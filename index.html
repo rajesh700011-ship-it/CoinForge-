@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>ToolNova — Smart Tools. Simple Solutions.</title>
+<meta name="description" content="ToolNova is a premium collection of 19+ everyday productivity utilities — generators, converters, calculators and developer tools — all running privately in your browser.">
+<meta name="theme-color" content="#0a0f1e">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%232563eb'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='24' fill='url(%23g)'/%3E%3Ctext x='50' y='68' font-size='58' font-family='Arial' font-weight='800' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/JsBarcode/3.11.5/JsBarcode.all.min.js"></script>
+<style>
+:root{
+  --bg:#0a0f1e; --bg2:#0d1428; --surface:rgba(255,255,255,.055); --surface-solid:#121a30;
+  --border:rgba(255,255,255,.09); --text:#eaeef8; --text-dim:#8d96ac; --text-faint:#5c6580;
+  --blue:#3b82f6; --cyan:#22d3ee; --grad:linear-gradient(135deg,#2563eb,#06b6d4);
+  --grad-soft:linear-gradient(135deg,rgba(37,99,235,.18),rgba(6,182,212,.14));
+  --success:#22c55e; --warning:#f59e0b; --danger:#ef4444;
+  --radius-lg:22px; --radius-md:16px; --radius-sm:10px;
+  --shadow:0 8px 30px rgba(0,0,0,.35);
+  --font-display:'Plus Jakarta Sans',sans-serif; --font-body:'Inter',sans-serif; --font-mono:'JetBrains Mono',monospace;
+}
+[data-theme="light"]{
+  --bg:#f3f6fc; --bg2:#eaf0fa; --surface:rgba(255,255,255,.75); --surface-solid:#ffffff;
+  --border:rgba(15,23,42,.08); --text:#131b31; --text-dim:#5b6577; --text-faint:#94a0b8;
+  --shadow:0 8px 30px rgba(30,60,120,.10);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  font-family:var(--font-body); background:radial-gradient(ellipse 900px 500px at 20% -10%,rgba(37,99,235,.20),transparent),
+    radial-gradient(ellipse 700px 500px at 100% 0%,rgba(6,182,212,.14),transparent), var(--bg);
+  color:var(--text); min-height:100%; overflow-x:hidden; transition:background .3s,color .3s;
+  -webkit-tap-highlight-color:transparent;
+}
+h1,h2,h3,h4,.brand,.hero-title{font-family:var(--font-display);}
+button,input,select,textarea{font-family:inherit; color:inherit;}
+a{color:inherit; text-decoration:none;}
+::selection{background:rgba(37,99,235,.35);}
+::-webkit-scrollbar{width:8px; height:8px;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12); border-radius:10px;}
+
+/* ---------- shell ---------- */
+#app{max-width:520px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column; position:relative;}
+.topbar{
+  position:sticky; top:0; z-index:40; display:flex; align-items:center; justify-content:space-between;
+  padding:16px 18px; backdrop-filter:blur(16px); background:rgba(10,15,30,.55); border-bottom:1px solid var(--border);
+}
+[data-theme="light"] .topbar{background:rgba(255,255,255,.65);}
+.topbar-left{display:flex; align-items:center; gap:10px;}
+.icon-btn{
+  width:40px; height:40px; border-radius:12px; border:1px solid var(--border); background:var(--surface);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text); flex-shrink:0;
+  transition:transform .15s, background .15s;
+}
+.icon-btn:active{transform:scale(.92);}
+.icon-btn svg{width:19px; height:19px;}
+.brand{display:flex; align-items:center; gap:9px; font-weight:800; font-size:19px; letter-spacing:-.02em;}
+.brand .mark{width:34px; height:34px; border-radius:10px; background:var(--grad); display:flex; align-items:center; justify-content:center; font-size:17px; font-weight:800; color:#fff; box-shadow:0 4px 14px rgba(37,99,235,.4);}
+.brand .nova{background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.page-title-bar{display:flex; align-items:center; gap:12px;}
+.page-title-bar h1{font-size:19px; font-weight:800;}
+
+main{flex:1; padding:18px 18px 100px;}
+.page{display:none; animation:fadeUp .35s ease;}
+.page.active{display:block;}
+@keyframes fadeUp{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+
+/* ---------- bottom nav ---------- */
+.bottomnav{
+  position:fixed; bottom:0; left:0; right:0; z-index:50; max-width:520px; margin:0 auto;
+  display:flex; justify-content:space-around; padding:10px 6px calc(10px + env(safe-area-inset-bottom));
+  background:rgba(10,15,30,.72); backdrop-filter:blur(18px); border-top:1px solid var(--border);
+}
+[data-theme="light"] .bottomnav{background:rgba(255,255,255,.78);}
+.nav-item{display:flex; flex-direction:column; align-items:center; gap:4px; background:none; border:none; cursor:pointer; color:var(--text-faint); font-size:11px; font-weight:600; padding:5px 10px; border-radius:12px; transition:color .15s;}
+.nav-item svg{width:21px; height:21px;}
+.nav-item.active{color:var(--blue);}
+[data-theme="light"] .nav-item.active{color:#2563eb;}
+
+/* ---------- search ---------- */
+.search-bar{display:flex; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:13px 16px; box-shadow:var(--shadow);}
+.search-bar svg{width:18px; height:18px; color:var(--text-faint); flex-shrink:0;}
+.search-bar input{background:none; border:none; outline:none; width:100%; font-size:14.5px; color:var(--text);}
+.search-bar input::placeholder{color:var(--text-faint);}
+
+/* ---------- hero ---------- */
+.hero{
+  position:relative; overflow:hidden; border-radius:var(--radius-lg); padding:26px 22px; margin:18px 0 20px;
+  background:var(--grad); box-shadow:0 14px 40px rgba(37,99,235,.30);
+}
+.hero::before,.hero::after{content:''; position:absolute; border-radius:50%; background:rgba(255,255,255,.14);}
+.hero::before{width:170px; height:170px; top:-70px; right:-50px; animation:float1 7s ease-in-out infinite;}
+.hero::after{width:110px; height:110px; bottom:-50px; left:-30px; background:rgba(255,255,255,.10); animation:float2 8s ease-in-out infinite;}
+@keyframes float1{0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(14px) rotate(12deg)}}
+@keyframes float2{0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)}}
+.hero h2{color:#fff; font-size:23px; font-weight:800; position:relative; z-index:1; margin-bottom:6px;}
+.hero p{color:rgba(255,255,255,.88); font-size:13.5px; position:relative; z-index:1; max-width:80%;}
+.hero .wave{display:inline-block; animation:wave 2s infinite;}
+@keyframes wave{0%,100%{transform:rotate(0)} 20%{transform:rotate(18deg)} 40%{transform:rotate(-10deg)} 60%{transform:rotate(14deg)}}
+
+/* ---------- sections ---------- */
+.section{margin-bottom:24px;}
+.section-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;}
+.section-head h3{font-size:15.5px; font-weight:700;}
+.link-btn{background:none; border:none; color:var(--blue); font-weight:600; font-size:13px; cursor:pointer;}
+
+.grid-2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+.grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+
+.tool-tile{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:16px 14px;
+  cursor:pointer; transition:transform .15s,border-color .15s; text-align:left; display:flex; flex-direction:column; gap:10px;
+}
+.tool-tile:active{transform:scale(.96);}
+.tool-tile:hover{border-color:rgba(59,130,246,.4);}
+.tool-tile .tile-icon{width:38px; height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center; color:#fff;}
+.tool-tile .tile-icon svg{width:19px; height:19px;}
+.tool-tile .tile-name{font-size:13px; font-weight:700;}
+
+.tool-row{
+  display:flex; align-items:center; gap:13px; background:var(--surface); border:1px solid var(--border);
+  border-radius:16px; padding:13px 14px; cursor:pointer; transition:transform .12s, border-color .15s;
+}
+.tool-row + .tool-row{margin-top:10px;}
+.tool-row:active{transform:scale(.985);}
+.tool-row:hover{border-color:rgba(59,130,246,.35);}
+.tool-row .row-icon{width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0;}
+.tool-row .row-icon svg{width:20px; height:20px;}
+.tool-row .row-text{flex:1; min-width:0;}
+.tool-row .row-text .rn{font-size:14px; font-weight:700;}
+.tool-row .row-text .rd{font-size:12px; color:var(--text-dim); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.tool-row .row-fav{background:none; border:none; cursor:pointer; color:var(--text-faint); flex-shrink:0;}
+.tool-row .row-fav svg{width:19px; height:19px;}
+.tool-row .row-fav.active{color:#f59e0b;}
+.tool-row .chev{color:var(--text-faint); flex-shrink:0;}
+.tool-row .chev svg{width:17px; height:17px;}
+
+.chip-row{display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; scrollbar-width:none;}
+.chip-row::-webkit-scrollbar{display:none;}
+.chip{
+  flex-shrink:0; padding:9px 16px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
+  font-size:13px; font-weight:600; cursor:pointer; color:var(--text-dim); white-space:nowrap; transition:all .15s;
+}
+.chip.active{background:var(--grad); color:#fff; border-color:transparent;}
+
+/* icon color variants */
+.c-blue{background:linear-gradient(135deg,#3b82f6,#2563eb);}
+.c-cyan{background:linear-gradient(135deg,#22d3ee,#06b6d4);}
+.c-green{background:linear-gradient(135deg,#34d399,#10b981);}
+.c-purple{background:linear-gradient(135deg,#a78bfa,#8b5cf6);}
+.c-orange{background:linear-gradient(135deg,#fb923c,#f97316);}
+.c-pink{background:linear-gradient(135deg,#f472b6,#ec4899);}
+.c-red{background:linear-gradient(135deg,#f87171,#ef4444);}
+.c-teal{background:linear-gradient(135deg,#2dd4bf,#0d9488);}
+
+/* ---------- footer ---------- */
+.footer{margin-top:8px; padding:26px 20px 20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); text-align:center;}
+.footer .brand{justify-content:center; margin-bottom:4px;}
+.footer .tag{color:var(--text-dim); font-size:12.5px; margin-bottom:18px;}
+.footer-stats{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px;}
+.fstat{background:var(--bg2); border-radius:14px; padding:12px; display:flex; gap:9px; align-items:center; text-align:left;}
+.fstat svg{width:17px; height:17px; flex-shrink:0;}
+.fstat .fn{font-size:12.5px; font-weight:700;}
+.fstat .fd{font-size:10.5px; color:var(--text-dim);}
+.footer-links{display:flex; flex-wrap:wrap; justify-content:center; gap:14px; font-size:12px; color:var(--text-dim); margin-bottom:10px;}
+.footer-links a{cursor:pointer;}
+.footer-links a:hover{color:var(--blue);}
+.copyright{font-size:11px; color:var(--text-faint);}
+
+/* ---------- empty state ---------- */
+.empty-state{text-align:center; padding:50px 20px; color:var(--text-dim);}
+.empty-state svg{width:64px; height:64px; margin-bottom:14px; color:var(--text-faint);}
+.empty-state h4{font-size:15px; color:var(--text); margin-bottom:6px;}
+.empty-state p{font-size:13px;}
+
+/* ---------- tool detail page ---------- */
+.tool-header{display:flex; align-items:center; gap:12px; margin-bottom:18px;}
+.tool-header .thi{width:44px; height:44px; border-radius:13px; display:flex; align-items:center; justify-content:center; color:#fff;}
+.tool-header .thi svg{width:21px; height:21px;}
+.tool-header .tht{flex:1;}
+.tool-header .tht h2{font-size:17px; font-weight:800;}
+.tool-header .tht p{font-size:12px; color:var(--text-dim);}
+.card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:18px; box-shadow:var(--shadow); margin-bottom:14px;}
+.field-label{font-size:12.5px; font-weight:600; color:var(--text-dim); margin-bottom:8px; display:block;}
+.field{
+  width:100%; background:var(--bg2); border:1px solid var(--border); border-radius:13px; padding:13px 14px;
+  font-size:14px; color:var(--text); outline:none; transition:border-color .15s;
+}
+.field:focus{border-color:var(--blue);}
+textarea.field{resize:vertical; min-height:100px; font-family:var(--font-mono);}
+.field-row{display:flex; gap:10px; margin-bottom:14px;}
+.field-row .field{flex:1;}
+.btn{
+  display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:14px; border:none;
+  border-radius:14px; background:var(--grad); color:#fff; font-weight:700; font-size:14.5px; cursor:pointer;
+  box-shadow:0 8px 22px rgba(37,99,235,.35); transition:transform .12s, filter .12s;
+}
+.btn:active{transform:scale(.98); filter:brightness(.96);}
+.btn.secondary{background:var(--surface); color:var(--text); border:1px solid var(--border); box-shadow:none;}
+.btn.outline{background:none; border:1.5px solid var(--blue); color:var(--blue); box-shadow:none;}
+.btn-row{display:flex; gap:10px;}
+.btn-row .btn{flex:1;}
+.result-box{background:var(--bg2); border:1px dashed var(--border); border-radius:14px; padding:16px; text-align:center; font-family:var(--font-mono); font-size:14px; word-break:break-all; margin-bottom:14px;}
+.result-display{font-size:26px; font-weight:800; text-align:right; padding:20px 6px; letter-spacing:.02em;}
+.tab-row{display:flex; gap:8px; margin-bottom:16px; background:var(--bg2); padding:5px; border-radius:14px;}
+.tab-btn{flex:1; padding:9px; border:none; background:none; border-radius:10px; font-size:12.5px; font-weight:700; color:var(--text-dim); cursor:pointer;}
+.tab-btn.active{background:var(--grad); color:#fff;}
+.qr-canvas-wrap{display:flex; justify-content:center; padding:20px; background:#fff; border-radius:16px; margin-bottom:14px;}
+.strength-meter{height:8px; border-radius:6px; background:var(--bg2); overflow:hidden; margin:10px 0 6px;}
+.strength-fill{height:100%; border-radius:6px; transition:width .3s, background .3s;}
+.copy-fab{position:relative;}
+.toast{
+  position:fixed; bottom:96px; left:50%; transform:translateX(-50%) translateY(20px); opacity:0; pointer-events:none;
+  background:#111827; color:#fff; padding:11px 20px; border-radius:100px; font-size:13px; font-weight:600; z-index:99;
+  box-shadow:0 10px 30px rgba(0,0,0,.35); transition:all .25s; display:flex; align-items:center; gap:7px;
+}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0); pointer-events:auto;}
+.toast svg{width:15px; height:15px; color:var(--success);}
+
+.stat-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px;}
+.stat-box{background:var(--bg2); border-radius:14px; padding:14px 8px; text-align:center;}
+.stat-box .sv{font-size:19px; font-weight:800;}
+.stat-box .sl{font-size:10.5px; color:var(--text-dim); margin-top:2px;}
+
+.case-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;}
+.case-btn{background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:11px; font-size:12.5px; font-weight:600; cursor:pointer; text-align:left;}
+.case-btn:active{transform:scale(.97);}
+
+.calc-display{background:var(--bg2); border-radius:16px; padding:18px; margin-bottom:14px; text-align:right;}
+.calc-expr{font-size:13px; color:var(--text-dim); min-height:16px;}
+.calc-result{font-size:30px; font-weight:800; margin-top:4px; word-break:break-all;}
+.calc-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:9px;}
+.calc-key{padding:17px 0; border-radius:14px; border:none; background:var(--surface); border:1px solid var(--border); font-size:17px; font-weight:700; cursor:pointer; color:var(--text);}
+.calc-key.op{background:var(--bg2); color:var(--blue);}
+.calc-key.eq{background:var(--grad); color:#fff; grid-row:span 1;}
+.calc-key:active{transform:scale(.93);}
+
+.color-preview{height:120px; border-radius:16px; margin-bottom:14px; border:1px solid var(--border); transition:background .2s;}
+.color-vals{display:grid; grid-template-columns:1fr; gap:10px;}
+.color-val-row{display:flex; align-items:center; justify-content:space-between; background:var(--bg2); border-radius:12px; padding:11px 14px; font-family:var(--font-mono); font-size:13.5px;}
+.color-val-row button{background:none; border:none; color:var(--blue); cursor:pointer;}
+
+.dice-area{display:flex; gap:14px; justify-content:center; flex-wrap:wrap; padding:20px 0; min-height:100px; align-items:center;}
+.die{width:64px; height:64px; border-radius:16px; background:var(--grad); display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:800; color:#fff; box-shadow:0 8px 20px rgba(37,99,235,.35);}
+.coin{width:120px; height:120px; border-radius:50%; margin:20px auto; background:var(--grad); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800; color:#fff; box-shadow:0 10px 30px rgba(37,99,235,.4);}
+.coin.flipping{animation:coinFlip .6s ease;}
+@keyframes coinFlip{0%{transform:rotateY(0)}100%{transform:rotateY(1440deg)}}
+
+.range-row{display:flex; align-items:center; gap:12px; margin-bottom:14px;}
+.range-row input[type=range]{flex:1; accent-color:#2563eb;}
+.toggle-row{display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border);}
+.toggle-row:last-child{border-bottom:none;}
+.toggle-row .tr-label{font-size:13.5px; font-weight:600;}
+.switch{position:relative; width:46px; height:27px; flex-shrink:0;}
+.switch input{opacity:0; width:0; height:0;}
+.slider-tg{position:absolute; inset:0; background:var(--bg2); border:1px solid var(--border); border-radius:100px; cursor:pointer; transition:.2s;}
+.slider-tg::before{content:''; position:absolute; width:21px; height:21px; left:2px; top:2px; background:#fff; border-radius:50%; transition:.2s; box-shadow:0 1px 4px rgba(0,0,0,.3);}
+.switch input:checked + .slider-tg{background:var(--grad); border-color:transparent;}
+.switch input:checked + .slider-tg::before{transform:translateX(19px);}
+
+.settings-group{margin-bottom:20px;}
+.settings-group h4{font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin-bottom:10px; padding-left:4px;}
+.settings-list{background:var(--surface); border:1px solid var(--border); border-radius:16px; overflow:hidden;}
+.settings-row{display:flex; align-items:center; gap:12px; padding:14px 16px; border-bottom:1px solid var(--border); cursor:pointer;}
+.settings-row:last-child{border-bottom:none;}
+.settings-row .sr-icon{width:32px; height:32px; border-radius:9px; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0;}
+.settings-row .sr-icon svg{width:16px; height:16px;}
+.settings-row .sr-text{flex:1; font-size:13.5px; font-weight:600;}
+.settings-row .sr-val{font-size:12px; color:var(--text-faint);}
+.settings-row .sr-chev{color:var(--text-faint); flex-shrink:0;}
+.settings-row .sr-chev svg{width:16px; height:16px;}
+
+.legal-page h2{font-size:20px; font-weight:800; margin-bottom:4px;}
+.legal-page .legal-meta{font-size:12px; color:var(--text-dim); margin-bottom:18px;}
+.legal-page .toc{background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px; margin-bottom:20px;}
+.legal-page .toc h4{font-size:13px; margin-bottom:10px;}
+.legal-page .toc ol{padding-left:18px; font-size:12.5px; color:var(--text-dim); line-height:2;}
+.legal-page section{margin-bottom:20px;}
+.legal-page section h3{font-size:14.5px; font-weight:700; margin-bottom:8px; color:var(--text);}
+.legal-page section p, .legal-page section li{font-size:13px; color:var(--text-dim); line-height:1.75; margin-bottom:6px;}
+.legal-page section ul{padding-left:18px;}
+
+.about-hero{text-align:center; padding:10px 10px 24px;}
+.about-hero .mark-lg{width:64px; height:64px; border-radius:18px; background:var(--grad); display:flex; align-items:center; justify-content:center; font-size:30px; font-weight:800; color:#fff; margin:0 auto 14px; box-shadow:0 10px 26px rgba(37,99,235,.4);}
+.feature-list{display:flex; flex-direction:column; gap:10px;}
+.feature-item{display:flex; gap:12px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:14px;}
+.feature-item .fi-icon{width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0;}
+.feature-item .fi-icon svg{width:17px; height:17px;}
+.feature-item h5{font-size:13.5px; font-weight:700; margin-bottom:2px;}
+.feature-item p{font-size:12px; color:var(--text-dim);}
+
+.contact-form{display:flex; flex-direction:column; gap:12px;}
+.faq-item{border-bottom:1px solid var(--border); padding:13px 2px; cursor:pointer;}
+.faq-item:last-child{border-bottom:none;}
+.faq-q{display:flex; justify-content:space-between; align-items:center; font-size:13.5px; font-weight:600;}
+.faq-q svg{width:16px; height:16px; transition:transform .2s; flex-shrink:0;}
+.faq-a{font-size:12.5px; color:var(--text-dim); max-height:0; overflow:hidden; transition:max-height .25s, margin .25s; line-height:1.6;}
+.faq-item.open .faq-a{max-height:200px; margin-top:8px;}
+.faq-item.open .faq-q svg{transform:rotate(180deg);}
+.social-row{display:flex; gap:10px; margin-top:6px;}
+.social-row a{width:40px; height:40px; border-radius:12px; background:var(--surface); border:1px solid var(--border); display:flex; align-items:center; justify-content:center;}
+.social-row a svg{width:17px; height:17px;}
+.info-list{background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:4px 16px;}
+.info-row{display:flex; justify-content:space-between; padding:13px 0; border-bottom:1px solid var(--border); font-size:13px;}
+.info-row:last-child{border-bottom:none;}
+.info-row span:first-child{color:var(--text-dim);}
+.info-row span:last-child{font-weight:600;}
+
+@media (min-width:600px){ .grid-3{grid-template-columns:repeat(4,1fr);} }
+.sr-only{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0);}
+:focus-visible{outline:2px solid var(--blue); outline-offset:2px;}
+@media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important;} }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ TOPBAR ============ -->
+  <header class="topbar" id="topbar">
+    <div class="topbar-left" id="topbarHome">
+      <div class="brand"><span class="mark">T</span>Tool<span class="nova">Nova</span></div>
+    </div>
+    <div class="page-title-bar" id="topbarPage" style="display:none;">
+      <button class="icon-btn" id="backBtn" aria-label="Back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h1 id="pageTitleText">Page</h1>
+    </div>
+    <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path stroke-linecap="round" d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
+    </button>
+  </header>
+
+  <main>
+
+  <!-- ============ HOME PAGE ============ -->
+  <section class="page active" id="page-home">
+    <div class="search-bar" id="homeSearchBar" role="button" tabindex="0">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M21 21l-4.3-4.3"/></svg>
+      <input type="text" id="homeSearchInput" placeholder="Search tools…" readonly>
+    </div>
+
+    <div class="hero">
+      <h2>Good Morning <span class="wave">👋</span></h2>
+      <p>19 handy tools, zero clutter — everything runs right on your device.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><h3>Popular Tools</h3><button class="link-btn" data-nav="tools">View All</button></div>
+      <div class="grid-3" id="popularGrid"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><h3>Categories</h3><button class="link-btn" data-nav="tools">View All</button></div>
+      <div class="chip-row" id="homeCatRow"></div>
+    </div>
+
+    <div class="section" id="recentSection" style="display:none;">
+      <div class="section-head"><h3>Recently Used</h3><button class="link-btn" data-nav="recent">View All</button></div>
+      <div id="recentHomeList"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><h3>Quick Access</h3></div>
+      <div class="grid-3" id="quickGrid"></div>
+    </div>
+
+    <footer class="footer">
+      <div class="brand"><span class="mark">T</span>Tool<span class="nova">Nova</span></div>
+      <p class="tag">Smart Tools, Simple Solutions.</p>
+      <div class="footer-stats">
+        <div class="fstat"><svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><div><div class="fn">19 Tools</div><div class="fd">All in one app</div></div></div>
+        <div class="fstat"><svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg><div><div class="fn">Fast & Local</div><div class="fd">Runs on-device</div></div></div>
+        <div class="fstat"><svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="4"/><path stroke-linecap="round" d="M8 12h8M8 16h5"/></svg><div><div class="fn">Easy to Use</div><div class="fd">Clean, simple UI</div></div></div>
+        <div class="fstat"><svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2"><path d="M12 2l7 4v6c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg><div><div class="fn">Private</div><div class="fd">No hidden cost</div></div></div>
+      </div>
+      <div class="footer-links">
+        <a data-nav="about">About</a><a data-nav="privacy">Privacy Policy</a><a data-nav="terms">Terms</a><a data-nav="contact">Contact</a><span>Version 1.0</span>
+      </div>
+      <p class="copyright">Copyright © 2026 ToolNova. All rights reserved.</p>
+    </footer>
+  </section>
+
+  <!-- ============ ALL TOOLS PAGE ============ -->
+  <section class="page" id="page-tools">
+    <div class="search-bar" style="margin-bottom:14px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M21 21l-4.3-4.3"/></svg>
+      <input type="text" id="toolsSearchInput" placeholder="Search tools…">
+    </div>
+    <div class="chip-row" id="toolsCatRow" style="margin-bottom:16px;"></div>
+    <div id="toolsList"></div>
+  </section>
+
+  <!-- ============ FAVORITES PAGE ============ -->
+  <section class="page" id="page-favorites">
+    <div id="favoritesList"></div>
+  </section>
+
+  <!-- ============ RECENT PAGE ============ -->
+  <section class="page" id="page-recent">
+    <div class="section-head"><h3 style="font-size:14px;color:var(--text-dim);font-weight:600;">Your last used tools</h3>
+      <button class="link-btn" id="clearRecentBtn">Clear</button></div>
+    <div id="recentList"></div>
+  </section>
+
+  <!-- ============ TOOL DETAIL PAGE ============ -->
+  <section class="page" id="page-tool">
+    <div id="toolDetailBody"></div>
+  </section>
+
+  <!-- ============ ABOUT PAGE ============ -->
+  <section class="page" id="page-about">
+    <div class="about-hero">
+      <div class="mark-lg">T</div>
+      <h2 style="font-size:20px;font-weight:800;margin-bottom:6px;">ToolNova</h2>
+      <p style="font-size:13px;color:var(--text-dim);max-width:300px;margin:0 auto;">Smart Tools. Simple Solutions. A single home for the small utilities you reach for every day.</p>
+    </div>
+    <div class="card">
+      <h3 style="font-size:14.5px;font-weight:700;margin-bottom:8px;">Who we are</h3>
+      <p style="font-size:13px;color:var(--text-dim);line-height:1.7;">ToolNova is an independent, browser-based utility suite. We build small, focused tools — generators, converters, calculators — and bring them together into one fast, distraction-free workspace so you never have to hunt through ten different sites to get one simple job done.</p>
+    </div>
+    <div class="card">
+      <h3 style="font-size:14.5px;font-weight:700;margin-bottom:8px;">Our Mission</h3>
+      <p style="font-size:13px;color:var(--text-dim);line-height:1.7;">To make everyday digital tasks effortless by putting reliable, private, and beautifully designed tools within a single tap — with no clutter, no logins, and no unnecessary permissions.</p>
+    </div>
+    <div class="card">
+      <h3 style="font-size:14.5px;font-weight:700;margin-bottom:8px;">Our Vision</h3>
+      <p style="font-size:13px;color:var(--text-dim);line-height:1.7;">A world where productivity tools respect your time and your data equally — where getting something done doesn't mean giving something up.</p>
+    </div>
+    <div class="section">
+      <div class="section-head"><h3>Why ToolNova</h3></div>
+      <div class="feature-list" id="whyList"></div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div style="width:44px;height:44px;border-radius:13px;background:var(--grad);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" style="width:21px;height:21px;"><path d="M12 2l8 4v6c0 5.5-3.4 9-8 10-4.6-1-8-4.5-8-10V6z"/><path stroke-linecap="round" d="M9 12l2 2 4-4"/></svg>
+      </div>
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:6px;">Our Security Commitment</h3>
+      <p style="font-size:12.5px;color:var(--text-dim);line-height:1.7;">Every tool in ToolNova processes your input locally in your browser. We never see your passwords, files, or generated content — because they never leave your device.</p>
+    </div>
+  </section>
+
+  <!-- ============ PRIVACY POLICY PAGE ============ -->
+  <section class="page legal-page" id="page-privacy"></section>
+
+  <!-- ============ TERMS PAGE ============ -->
+  <section class="page legal-page" id="page-terms"></section>
+
+  <!-- ============ CONTACT PAGE ============ -->
+  <section class="page" id="page-contact">
+    <div class="card">
+      <h3 style="font-size:14.5px;font-weight:700;margin-bottom:12px;">Send us a message</h3>
+      <form class="contact-form" id="contactForm">
+        <input class="field" placeholder="Your name" required>
+        <input class="field" type="email" placeholder="Your email" required>
+        <select class="field"><option>General question</option><option>Bug report</option><option>Feature request</option><option>Business inquiry</option></select>
+        <textarea class="field" placeholder="Your message" rows="4" required></textarea>
+        <button type="submit" class="btn">Send Message</button>
+      </form>
+    </div>
+    <div class="card">
+      <div class="info-list" style="border:none;padding:0;">
+        <div class="info-row"><span>Support Email</span><span>support@toolnova.app</span></div>
+        <div class="info-row"><span>Business Hours</span><span>Mon–Fri, 9am–6pm</span></div>
+        <div class="info-row"><span>Response Time</span><span>Within 24–48 hrs</span></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-head"><h3>Frequently Asked</h3></div>
+      <div class="card" id="faqCard"></div>
+    </div>
+    <div class="section">
+      <div class="section-head"><h3>Follow Us</h3></div>
+      <div class="social-row">
+        <a href="#" aria-label="Website"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 4 6 4 9s-1.5 6.3-4 9c-2.5-2.7-4-6-4-9s1.5-6.3 4-9z"/></svg></a>
+        <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linejoin="round" d="M22 5.9c-.7.3-1.5.6-2.3.7.8-.5 1.5-1.3 1.8-2.3-.8.5-1.7.8-2.6 1a4 4 0 00-6.9 3.7 11.5 11.5 0 01-8.4-4.3 4 4 0 001.3 5.4c-.7 0-1.3-.2-1.9-.5v.1a4 4 0 003.3 4 4 4 0 01-1.9.1 4 4 0 003.8 2.8A8.1 8.1 0 012 19.5a11.4 11.4 0 006.2 1.8c7.5 0 11.6-6.4 11.6-11.9v-.5c.8-.6 1.5-1.3 2.2-2.1z"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg></a>
+        <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><path stroke-linecap="round" d="M7.5 10v7M7.5 7.2v.1M12 17v-4.5c0-1.4 1-2.5 2.4-2.5S17 11.1 17 12.5V17M12 12.5v4.5"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SETTINGS PAGE ============ -->
+  <section class="page" id="page-settings">
+    <div class="settings-group">
+      <h4>Appearance</h4>
+      <div class="settings-list">
+        <div class="settings-row" style="cursor:default;">
+          <div class="sr-icon c-purple"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg></div>
+          <div class="sr-text">Dark Mode</div>
+          <label class="switch"><input type="checkbox" id="darkModeSwitch" checked><span class="slider-tg"></span></label>
+        </div>
+      </div>
+    </div>
+    <div class="settings-group">
+      <h4>General</h4>
+      <div class="settings-list">
+        <div class="settings-row" id="languageRow"><div class="sr-icon c-blue"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 4 6 4 9s-1.5 6.3-4 9c-2.5-2.7-4-6-4-9s1.5-6.3 4-9z"/></svg></div><div class="sr-text">Language</div><div class="sr-val">English</div><div class="sr-chev">›</div></div>
+        <div class="settings-row" id="clearCacheRow"><div class="sr-icon c-orange"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path stroke-linecap="round" d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-9 0l1 12a2 2 0 002 2h6a2 2 0 002-2l1-12"/></svg></div><div class="sr-text">Clear Cache</div><div class="sr-val" id="cacheSize">0 KB</div><div class="sr-chev">›</div></div>
+        <div class="settings-row" id="rateRow"><div class="sr-icon c-orange"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path stroke-linejoin="round" d="M12 3l2.7 5.9 6.3.6-4.8 4.3 1.4 6.2L12 16.9 6.4 20l1.4-6.2-4.8-4.3 6.3-.6z"/></svg></div><div class="sr-text">Rate Us</div><div class="sr-chev">›</div></div>
+        <div class="settings-row" id="shareRow"><div class="sr-icon c-cyan"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.1M8.2 13.2l7.6 4.1"/></svg></div><div class="sr-text">Share App</div><div class="sr-chev">›</div></div>
+      </div>
+    </div>
+    <div class="settings-group">
+      <h4>About</h4>
+      <div class="settings-list">
+        <div class="settings-row" data-nav="about"><div class="sr-icon c-blue"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M12 16v-5M12 8.2v.1"/></svg></div><div class="sr-text">About ToolNova</div><div class="sr-val">v1.0.0</div><div class="sr-chev">›</div></div>
+        <div class="settings-row" data-nav="privacy"><div class="sr-icon c-green"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2l8 4v6c0 5.5-3.4 9-8 10-4.6-1-8-4.5-8-10V6z"/></svg></div><div class="sr-text">Privacy Policy</div><div class="sr-chev">›</div></div>
+        <div class="settings-row" data-nav="terms"><div class="sr-icon c-purple"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M7 3h8l4 4v14H7z"/><path stroke-linecap="round" d="M9 12h6M9 16h6M9 8h2"/></svg></div><div class="sr-text">Terms of Service</div><div class="sr-chev">›</div></div>
+        <div class="settings-row" data-nav="contact"><div class="sr-icon c-pink"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="3"/><path stroke-linecap="round" d="M4 7l8 6 8-6"/></svg></div><div class="sr-text">Contact Us</div><div class="sr-chev">›</div></div>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <!-- ============ BOTTOM NAV ============ -->
+  <nav class="bottomnav">
+    <button class="nav-item active" data-nav="home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z"/></svg>Home</button>
+    <button class="nav-item" data-nav="tools">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>All Tools</button>
+    <button class="nav-item" data-nav="favorites">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-9.5-8.8C.7 7.8 2.5 4.5 6 4.2c2-.2 3.7 1 4.5 2.4.8-1.4 2.5-2.6 4.5-2.4 3.5.3 5.3 3.6 3.5 7-2.5 4.4-9.5 8.8-9.5 8.8z"/></svg>Favorites</button>
+    <button class="nav-item" data-nav="recent">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M12 7v5l3.5 2"/></svg>Recent</button>
+    <button class="nav-item" data-nav="settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a7.7 7.7 0 000-2l2-1.5-2-3.4-2.3.9a7.6 7.6 0 00-1.7-1L15 3.5h-4l-.4 2.5a7.6 7.6 0 00-1.7 1l-2.3-.9-2 3.4L6.6 11a7.7 7.7 0 000 2l-2 1.5 2 3.4 2.3-.9c.5.4 1.1.8 1.7 1l.4 2.5h4l.4-2.5a7.6 7.6 0 001.7-1l2.3.9 2-3.4z"/></svg>Settings</button>
+  </nav>
+
+  <div class="toast" id="toast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"/></svg><span id="toastMsg">Copied!</span></div>
+</div>
+<script>
+/* ============================================================
+   ToolNova — App Logic
+   ============================================================ */
+(function(){
+'use strict';
+
+const ICONS = {
+  qr:      '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM19 14h2v2h-2zM14 19h2v2h-2zM19 19h2v2h-2z"/></svg>',
+  barcode: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 4v16M8 4v16M11 4v16M15 4v16M17 4v16M21 4v16"/></svg>',
+  pwgen:   '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 118 0v4"/></svg>',
+  pwcheck: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2l8 4v6c0 5.5-3.4 9-8 10-4.6-1-8-4.5-8-10V6z"/><path stroke-linecap="round" d="M9 12l2 2 4-4"/></svg>',
+  calc:    '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><path stroke-linecap="round" d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></svg>',
+  unit:    '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M7 7h13M17 4l3 3-3 3M17 17H4M7 20l-3-3 3-3"/></svg>',
+  textcnt: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>',
+  casecnv: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 18L8 6l5 12M4.5 14h7M14 18l3.5-9L21 18M15 15.5h5"/></svg>',
+  color:   '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2a9 9 0 000 18h1.5a2 2 0 001.5-3.3 1.6 1.6 0 011.5-2.7H18a3 3 0 003-3 9 9 0 00-9-9z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7.5" r="1"/><circle cx="15" cy="7.5" r="1"/></svg>',
+  uuid:    '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M8 10h.01M12 9v6M16 10h.01M9 15h6"/></svg>',
+  json:    '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4c-2 0-3 1-3 3v3c0 1-1 2-2 2 1 0 2 1 2 2v3c0 2 1 3 3 3M17 4c2 0 3 1 3 3v3c0 1 1 2 2 2-1 0-2 1-2 2v3c0 2-1 3-3 3"/></svg>',
+  b64:     '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="7" height="10" rx="1.5"/><path d="M14 7l4 5-4 5M21 7v10"/></svg>',
+  urlenc:  '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M9 12a4 4 0 004 4h3a4 4 0 000-8h-1M15 12a4 4 0 00-4-4H8a4 4 0 000 8h1"/></svg>',
+  ts:      '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="13" r="8"/><path stroke-linecap="round" d="M12 9v4l3 2M9 2h6"/></svg>',
+  rng:     '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="8.5" cy="8.5" r="1.2" fill="#fff" stroke="none"/><circle cx="15.5" cy="15.5" r="1.2" fill="#fff" stroke="none"/><circle cx="15.5" cy="8.5" r="1.2" fill="#fff" stroke="none"/><circle cx="8.5" cy="15.5" r="1.2" fill="#fff" stroke="none"/><circle cx="12" cy="12" r="1.2" fill="#fff" stroke="none"/></svg>',
+  coin:    '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M9 10a3 3 0 116 0c0 2-3 2-3 4M12 17h.01"/></svg>',
+  dice:    '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="8.5" cy="8.5" r="1.1" fill="#fff" stroke="none"/><circle cx="15.5" cy="8.5" r="1.1" fill="#fff" stroke="none"/><circle cx="8.5" cy="15.5" r="1.1" fill="#fff" stroke="none"/><circle cx="15.5" cy="15.5" r="1.1" fill="#fff" stroke="none"/></svg>',
+  charcnt: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M4 19V7a2 2 0 012-2h6l6 6v8a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path stroke-linecap="round" d="M12 5v6h6"/></svg>',
+  lorem:   '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M5 5h14M5 9h14M5 13h9M5 17h11"/></svg>'
+};
+
+const TOOLS = [
+  {id:'qr', name:'QR Code Generator', short:'Create QR codes for any text or link', desc:'Turn text, links or contact details into a scannable QR code instantly.', cat:'Generator', color:'c-blue'},
+  {id:'barcode', name:'Barcode Generator', short:'Generate barcodes for products', desc:'Generate standard CODE128 barcodes for products and inventory.', cat:'Generator', color:'c-cyan'},
+  {id:'pwgen', name:'Password Generator', short:'Generate strong random passwords', desc:'Create strong, random passwords with custom length and character sets.', cat:'Security', color:'c-green'},
+  {id:'pwcheck', name:'Password Strength Checker', short:'Check the strength of your password', desc:'See how strong your password is and get tips to make it stronger.', cat:'Security', color:'c-purple'},
+  {id:'calc', name:'Calculator', short:'Perform basic and advanced calculations', desc:'A fast, clean calculator for everyday arithmetic.', cat:'Calculator', color:'c-orange'},
+  {id:'unit', name:'Unit Converter', short:'Convert between multiple units', desc:'Convert length, weight, temperature and more between units.', cat:'Converter', color:'c-blue'},
+  {id:'textcnt', name:'Text Counter', short:'Count characters, words and lines', desc:'Count words, characters, sentences and lines in your text.', cat:'Text', color:'c-purple'},
+  {id:'casecnv', name:'Case Converter', short:'Convert text between cases', desc:'Switch text between UPPER, lower, Title, Sentence and more.', cat:'Text', color:'c-pink'},
+  {id:'color', name:'Color Picker', short:'Pick any color and get its values', desc:'Pick a color and instantly get its HEX, RGB and HSL values.', cat:'Utility', color:'c-pink'},
+  {id:'uuid', name:'UUID Generator', short:'Generate random UUIDs', desc:'Generate RFC-4122 v4 UUIDs for your projects.', cat:'Developer', color:'c-teal'},
+  {id:'json', name:'JSON Formatter', short:'Format and validate JSON', desc:'Beautify, minify and validate JSON data.', cat:'Developer', color:'c-blue'},
+  {id:'b64', name:'Base64 Encoder & Decoder', short:'Encode or decode Base64 text', desc:'Encode text to Base64 or decode Base64 back to text.', cat:'Developer', color:'c-cyan'},
+  {id:'urlenc', name:'URL Encoder & Decoder', short:'Encode or decode URLs', desc:'Encode text for safe use in URLs, or decode it back.', cat:'Developer', color:'c-green'},
+  {id:'ts', name:'Timestamp Converter', short:'Convert Unix timestamps to dates', desc:'Convert between Unix timestamps and human-readable dates.', cat:'Converter', color:'c-orange'},
+  {id:'rng', name:'Random Number Generator', short:'Generate random numbers in a range', desc:'Generate a random number within any range you choose.', cat:'Generator', color:'c-purple'},
+  {id:'coin', name:'Coin Flip', short:'Flip a virtual coin', desc:'Flip a virtual coin for quick heads-or-tails decisions.', cat:'Utility', color:'c-orange'},
+  {id:'dice', name:'Dice Roller', short:'Roll one or more dice', desc:'Roll one or more six-sided dice.', cat:'Utility', color:'c-red'},
+  {id:'charcnt', name:'Character Counter', short:'Count characters with limits', desc:'Track character count against common limits like SMS or tweets.', cat:'Text', color:'c-teal'},
+  {id:'lorem', name:'Lorem Ipsum Generator', short:'Generate placeholder text', desc:'Generate placeholder paragraphs, sentences or words.', cat:'Generator', color:'c-cyan'}
+];
+const CATS = ['All','Generator','Converter','Calculator','Text','Developer','Utility','Security'];
+
+let state = { page:'home', prevPage:'home', currentTool:null, toolsFilter:'All', toolsQuery:'' };
+const LS = { fav:'toolnova_favorites', recent:'toolnova_recent', theme:'toolnova_theme' };
+
+function getFavs(){ try{return JSON.parse(localStorage.getItem(LS.fav)||'[]');}catch(e){return [];} }
+function setFavs(a){ localStorage.setItem(LS.fav, JSON.stringify(a)); }
+function toggleFav(id){ let f=getFavs(); if(f.includes(id)) f=f.filter(x=>x!==id); else f.unshift(id); setFavs(f); }
+function getRecent(){ try{return JSON.parse(localStorage.getItem(LS.recent)||'[]');}catch(e){return [];} }
+function pushRecent(id){ let r=getRecent().filter(x=>x!==id); r.unshift(id); r=r.slice(0,12); localStorage.setItem(LS.recent, JSON.stringify(r)); }
+
+function toast(msg){
+  const t=document.getElementById('toast'); document.getElementById('toastMsg').textContent=msg;
+  t.classList.add('show'); clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.remove('show'),1800);
+}
+function copyText(str){
+  navigator.clipboard && navigator.clipboard.writeText(str).then(()=>toast('Copied to clipboard')).catch(()=>toast('Copy failed'));
+}
+
+/* ---------------- routing ---------------- */
+function go(page, opts){
+  opts = opts || {};
+  if(page!=='tool') state.currentTool=null;
+  state.prevPage = state.page==='tool' ? state.prevPage : state.page;
+  state.page = page;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.nav===page));
+
+  const topbarHome=document.getElementById('topbarHome'), topbarPage=document.getElementById('topbarPage');
+  const titles={tools:'All Tools',favorites:'Favorites',recent:'Recent Tools',about:'About',privacy:'Privacy Policy',terms:'Terms of Service',contact:'Contact Us',settings:'Settings'};
+  if(page==='home'){ topbarHome.style.display='flex'; topbarPage.style.display='none'; }
+  else{ topbarHome.style.display='none'; topbarPage.style.display='flex'; document.getElementById('pageTitleText').textContent = page==='tool' ? (opts.title||'Tool') : (titles[page]||''); }
+
+  window.scrollTo({top:0,behavior:'instant'});
+  if(page==='tools') renderToolsPage();
+  if(page==='favorites') renderFavoritesPage();
+  if(page==='recent') renderRecentPage();
+  if(page==='privacy') renderPrivacyPage();
+  if(page==='terms') renderTermsPage();
+  if(page==='contact') renderContactPage();
+}
+document.getElementById('backBtn').addEventListener('click', ()=>{
+  if(state.page==='tool'){ go(state.prevPage||'tools'); } else { go('home'); }
+});
+document.addEventListener('click', (e)=>{
+  const navEl = e.target.closest('[data-nav]');
+  if(navEl){ go(navEl.dataset.nav); }
+});
+document.getElementById('homeSearchBar').addEventListener('click', ()=>{ go('tools'); setTimeout(()=>document.getElementById('toolsSearchInput').focus(),150); });
+
+/* ---------------- icon/row helpers ---------------- */
+function toolRow(t){
+  const favs=getFavs(); const isFav=favs.includes(t.id);
+  return `<div class="tool-row" data-open="${t.id}">
+    <div class="row-icon ${t.color}">${ICONS[t.id]}</div>
+    <div class="row-text"><div class="rn">${t.name}</div><div class="rd">${t.short}</div></div>
+    <button class="row-fav ${isFav?'active':''}" data-fav="${t.id}" aria-label="Toggle favorite">
+      <svg viewBox="0 0 24 24" fill="${isFav?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-9.5-8.8C.7 7.8 2.5 4.5 6 4.2c2-.2 3.7 1 4.5 2.4.8-1.4 2.5-2.6 4.5-2.4 3.5.3 5.3 3.6 3.5 7-2.5 4.4-9.5 8.8-9.5 8.8z"/></svg>
+    </button>
+    <div class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></div>
+  </div>`;
+}
+function toolTile(t){
+  return `<div class="tool-tile" data-open="${t.id}"><div class="tile-icon ${t.color}">${ICONS[t.id]}</div><div class="tile-name">${t.name}</div></div>`;
+}
+function wireRows(container){
+  container.querySelectorAll('[data-open]').forEach(el=>{
+    el.addEventListener('click',(e)=>{ if(e.target.closest('[data-fav]')) return; openTool(el.dataset.open); });
+  });
+  container.querySelectorAll('[data-fav]').forEach(el=>{
+    el.addEventListener('click',(e)=>{ e.stopPropagation(); toggleFav(el.dataset.fav); refreshCurrentPage(); });
+  });
+}
+function refreshCurrentPage(){
+  if(state.page==='home') renderHome();
+  if(state.page==='tools') renderToolsPage();
+  if(state.page==='favorites') renderFavoritesPage();
+  if(state.page==='recent') renderRecentPage();
+}
+function emptyState(icon, title, desc){
+  return `<div class="empty-state">${icon}<h4>${title}</h4><p>${desc}</p></div>`;
+}
+const STAR_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20s-7-4.4-9.5-8.8C.7 7.8 2.5 4.5 6 4.2c2-.2 3.7 1 4.5 2.4.8-1.4 2.5-2.6 4.5-2.4 3.5.3 5.3 3.6 3.5 7-2.5 4.4-9.5 8.8-9.5 8.8z"/></svg>';
+const CLOCK_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M12 7v5l3 2"/></svg>';
+
+/* ---------------- HOME ---------------- */
+function renderHome(){
+  const popular = TOOLS.filter(t=>['qr','pwgen','calc','unit','textcnt','json'].includes(t.id));
+  document.getElementById('popularGrid').innerHTML = popular.slice(0,6).map(toolTile).join('');
+  const catIcons={Generator:'c-blue',Converter:'c-cyan',Calculator:'c-orange',Text:'c-purple',Developer:'c-teal',Utility:'c-pink',Security:'c-green'};
+  document.getElementById('homeCatRow').innerHTML = CATS.slice(1).map(c=>`<div class="chip" data-catgo="${c}">${c}</div>`).join('');
+  const quick = TOOLS.filter(t=>['coin','dice','uuid','b64','rng','ts'].includes(t.id));
+  document.getElementById('quickGrid').innerHTML = quick.slice(0,6).map(toolTile).join('');
+
+  const recent = getRecent();
+  const recentSection = document.getElementById('recentSection');
+  if(recent.length){
+    recentSection.style.display='block';
+    const items = recent.slice(0,3).map(id=>TOOLS.find(t=>t.id===id)).filter(Boolean);
+    document.getElementById('recentHomeList').innerHTML = items.map(toolRow).join('');
+    wireRows(document.getElementById('recentHomeList'));
+  } else { recentSection.style.display='none'; }
+
+  wireRows(document.getElementById('popularGrid'));
+  wireRows(document.getElementById('quickGrid'));
+  document.querySelectorAll('[data-catgo]').forEach(el=>{
+    el.addEventListener('click',()=>{ state.toolsFilter=el.dataset.catgo; go('tools'); });
+  });
+}
+
+/* ---------------- ALL TOOLS ---------------- */
+function renderToolsPage(){
+  const row=document.getElementById('toolsCatRow');
+  row.innerHTML = CATS.map(c=>`<div class="chip ${state.toolsFilter===c?'active':''}" data-catf="${c}">${c}</div>`).join('');
+  row.querySelectorAll('[data-catf]').forEach(el=>el.addEventListener('click',()=>{ state.toolsFilter=el.dataset.catf; renderToolsPage(); }));
+
+  const input=document.getElementById('toolsSearchInput');
+  input.value = state.toolsQuery;
+  input.oninput = ()=>{ state.toolsQuery = input.value; renderToolsList(); };
+  renderToolsList();
+}
+function renderToolsList(){
+  let list = TOOLS.filter(t=> state.toolsFilter==='All' || t.cat===state.toolsFilter);
+  const q = state.toolsQuery.trim().toLowerCase();
+  if(q) list = list.filter(t=> t.name.toLowerCase().includes(q) || t.short.toLowerCase().includes(q));
+  const el = document.getElementById('toolsList');
+  if(!list.length){ el.innerHTML = emptyState(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M21 21l-4.3-4.3"/></svg>`,'No tools found','Try a different search term or category.'); return; }
+  el.innerHTML = list.map(toolRow).join('');
+  wireRows(el);
+}
+
+/* ---------------- FAVORITES ---------------- */
+function renderFavoritesPage(){
+  const favs=getFavs(); const items=favs.map(id=>TOOLS.find(t=>t.id===id)).filter(Boolean);
+  const el=document.getElementById('favoritesList');
+  if(!items.length){ el.innerHTML = emptyState(STAR_ICON,'No favorites yet','Tap the star on any tool to pin it here for quick access.'); return; }
+  el.innerHTML = items.map(toolRow).join('');
+  wireRows(el);
+}
+
+/* ---------------- RECENT ---------------- */
+function renderRecentPage(){
+  const recent=getRecent(); const items=recent.map(id=>TOOLS.find(t=>t.id===id)).filter(Boolean);
+  const el=document.getElementById('recentList');
+  if(!items.length){ el.innerHTML = emptyState(CLOCK_ICON,'No recent tools','Tools you open will show up here for fast access.'); return; }
+  el.innerHTML = items.map(toolRow).join('');
+  wireRows(el);
+}
+document.getElementById('clearRecentBtn').addEventListener('click', ()=>{ localStorage.removeItem(LS.recent); renderRecentPage(); });
+
+/* ---------------- TOOL DETAIL ---------------- */
+function openTool(id){
+  const t = TOOLS.find(x=>x.id===id); if(!t) return;
+  state.currentTool = id;
+  pushRecent(id);
+  go('tool', {title:t.name});
+  const body=document.getElementById('toolDetailBody');
+  const favs=getFavs(); const isFav=favs.includes(id);
+  body.innerHTML = `
+    <div class="tool-header">
+      <div class="thi ${t.color}">${ICONS[t.id]}</div>
+      <div class="tht"><h2>${t.name}</h2><p>${t.desc}</p></div>
+      <button id="toolFavBtn" style="width:36px;height:36px;border:1px solid var(--border);border-radius:10px;background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;color:${isFav?'#f59e0b':'var(--text-faint)'};flex-shrink:0;">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="${isFav?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-9.5-8.8C.7 7.8 2.5 4.5 6 4.2c2-.2 3.7 1 4.5 2.4.8-1.4 2.5-2.6 4.5-2.4 3.5.3 5.3 3.6 3.5 7-2.5 4.4-9.5 8.8-9.5 8.8z"/></svg>
+      </button>
+    </div>
+    <div id="toolMount"></div>`;
+  document.getElementById('toolFavBtn').addEventListener('click', ()=>{ toggleFav(id); openTool(id); });
+  const mount = document.getElementById('toolMount');
+  (TOOL_RENDERERS[id] || (()=>{mount.innerHTML='<div class="card">Coming soon.</div>';}))(mount);
+}
+
+const TOOL_RENDERERS = {};
+
+/* ---- QR Code Generator ---- */
+TOOL_RENDERERS.qr = function(m){
+  m.innerHTML = `
+    <div class="card">
+      <label class="field-label">Enter Text or URL</label>
+      <textarea class="field" id="qrInput" rows="3" placeholder="https://example.com">https://toolnova.app</textarea>
+      <div style="height:12px;"></div>
+      <button class="btn" id="qrGenBtn">Generate QR Code</button>
+    </div>
+    <div class="card" id="qrResultCard" style="display:none;">
+      <div class="qr-canvas-wrap"><div id="qrCanvasHolder"></div></div>
+      <div class="btn-row"><button class="btn secondary" id="qrDownloadBtn">Download</button><button class="btn secondary" id="qrShareBtn">Share</button></div>
+    </div>`;
+  let qrObj=null;
+  function render(){
+    const val = document.getElementById('qrInput').value.trim() || 'https://toolnova.app';
+    const holder=document.getElementById('qrCanvasHolder'); holder.innerHTML='';
+    try{
+      qrObj = new QRCode(holder, {text: val, width:200, height:200, colorDark:'#0a0f1e', colorLight:'#ffffff', correctLevel:QRCode.CorrectLevel.M});
+      document.getElementById('qrResultCard').style.display='block';
+    }catch(e){ toast('Could not generate QR code'); }
+  }
+  document.getElementById('qrGenBtn').addEventListener('click', render);
+  document.getElementById('qrDownloadBtn').addEventListener('click', ()=>{
+    const img = m.querySelector('#qrCanvasHolder img, #qrCanvasHolder canvas');
+    if(!img) return toast('Generate a code first');
+    const link=document.createElement('a');
+    link.download='toolnova-qr.png';
+    link.href = img.tagName==='CANVAS' ? img.toDataURL('image/png') : img.src;
+    link.click();
+  });
+  document.getElementById('qrShareBtn').addEventListener('click', ()=>{ copyText(document.getElementById('qrInput').value.trim()); });
+  render();
+};
+
+/* ---- Barcode Generator ---- */
+TOOL_RENDERERS.barcode = function(m){
+  m.innerHTML = `
+    <div class="card">
+      <label class="field-label">Enter Product Code / Text</label>
+      <input class="field" id="bcInput" value="TOOLNOVA123">
+      <div style="height:12px;"></div>
+      <button class="btn" id="bcGenBtn">Generate Barcode</button>
+    </div>
+    <div class="card" id="bcResultCard" style="display:none;">
+      <div class="qr-canvas-wrap"><svg id="bcSvg"></svg></div>
+      <button class="btn secondary" id="bcDownloadBtn">Download</button>
+    </div>`;
+  function render(){
+    const val=document.getElementById('bcInput').value.trim() || 'TOOLNOVA123';
+    try{
+      JsBarcode('#bcSvg', val, {format:'CODE128', lineColor:'#0a0f1e', width:2, height:80, displayValue:true});
+      document.getElementById('bcResultCard').style.display='block';
+    }catch(e){ toast('Invalid input for barcode'); }
+  }
+  document.getElementById('bcGenBtn').addEventListener('click', render);
+  document.getElementById('bcDownloadBtn').addEventListener('click', ()=>{
+    const svg=document.getElementById('bcSvg');
+    const xml=new XMLSerializer().serializeToString(svg);
+    const img=new Image(); const canvas=document.createElement('canvas');
+    canvas.width=svg.width.baseVal.value*2; canvas.height=svg.height.baseVal.value*2;
+    img.onload=function(){ const ctx=canvas.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      const a=document.createElement('a'); a.download='toolnova-barcode.png'; a.href=canvas.toDataURL('image/png'); a.click(); };
+    img.src='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(xml)));
+  });
+  render();
+};
+
+/* ---- Password Generator ---- */
+TOOL_RENDERERS.pwgen = function(m){
+  m.innerHTML = `
+    <div class="card">
+      <div class="result-box" id="pwOutput" style="font-size:18px;">Tap generate</div>
+      <div class="btn-row"><button class="btn" id="pwCopyBtn">Copy</button><button class="btn secondary" id="pwGenBtn">Generate</button></div>
+    </div>
+    <div class="card">
+      <div class="range-row"><span class="field-label" style="margin:0;">Length</span><input type="range" id="pwLen" min="6" max="32" value="16"><span id="pwLenVal" style="font-weight:700;">16</span></div>
+      <div class="toggle-row"><span class="tr-label">Uppercase (A-Z)</span><label class="switch"><input type="checkbox" id="pwUpper" checked><span class="slider-tg"></span></label></div>
+      <div class="toggle-row"><span class="tr-label">Lowercase (a-z)</span><label class="switch"><input type="checkbox" id="pwLower" checked><span class="slider-tg"></span></label></div>
+      <div class="toggle-row"><span class="tr-label">Numbers (0-9)</span><label class="switch"><input type="checkbox" id="pwNum" checked><span class="slider-tg"></span></label></div>
+      <div class="toggle-row"><span class="tr-label">Symbols (!@#$)</span><label class="switch"><input type="checkbox" id="pwSym"><span class="slider-tg"></span></label></div>
+    </div>`;
+  function gen(){
+    const len=+document.getElementById('pwLen').value;
+    document.getElementById('pwLenVal').textContent=len;
+    let chars='';
+    if(document.getElementById('pwUpper').checked) chars+='ABCDEFGHJKLMNPQRSTUVWXYZ';
+    if(document.getElementById('pwLower').checked) chars+='abcdefghijkmnpqrstuvwxyz';
+    if(document.getElementById('pwNum').checked) chars+='23456789';
+    if(document.getElementById('pwSym').checked) chars+='!@#$%^&*()-_=+?';
+    if(!chars){ document.getElementById('pwOutput').textContent='Select at least one type'; return; }
+    const arr=new Uint32Array(len); crypto.getRandomValues(arr);
+    let out=''; for(let i=0;i<len;i++) out+=chars[arr[i]%chars.length];
+    document.getElementById('pwOutput').textContent=out;
+  }
+  document.getElementById('pwGenBtn').addEventListener('click', gen);
+  document.getElementById('pwLen').addEventListener('input', gen);
+  ['pwUpper','pwLower','pwNum','pwSym'].forEach(id=>document.getElementById(id).addEventListener('change', gen));
+  document.getElementById('pwCopyBtn').addEventListener('click', ()=>copyText(document.getElementById('pwOutput').textContent));
+  gen();
+};
+
+/* ---- Password Strength Checker ---- */
+TOOL_RENDERERS.pwcheck = function(m){
+  m.innerHTML = `
+    <div class="card">
+      <label class="field-label">Enter Password</label>
+      <input class="field" id="pcInput" type="text" placeholder="Type a password to check">
+      <div class="strength-meter"><div class="strength-fill" id="pcFill" style="width:0%;background:#ef4444;"></div></div>
+      <div id="pcLabel" style="font-size:13px;font-weight:700;text-align:right;">—</div>
+    </div>
+    <div class="card">
+      <div class="toggle-row"><span class="tr-label">At least 8 characters</span><span id="ck1">—</span></div>
+      <div class="toggle-row"><span class="tr-label">Upper & lowercase letters</span><span id="ck2">—</span></div>
+      <div class="toggle-row"><span class="tr-label">Contains a number</span><span id="ck3">—</span></div>
+      <div class="toggle-row"><span class="tr-label">Contains a symbol</span><span id="ck4">—</span></div>
+    </div>`;
+  const colors=['#ef4444','#f59e0b','#eab308','#22c55e','#06b6d4'];
+  const labels=['Very Weak','Weak','Fair','Strong','Very Strong'];
+  function check(){
+    const v=document.getElementById('pcInput').value;
+    let score=0;
+    const c1=v.length>=8, c2=/[a-z]/.test(v)&&/[A-Z]/.test(v), c3=/[0-9]/.test(v), c4=/[^A-Za-z0-9]/.test(v);
+    [c1,c2,c3,c4].forEach(c=>c&&score++);
+    if(v.length>=12) score=Math.min(score+1,4);
+    document.getElementById('ck1').textContent=c1?'✓':'✕';
+    document.getElementById('ck2').textContent=c2?'✓':'✕';
+    document.getElementById('ck3').textContent=c3?'✓':'✕';
+    document.getElementById('ck4').textContent=c4?'✓':'✕';
+    const pct = v.length? (score/4*100) : 0;
+    document.getElementById('pcFill').style.width=pct+'%';
+    document.getElementById('pcFill').style.background=colors[score];
+    document.getElementById('pcLabel').textContent = v.length? labels[score] : '—';
+  }
+  document.getElementById('pcInput').addEventListener('input', check);
+};
+
+/* ---- Calculator ---- */
+TOOL_RENDERERS.calc = function(m){
+  m.innerHTML = `
+    <div class="calc-display"><div class="calc-expr" id="calcExpr">&nbsp;</div><div class="calc-result" id="calcRes">0</div></div>
+    <div class="calc-grid">
+      <button class="calc-key op" data-k="AC">AC</button><button class="calc-key op" data-k="(">( )</button><button class="calc-key op" data-k="%">%</button><button class="calc-key op" data-k="/">÷</button>
+      <button class="calc-key" data-k="7">7</button><button class="calc-key" data-k="8">8</button><button class="calc-key" data-k="9">9</button><button class="calc-key op" data-k="*">×</button>
+      <button class="calc-key" data-k="4">4</button><button class="calc-key" data-k="5">5</button><button class="calc-key" data-k="6">6</button><button class="calc-key op" data-k="-">−</button>
+      <button class="calc-key" data-k="1">1</button><button class="calc-key" data-k="2">2</button><button class="calc-key" data-k="3">3</button><button class="calc-key op" data-k="+">+</button>
+      <button class="calc-key" data-k="0" style="grid-column:span 2;">0</button><button class="calc-key" data-k=".">.</button><button class="calc-key eq" data-k="=">=</button>
+    </div>`;
+  let expr='';
+  let paren=0;
+  function evalExpr(str){
+    const safe = str.replace(/[^0-9+\-*/().%\s]/g,'');
+    if(!safe.trim()) return '';
+    const withPercent = safe.replace(/(\d+(\.\d+)?)%/g,'($1/100)');
+    // eslint-disable-next-line no-new-func
+    const val = Function('"use strict"; return ('+withPercent+')')();
+    if(!isFinite(val)) return 'Error';
+    return Math.round(val*1e10)/1e10;
+  }
+  function render(){
+    document.getElementById('calcExpr').textContent = expr.replace(/\*/g,'×').replace(/\//g,'÷') || '\u00a0';
+  }
+  document.querySelectorAll('.calc-key').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const k=btn.dataset.k;
+      if(k==='AC'){ expr=''; paren=0; document.getElementById('calcRes').textContent='0'; render(); return; }
+      if(k==='('){ if(paren>0 && /[\d)]$/.test(expr)===false){ expr+='('; paren++; } else if(/[\d)]$/.test(expr)){ expr+=')'; paren=Math.max(0,paren-1);} else { expr+='('; paren++; } render(); return; }
+      if(k==='='){
+        try{ const r=evalExpr(expr); document.getElementById('calcRes').textContent = r===''?'0':r; }
+        catch(e){ document.getElementById('calcRes').textContent='Error'; }
+        return;
+      }
+      expr+=k; render();
+      try{ const r=evalExpr(expr); if(r!=='') document.getElementById('calcRes').textContent=r; }catch(e){}
+    });
+  });
+};
+
+/* ---- Unit Converter ---- */
+TOOL_RENDERERS.unit = function(m){
+  const CATS_U = {
+    Length:{base:'m', units:{Kilometer:1000,Meter:1,Centimeter:0.01,Millimeter:0.001,Mile:1609.34,Yard:0.9144,Foot:0.3048,Inch:0.0254}},
+    Weight:{base:'g', units:{Kilogram:1000,Gram:1,Milligram:0.001,Pound:453.592,Ounce:28.3495,Tonne:1000000}},
+    Temperature:{special:true},
+    Volume:{base:'l', units:{Liter:1,Milliliter:0.001,'Gallon (US)':3.78541,'Cup':0.24,'Fluid Ounce':0.0295735}},
+    Time:{base:'s', units:{Second:1,Minute:60,Hour:3600,Day:86400,Week:604800}},
+    Speed:{base:'mps', units:{'m/s':1,'km/h':0.277778,'mph':0.44704,'knot':0.514444}}
+  };
+  m.innerHTML = `
+    <div class="card">
+      <label class="field-label">Category</label>
+      <select class="field" id="ucCat">${Object.keys(CATS_U).map(c=>`<option>${c}</option>`).join('')}</select>
+    </div>
+    <div class="card">
+      <label class="field-label">From</label>
+      <div class="field-row"><input class="field" id="ucFrom" type="number" value="1"><select class="field" id="ucFromUnit" style="max-width:140px;"></select></div>
+      <label class="field-label">To</label>
+      <div class="field-row"><input class="field" id="ucTo" type="number" readonly><select class="field" id="ucToUnit" style="max-width:140px;"></select></div>
+    </div>
+    <div class="result-box" id="ucResultText">—</div>`;
+  const catSel=document.getElementById('ucCat'), fromU=document.getElementById('ucFromUnit'), toU=document.getElementById('ucToUnit');
+  function populate(){
+    const cat=CATS_U[catSel.value];
+    const keys = cat.special ? ['Celsius','Fahrenheit','Kelvin'] : Object.keys(cat.units);
+    fromU.innerHTML=keys.map(k=>`<option>${k}</option>`).join('');
+    toU.innerHTML=keys.map(k=>`<option>${k}</option>`).join('');
+    if(keys.length>1) toU.selectedIndex=1;
+    convert();
+  }
+  function toCelsius(v,u){ if(u==='Celsius')return v; if(u==='Fahrenheit')return (v-32)*5/9; return v-273.15; }
+  function fromCelsius(c,u){ if(u==='Celsius')return c; if(u==='Fahrenheit')return c*9/5+32; return c+273.15; }
+  function convert(){
+    const cat=CATS_U[catSel.value]; const from=+document.getElementById('ucFrom').value||0;
+    let result;
+    if(cat.special){ result = fromCelsius(toCelsius(from, fromU.value), toU.value); }
+    else{ const base = from * cat.units[fromU.value]; result = base / cat.units[toU.value]; }
+    result = Math.round(result*1e6)/1e6;
+    document.getElementById('ucTo').value = result;
+    document.getElementById('ucResultText').textContent = `${from} ${fromU.value} = ${result} ${toU.value}`;
+  }
+  catSel.addEventListener('change', populate);
+  fromU.addEventListener('change', convert); toU.addEventListener('change', convert);
+  document.getElementById('ucFrom').addEventListener('input', convert);
+  populate();
+};
+
+/* ---- Text Counter ---- */
+TOOL_RENDERERS.textcnt = function(m){
+  m.innerHTML = `
+    <div class="card">
+      <textarea class="field" id="tcInput" rows="7" placeholder="Paste or type your text here…"></textarea>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="sv" id="tcWords">0</div><div class="sl">Words</div></div>
+      <div class="stat-box"><div class="sv" id="tcChars">0</div><div class="sl">Characters</div></div>
+      <div class="stat-box"><div class="sv" id="tcLines">0</div><div class="sl">Lines</div></div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="sv" id="tcSent">0</div><div class="sl">Sentences</div></div>
+      <div class="stat-box"><div class="sv" id="tcNoSpace">0</div><div class="sl">No Spaces</div></div>
+      <div class="stat-box"><div class="sv" id="tcReadTime">0s</div><div class="sl">Read Time</div></div>
+    </div>`;
+  function update(){
+    const v=document.getElementById('tcInput').value;
+    const words=v.trim()? v.trim().split(/\s+/).length : 0;
+    document.getElementById('tcWords').textContent=words;
+    document.getElementById('tcChars').textContent=v.length;
+    document.getElementById('tcLines').textContent= v? v.split(/\n/).length : 0;
+    document.getElementById('tcSent').textContent= (v.match(/[.!?]+/g)||[]).length;
+    document.getElementById('tcNoSpace').textContent= v.replace(/\s/g,'').length;
+    document.getElementById('tcReadTime').textContent= Math.max(1,Math.ceil(words/200*60))+'s';
+  }
+  document.getElementById('tcInput').addEventListener('input', update);
+};
+
+/* ---- Case Converter ---- */
+TOOL_RENDERERS.casecnv = function(m){
+  m.innerHTML = `
+    <div class="card"><textarea class="field" id="ccInput" rows="5" placeholder="Type text to convert…">ToolNova makes everyday tasks Simple.</textarea></div>
+    <div class="case-grid">
+      <button class="case-btn" data-c="upper">UPPERCASE</button>
+      <button class="case-btn" data-c="lower">lowercase</button>
+      <button class="case-btn" data-c="title">Title Case</button>
+      <button class="case-btn" data-c="sentence">Sentence case</button>
+      <button class="case-btn" data-c="camel">camelCase</button>
+      <button class="case-btn" data-c="snake">snake_case</button>
+      <button class="case-btn" data-c="kebab">kebab-case</button>
+      <button class="case-btn" data-c="alt">aLtErNaTiNg</button>
+    </div>
+    <div class="card"><div class="result-box" id="ccOutput" style="text-align:left;font-family:var(--font-body);">Result will appear here</div><button class="btn secondary" id="ccCopy">Copy Result</button></div>`;
+  const converters={
+    upper:s=>s.toUpperCase(), lower:s=>s.toLowerCase(),
+    title:s=>s.replace(/\w\S*/g,w=>w[0].toUpperCase()+w.slice(1).toLowerCase()),
+    sentence:s=>s.toLowerCase().replace(/(^\s*\w|[.!?]\s*\w)/g,c=>c.toUpperCase()),
+    camel:s=>s.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g,(_,c)=>c.toUpperCase()),
+    snake:s=>s.trim().toLowerCase().replace(/[^a-zA-Z0-9]+/g,'_'),
+    kebab:s=>s.trim().toLowerCase().replace(/[^a-zA-Z0-9]+/g,'-'),
+    alt:s=>s.split('').map((c,i)=>i%2? c.toLowerCase():c.toUpperCase()).join('')
+  };
+  let out='';
+  document.querySelectorAll('.case-btn').forEach(b=>b.addEventListener('click',()=>{
+    out=converters[b.dataset.c](document.getElementById('ccInput').value);
+    document.getElementById('ccOutput').textContent=out;
+  }));
+  document.getElementById('ccCopy').addEventListener('click',()=>copyText(out||document.getElementById('ccOutput').textContent));
+};
+
+/* ---- Color Picker ---- */
+TOOL_RENDERERS.color = function(m){
+  m.innerHTML = `
+    <div class="color-preview" id="cpPreview" style="background:#2563eb;"></div>
+    <div class="card">
+      <input type="color" id="cpInput" value="#2563eb" style="width:100%;height:46px;border:none;background:none;cursor:pointer;">
+    </div>
+    <div class="color-vals">
+      <div class="color-val-row"><span id="cpHex">#2563EB</span><button data-copy="hex">Copy</button></div>
+      <div class="color-val-row"><span id="cpRgb">rgb(37,99,235)</span><button data-copy="rgb">Copy</button></div>
+      <div class="color-val-row"><span id="cpHsl">hsl(217,83%,53%)</span><button data-copy="hsl">Copy</button></div>
+    </div>`;
+  function hexToRgb(hex){ const n=parseInt(hex.slice(1),16); return [n>>16&255,n>>8&255,n&255]; }
+  function rgbToHsl(r,g,b){
+    r/=255;g/=255;b/=255; const max=Math.max(r,g,b),min=Math.min(r,g,b); let h,s,l=(max+min)/2;
+    if(max===min){h=s=0;} else{ const d=max-min; s=l>0.5? d/(2-max-min): d/(max+min);
+      switch(max){case r:h=(g-b)/d+(g<b?6:0);break; case g:h=(b-r)/d+2;break; default:h=(r-g)/d+4;} h/=6; }
+    return [Math.round(h*360),Math.round(s*100),Math.round(l*100)];
+  }
+  function update(){
+    const hex=document.getElementById('cpInput').value;
+    document.getElementById('cpPreview').style.background=hex;
+    document.getElementById('cpHex').textContent=hex.toUpperCase();
+    const [r,g,b]=hexToRgb(hex);
+    document.getElementById('cpRgb').textContent=`rgb(${r},${g},${b})`;
+    const [h,s,l]=rgbToHsl(r,g,b);
+    document.getElementById('cpHsl').textContent=`hsl(${h},${s}%,${l}%)`;
+  }
+  document.getElementById('cpInput').addEventListener('input', update);
+  document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',()=>{
+    const map={hex:'cpHex',rgb:'cpRgb',hsl:'cpHsl'}; copyText(document.getElementById(map[b.dataset.copy]).textContent);
+  }));
+  update();
+};
+
+/* ---- UUID Generator ---- */
+TOOL_RENDERERS.uuid = function(m){
+  m.innerHTML = `
+    <div class="card">
+      <div class="result-box" id="uuidOut" style="font-size:15px;">—</div>
+      <div class="btn-row"><button class="btn" id="uuidGen">Generate New</button><button class="btn secondary" id="uuidCopy">Copy</button></div>
+    </div>
+    <div class="card">
+      <label class="field-label">Bulk Generate</label>
+      <div class="field-row"><input class="field" type="number" id="uuidCount" value="5" min="1" max="50"><button class="btn secondary" id="uuidBulkBtn" style="flex:0 0 auto;width:auto;padding:0 18px;">Generate</button></div>
+      <textarea class="field" id="uuidBulkOut" rows="6" readonly style="margin-top:10px;"></textarea>
+    </div>`;
+  function newUuid(){ return crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0; return (c==='x'?r:(r&0x3|0x8)).toString(16);}); }
+  function gen(){ document.getElementById('uuidOut').textContent=newUuid(); }
+  document.getElementById('uuidGen').addEventListener('click', gen);
+  document.getElementById('uuidCopy').addEventListener('click', ()=>copyText(document.getElementById('uuidOut').textContent));
+  document.getElementById('uuidBulkBtn').addEventListener('click', ()=>{
+    const n=Math.min(50,Math.max(1,+document.getElementById('uuidCount').value||1));
+    document.getElementById('uuidBulkOut').value = Array.from({length:n},newUuid).join('\n');
+  });
+  gen();
+};
+
+/* ---- JSON Formatter ---- */
+TOOL_RENDERERS.json = function(m){
+  m.innerHTML = `
+    <div class="card"><textarea class="field" id="jfInput" rows="7" placeholder='{"name":"ToolNova","tools":19}'>{"name":"ToolNova","tools":19,"active":true}</textarea></div>
+    <div class="btn-row" style="margin-bottom:14px;"><button class="btn" id="jfFormat">Format</button><button class="btn secondary" id="jfMinify">Minify</button></div>
+    <div class="card"><textarea class="field" id="jfOutput" rows="7" readonly></textarea><div style="height:10px;"></div><button class="btn secondary" id="jfCopy">Copy Result</button></div>
+    <div id="jfError" style="color:#ef4444;font-size:12.5px;margin-top:8px;"></div>`;
+  function parse(){
+    try{ const obj=JSON.parse(document.getElementById('jfInput').value); document.getElementById('jfError').textContent=''; return obj; }
+    catch(e){ document.getElementById('jfError').textContent='Invalid JSON: '+e.message; return null; }
+  }
+  document.getElementById('jfFormat').addEventListener('click', ()=>{ const o=parse(); if(o!==null) document.getElementById('jfOutput').value=JSON.stringify(o,null,2); });
+  document.getElementById('jfMinify').addEventListener('click', ()=>{ const o=parse(); if(o!==null) document.getElementById('jfOutput').value=JSON.stringify(o); });
+  document.getElementById('jfCopy').addEventListener('click', ()=>copyText(document.getElementById('jfOutput').value));
+};
+
+/* ---- Base64 Encoder & Decoder ---- */
+TOOL_RENDERERS.b64 = function(m){
+  m.innerHTML = `
+    <div class="tab-row"><button class="tab-btn active" data-t="enc">Encode</button><button class="tab-btn" data-t="dec">Decode</button></div>
+    <div class="card"><textarea class="field" id="b64Input" rows="5" placeholder="Enter text…"></textarea></div>
+    <button class="btn" id="b64Run" style="margin-bottom:14px;">Convert</button>
+    <div class="card"><textarea class="field" id="b64Output" rows="5" readonly></textarea><div style="height:10px;"></div><button class="btn secondary" id="b64Copy">Copy Result</button></div>`;
+  let mode='enc';
+  m.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',()=>{ m.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); mode=b.dataset.t; }));
+  document.getElementById('b64Run').addEventListener('click', ()=>{
+    const v=document.getElementById('b64Input').value;
+    try{ document.getElementById('b64Output').value = mode==='enc' ? btoa(unescape(encodeURIComponent(v))) : decodeURIComponent(escape(atob(v))); }
+    catch(e){ document.getElementById('b64Output').value='Error: invalid input for this operation.'; }
+  });
+  document.getElementById('b64Copy').addEventListener('click', ()=>copyText(document.getElementById('b64Output').value));
+};
+
+/* ---- URL Encoder & Decoder ---- */
+TOOL_RENDERERS.urlenc = function(m){
+  m.innerHTML = `
+    <div class="tab-row"><button class="tab-btn active" data-t="enc">Encode</button><button class="tab-btn" data-t="dec">Decode</button></div>
+    <div class="card"><textarea class="field" id="urlInput" rows="4" placeholder="https://example.com/?q=hello world"></textarea></div>
+    <button class="btn" id="urlRun" style="margin-bottom:14px;">Convert</button>
+    <div class="card"><textarea class="field" id="urlOutput" rows="4" readonly></textarea><div style="height:10px;"></div><button class="btn secondary" id="urlCopy">Copy Result</button></div>`;
+  let mode='enc';
+  m.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',()=>{ m.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); mode=b.dataset.t; }));
+  document.getElementById('urlRun').addEventListener('click', ()=>{
+    const v=document.getElementById('urlInput').value;
+    try{ document.getElementById('urlOutput').value = mode==='enc' ? encodeURIComponent(v) : decodeURIComponent(v); }
+    catch(e){ document.getElementById('urlOutput').value='Error: invalid input for this operation.'; }
+  });
+  document.getElementById('urlCopy').addEventListener('click', ()=>copyText(document.getElementById('urlOutput').value));
+};
+
+/* ---- Timestamp Converter ---- */
+TOOL_RENDERERS.ts = function(m){
+  m.innerHTML = `
+    <div class="tab-row"><button class="tab-btn active" data-t="toDate">Timestamp → Date</button><button class="tab-btn" data-t="toTs">Date → Timestamp</button></div>
+    <div class="card" id="tsToDateCard">
+      <label class="field-label">Unix Timestamp (seconds)</label>
+      <input class="field" id="tsInput" type="number" value="${Math.floor(Date.now()/1000)}">
+      <div style="height:12px;"></div>
+      <button class="btn" id="tsNowBtn">Use Current Time</button>
+    </div>
+    <div class="card" id="tsToTsCard" style="display:none;">
+      <label class="field-label">Date & Time</label>
+      <input class="field" id="tsDateInput" type="datetime-local">
+    </div>
+    <div class="result-box" id="tsResult">—</div>`;
+  let mode='toDate';
+  function update(){
+    if(mode==='toDate'){
+      const v=+document.getElementById('tsInput').value;
+      const d=new Date(v*1000);
+      document.getElementById('tsResult').textContent = isNaN(d.getTime()) ? 'Invalid timestamp' : d.toUTCString()+'\n'+d.toString();
+    } else {
+      const v=document.getElementById('tsDateInput').value;
+      const d=new Date(v);
+      document.getElementById('tsResult').textContent = isNaN(d.getTime()) ? 'Pick a date' : Math.floor(d.getTime()/1000);
+    }
+  }
+  m.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',()=>{
+    m.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); mode=b.dataset.t;
+    document.getElementById('tsToDateCard').style.display = mode==='toDate'?'block':'none';
+    document.getElementById('tsToTsCard').style.display = mode==='toTs'?'block':'none';
+    update();
+  }));
+  document.getElementById('tsInput').addEventListener('input', update);
+  document.getElementById('tsDateInput').addEventListener('input', update);
+  document.getElementById('tsNowBtn').addEventListener('click', ()=>{ document.getElementById('tsInput').value=Math.floor(Date.now()/1000); update(); });
+  update();
+};
+
+/* ---- Random Number Generator ---- */
+TOOL_RENDERERS.rng = function(m){
+  m.innerHTML = `
+    <div class="card"><div class="result-display" id="rngResult">—</div></div>
+    <div class="card">
+      <div class="field-row"><div style="flex:1;"><label class="field-label">Min</label><input class="field" id="rngMin" type="number" value="1"></div><div style="flex:1;"><label class="field-label">Max</label><input class="field" id="rngMax" type="number" value="100"></div></div>
+      <div class="toggle-row"><span class="tr-label">Allow duplicates when generating multiple</span><label class="switch"><input type="checkbox" id="rngDup" checked><span class="slider-tg"></span></label></div>
+      <div class="field-row" style="margin-top:6px;"><div style="flex:1;"><label class="field-label">How many numbers</label><input class="field" id="rngCount" type="number" value="1" min="1" max="50"></div></div>
+      <button class="btn" id="rngGenBtn">Generate</button>
+    </div>`;
+  document.getElementById('rngGenBtn').addEventListener('click', ()=>{
+    let min=+document.getElementById('rngMin').value, max=+document.getElementById('rngMax').value;
+    if(min>max) [min,max]=[max,min];
+    const count=Math.min(50,Math.max(1,+document.getElementById('rngCount').value||1));
+    const dup=document.getElementById('rngDup').checked;
+    let nums=[];
+    if(dup || (max-min+1)<count){ for(let i=0;i<count;i++) nums.push(Math.floor(Math.random()*(max-min+1))+min); }
+    else{ const pool=[]; for(let i=min;i<=max;i++) pool.push(i); for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]];} nums=pool.slice(0,count); }
+    document.getElementById('rngResult').textContent = nums.join(', ');
+  });
+};
+
+/* ---- Coin Flip ---- */
+TOOL_RENDERERS.coin = function(m){
+  m.innerHTML = `
+    <div class="card" style="text-align:center;">
+      <div class="coin" id="coinEl">HEADS</div>
+      <button class="btn" id="coinFlipBtn">Flip Coin</button>
+      <p style="margin-top:14px;font-size:12.5px;color:var(--text-dim);" id="coinStats">Heads: 0 · Tails: 0</p>
+    </div>`;
+  let heads=0, tails=0;
+  document.getElementById('coinFlipBtn').addEventListener('click', ()=>{
+    const el=document.getElementById('coinEl');
+    el.classList.remove('flipping'); void el.offsetWidth; el.classList.add('flipping');
+    setTimeout(()=>{
+      const isHeads = Math.random()<0.5;
+      el.textContent = isHeads ? 'HEADS' : 'TAILS';
+      isHeads ? heads++ : tails++;
+      document.getElementById('coinStats').textContent = `Heads: ${heads} · Tails: ${tails}`;
+    }, 300);
+  });
+};
+
+/* ---- Dice Roller ---- */
+TOOL_RENDERERS.dice = function(m){
+  m.innerHTML = `
+    <div class="card">
+      <div class="dice-area" id="diceArea"></div>
+      <div class="range-row"><span class="field-label" style="margin:0;">Number of dice</span><input type="range" id="diceCount" min="1" max="6" value="2"><span id="diceCountVal" style="font-weight:700;">2</span></div>
+      <button class="btn" id="diceRollBtn">Roll Dice</button>
+      <p style="margin-top:12px;text-align:center;font-size:13px;color:var(--text-dim);" id="diceSum"></p>
+    </div>`;
+  function roll(){
+    const n=+document.getElementById('diceCount').value;
+    document.getElementById('diceCountVal').textContent=n;
+    const vals=Array.from({length:n},()=>Math.floor(Math.random()*6)+1);
+    document.getElementById('diceArea').innerHTML = vals.map(v=>`<div class="die">${v}</div>`).join('');
+    document.getElementById('diceSum').textContent = `Total: ${vals.reduce((a,b)=>a+b,0)}`;
+  }
+  document.getElementById('diceRollBtn').addEventListener('click', roll);
+  document.getElementById('diceCount').addEventListener('input', roll);
+  roll();
+};
+
+/* ---- Character Counter ---- */
+TOOL_RENDERERS.charcnt = function(m){
+  m.innerHTML = `
+    <div class="card"><textarea class="field" id="chInput" rows="6" placeholder="Type or paste text…"></textarea></div>
+    <div class="card">
+      <div class="toggle-row"><span class="tr-label">SMS (160 chars)</span><span id="chSms" style="font-weight:700;">0 / 160</span></div>
+      <div class="toggle-row"><span class="tr-label">Tweet / Post (280 chars)</span><span id="chTweet" style="font-weight:700;">0 / 280</span></div>
+      <div class="toggle-row"><span class="tr-label">Meta Description (160 chars)</span><span id="chMeta" style="font-weight:700;">0 / 160</span></div>
+    </div>
+    <div class="stat-grid"><div class="stat-box"><div class="sv" id="chTotal">0</div><div class="sl">Total Characters</div></div><div class="stat-box"><div class="sv" id="chNoSpace">0</div><div class="sl">Without Spaces</div></div></div>`;
+  function update(){
+    const v=document.getElementById('chInput').value;
+    document.getElementById('chTotal').textContent=v.length;
+    document.getElementById('chNoSpace').textContent=v.replace(/\s/g,'').length;
+    document.getElementById('chSms').textContent=`${v.length} / 160`;
+    document.getElementById('chTweet').textContent=`${v.length} / 280`;
+    document.getElementById('chMeta').textContent=`${v.length} / 160`;
+  }
+  document.getElementById('chInput').addEventListener('input', update);
+};
+
+/* ---- Lorem Ipsum Generator ---- */
+TOOL_RENDERERS.lorem = function(m){
+  const WORDS = "lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum".split(' ');
+  m.innerHTML = `
+    <div class="card">
+      <label class="field-label">Generate</label>
+      <select class="field" id="loType"><option value="p">Paragraphs</option><option value="s">Sentences</option><option value="w">Words</option></select>
+      <div style="height:12px;"></div>
+      <div class="range-row"><span class="field-label" style="margin:0;">Amount</span><input type="range" id="loAmt" min="1" max="10" value="3"><span id="loAmtVal" style="font-weight:700;">3</span></div>
+      <button class="btn" id="loGenBtn">Generate Text</button>
+    </div>
+    <div class="card"><textarea class="field" id="loOutput" rows="8" readonly></textarea><div style="height:10px;"></div><button class="btn secondary" id="loCopy">Copy Result</button></div>`;
+  function randWords(n){ let out=[]; for(let i=0;i<n;i++) out.push(WORDS[Math.floor(Math.random()*WORDS.length)]); out[0]=out[0][0].toUpperCase()+out[0].slice(1); return out.join(' '); }
+  function sentence(){ return randWords(6+Math.floor(Math.random()*8))+'.'; }
+  function paragraph(){ let s=[]; for(let i=0;i<4+Math.floor(Math.random()*3);i++) s.push(sentence()); return s.join(' '); }
+  function gen(){
+    const type=document.getElementById('loType').value, amt=+document.getElementById('loAmt').value;
+    let out='';
+    if(type==='p') out=Array.from({length:amt},paragraph).join('\n\n');
+    else if(type==='s') out=Array.from({length:amt},sentence).join(' ');
+    else out=randWords(amt)+'.';
+    document.getElementById('loOutput').value=out;
+  }
+  document.getElementById('loAmt').addEventListener('input', ()=>{ document.getElementById('loAmtVal').textContent=document.getElementById('loAmt').value; });
+  document.getElementById('loGenBtn').addEventListener('click', gen);
+  document.getElementById('loCopy').addEventListener('click', ()=>copyText(document.getElementById('loOutput').value));
+  gen();
+};
+
+/* ---------------- ABOUT: why list ---------------- */
+function renderWhyList(){
+  const items=[
+    {icon:ICONS.qr,color:'c-blue',title:'19+ Tools in One Place',desc:'No more switching between ten different sites.'},
+    {icon:ICONS.pwcheck,color:'c-green',title:'Privacy First',desc:'Your data is processed locally and never uploaded.'},
+    {icon:ICONS.calc,color:'c-orange',title:'No Sign-Up Needed',desc:'Open a tool and start using it immediately.'},
+    {icon:ICONS.color,color:'c-pink',title:'Beautiful, Simple Design',desc:'A clean interface that stays out of your way.'}
+  ];
+  document.getElementById('whyList').innerHTML = items.map(i=>`<div class="feature-item"><div class="fi-icon ${i.color}">${i.icon}</div><div><h5>${i.title}</h5><p>${i.desc}</p></div></div>`).join('');
+}
+
+/* ---------------- CONTACT: FAQ ---------------- */
+function renderContactPage(){
+  const faqs=[
+    {q:'Is ToolNova free to use?',a:'Yes. Every tool in ToolNova is completely free, with no hidden costs or required sign-ups.'},
+    {q:'Do you store my data?',a:'No. Almost every tool runs entirely in your browser — your text, passwords and files are never sent to a server.'},
+    {q:'Does ToolNova work offline?',a:'Once loaded, most tools continue to work without an internet connection.'},
+    {q:'Can I request a new tool?',a:'Absolutely — use the contact form above and tell us what you would like to see added.'}
+  ];
+  const card=document.getElementById('faqCard');
+  card.innerHTML = faqs.map((f,i)=>`<div class="faq-item" data-i="${i}"><div class="faq-q">${f.q}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-a">${f.a}</div></div>`).join('');
+  card.querySelectorAll('.faq-item').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('open')));
+  const form=document.getElementById('contactForm');
+  form.onsubmit=(e)=>{ e.preventDefault(); toast('Message sent — we will reply soon'); form.reset(); };
+}
+
+/* ---------------- PRIVACY POLICY ---------------- */
+function renderPrivacyPage(){
+  const el=document.getElementById('page-privacy');
+  el.innerHTML = `
+  <h2>Privacy Policy</h2>
+  <p class="legal-meta">Effective Date: January 1, 2026 &nbsp;·&nbsp; Last Updated: August 7, 2026</p>
+  <div class="toc"><h4>Table of Contents</h4><ol>
+    <li>User Privacy</li><li>Information We Collect</li><li>Information We Do Not Collect</li>
+    <li>Browser Local Processing</li><li>Local Storage</li><li>Cookies</li><li>Third-Party Services</li>
+    <li>Advertising Providers</li><li>Analytics</li><li>Data Security</li><li>User Rights</li>
+    <li>Children's Privacy</li><li>International Users</li><li>Data Retention</li>
+    <li>Changes to This Privacy Policy</li><li>Contact Information</li>
+  </ol></div>
+
+  <section><h3>1. User Privacy</h3>
+  <p>ToolNova ("we", "us", "our", or "the App") was built on a simple idea: everyday utilities should not require you to give up your privacy to use them. This Privacy Policy explains, in plain language, what information ToolNova interacts with, how it is handled, and what choices you have. By using ToolNova, you agree to the practices described in this document. If you do not agree with any part of this policy, we encourage you to discontinue use of the App.</p>
+  <p>We designed ToolNova around a "local-first" philosophy. Wherever technically possible, the tools inside the App — including the QR Code Generator, Barcode Generator, Password Generator, Calculator, Unit Converter, Text Counter, Case Converter, Color Picker, UUID Generator, JSON Formatter, Base64 and URL Encoders/Decoders, Timestamp Converter, Random Number Generator, Coin Flip, Dice Roller, Character Counter, and Lorem Ipsum Generator — run their calculations directly inside your device's browser rather than on a remote server.</p></section>
+
+  <section><h3>2. Information We Collect</h3>
+  <p>ToolNova is designed to minimize data collection. Depending on how you use the App, the following limited categories of information may be processed:</p>
+  <ul>
+    <li><strong>Technical information</strong> such as browser type, device type, and general app performance data, used only to keep the App fast and stable.</li>
+    <li><strong>Preference data</strong> such as your selected theme (dark or light mode), your favorite tools, and your recently used tools — all stored on your own device.</li>
+    <li><strong>Voluntary information</strong> you choose to submit through the Contact page, such as your name, email address, and message, solely for the purpose of responding to your inquiry.</li>
+  </ul>
+  <p>We do not require account creation, and we do not ask for information beyond what is reasonably necessary to operate the specific feature you are using.</p></section>
+
+  <section><h3>3. Information We Do Not Collect</h3>
+  <p>We want to be explicit about what ToolNova does <em>not</em> do. We do not collect, transmit, or store:</p>
+  <ul>
+    <li>The text, passwords, colors, numbers, or files you enter into any tool.</li>
+    <li>The content of QR codes or barcodes you generate.</li>
+    <li>Your precise location, contacts, camera roll, or device identifiers.</li>
+    <li>Financial information, government identification numbers, or other sensitive personal data.</li>
+  </ul>
+  <p>Because most tools process information entirely within your browser's memory, that information is discarded the moment you close the tab, refresh the page, or navigate away — it never reaches our servers in the first place.</p></section>
+
+  <section><h3>4. Browser Local Processing</h3>
+  <p>Tools such as the Password Generator, Password Strength Checker, Calculator, Unit Converter, Text Counter, Case Converter, Color Picker, UUID Generator, JSON Formatter, Base64 Encoder/Decoder, URL Encoder/Decoder, Timestamp Converter, Random Number Generator, Coin Flip, Dice Roller, Character Counter, and Lorem Ipsum Generator perform every calculation using JavaScript running locally on your device. No input from these tools is ever transmitted to ToolNova or to any third party. This means your generated passwords, calculated results, formatted JSON, and converted values stay exclusively on your device unless you personally choose to copy, download, or share them.</p></section>
+
+  <section><h3>5. Local Storage</h3>
+  <p>ToolNova uses your browser's local storage to remember small, non-sensitive preferences between visits, such as which tools you have marked as favorites, which tools you have recently opened, and your preferred display theme. This information is stored only on your own device and is never transmitted to our servers. You may clear this data at any time from the Settings page using the "Clear Cache" option, or by clearing your browser's site data manually.</p></section>
+
+  <section><h3>6. Cookies</h3>
+  <p>ToolNova's core functionality does not rely on tracking cookies. If, in the future, we introduce optional analytics or advertising features, any associated cookies will be limited in scope, clearly disclosed, and — where required by applicable law — subject to your consent.</p></section>
+
+  <section><h3>7. Third-Party Services</h3>
+  <p>ToolNova may load a small number of third-party resources, such as web fonts or lightweight libraries used to render QR codes and barcodes, directly within your browser. These resources are used strictly to display content and do not receive the data you type into ToolNova's tools.</p></section>
+
+  <section><h3>8. Advertising Providers</h3>
+  <p>ToolNova does not currently display advertisements. Should advertising be introduced in a future update, it will always be optional, clearly labeled, and will never block access to any tool. We will never force you to view an advertisement to use a feature, and the App will remain fully functional without them. Should third-party advertising partners be engaged, this policy will be updated to name them and describe their data practices.</p></section>
+
+  <section><h3>9. Analytics</h3>
+  <p>We may use limited, privacy-conscious analytics to understand aggregate, anonymized usage patterns — for example, which tools are most popular — so that we can improve the App. Any analytics we use are configured to avoid collecting personally identifiable information wherever possible.</p></section>
+
+  <section><h3>10. Data Security</h3>
+  <p>We take reasonable technical and organizational measures to protect any information that is submitted to us, such as messages sent through the Contact form. However, no method of electronic transmission or storage is completely secure, and we cannot guarantee absolute security. Because the vast majority of ToolNova's functionality never leaves your device, your exposure to data-security risk from using ToolNova is inherently limited.</p></section>
+
+  <section><h3>11. User Rights</h3>
+  <p>Depending on your jurisdiction, you may have rights to access, correct, delete, or restrict the processing of personal information we hold about you — primarily limited to information you voluntarily submitted through the Contact form. You may exercise these rights at any time by reaching out through the Contact page. Because ToolNova does not maintain user accounts, most of your usage data (favorites, recents, theme) is already fully within your control and can be erased instantly via Settings.</p></section>
+
+  <section><h3>12. Children's Privacy</h3>
+  <p>ToolNova is a general-audience utility application and is not directed at children under the age of 13 (or the relevant minimum age in your jurisdiction). We do not knowingly collect personal information from children. If you believe a child has provided us with personal information, please contact us so we can take appropriate action.</p></section>
+
+  <section><h3>13. International Users</h3>
+  <p>ToolNova may be accessed by users around the world. Because most processing happens locally on your device, cross-border data transfer concerns are minimal. Where information is submitted to us directly (such as through the Contact form), it may be processed in a country other than your own; by submitting such information, you consent to this processing in accordance with this Privacy Policy.</p></section>
+
+  <section><h3>14. Data Retention</h3>
+  <p>Information stored locally on your device (favorites, recent tools, theme preference) persists only until you clear it or clear your browser data. Messages submitted through the Contact form are retained only as long as necessary to respond to your inquiry and to comply with any applicable legal obligations, after which they are deleted.</p></section>
+
+  <section><h3>15. Changes to This Privacy Policy</h3>
+  <p>We may update this Privacy Policy from time to time to reflect changes in our practices, technology, or applicable law. Material changes will be reflected by updating the "Last Updated" date at the top of this page. We encourage you to review this policy periodically.</p></section>
+
+  <section><h3>16. Contact Information</h3>
+  <p>If you have questions, concerns, or requests relating to this Privacy Policy or your personal information, please reach us at <strong>support@toolnova.app</strong> or through the Contact page within the App.</p></section>`;
+}
+
+/* ---------------- TERMS OF SERVICE ---------------- */
+function renderTermsPage(){
+  const el=document.getElementById('page-terms');
+  el.innerHTML = `
+  <h2>Terms of Service</h2>
+  <p class="legal-meta">Effective Date: January 1, 2026 &nbsp;·&nbsp; Last Updated: August 7, 2026</p>
+
+  <section><h3>1. Acceptance of Terms</h3>
+  <p>These Terms of Service ("Terms") govern your access to and use of ToolNova (the "App", "we", "us", or "our"). By accessing or using ToolNova, you agree to be bound by these Terms. If you do not agree to these Terms, please discontinue use of the App immediately. We may update these Terms from time to time, and continued use of the App after changes take effect constitutes acceptance of the revised Terms.</p></section>
+
+  <section><h3>2. Description of Service</h3>
+  <p>ToolNova provides a collection of free, browser-based productivity utilities, including but not limited to a QR Code Generator, Barcode Generator, Password Generator, Password Strength Checker, Calculator, Unit Converter, Text Counter, Case Converter, Color Picker, UUID Generator, JSON Formatter, Base64 Encoder/Decoder, URL Encoder/Decoder, Timestamp Converter, Random Number Generator, Coin Flip, Dice Roller, Character Counter, and Lorem Ipsum Generator. The App does not require account registration and, for most tools, does not depend on a backend server or database. We may add, modify, or remove tools and features at our discretion.</p></section>
+
+  <section><h3>3. User Responsibilities</h3>
+  <p>You agree to use ToolNova only for lawful purposes and in a manner consistent with these Terms. You are solely responsible for the content you input into, generate with, or export from the App's tools, including but not limited to passwords, QR codes, barcodes, and text. You are responsible for maintaining the security of any passwords or sensitive values you generate using ToolNova, including storing them appropriately after generation.</p></section>
+
+  <section><h3>4. Acceptable Use Policy</h3>
+  <p>When using ToolNova, you agree that you will not:</p>
+  <ul>
+    <li>Use the App to generate or distribute content that is illegal, fraudulent, deceptive, or infringes on the rights of others.</li>
+    <li>Attempt to reverse-engineer, decompile, or interfere with the App's underlying code beyond what is permitted by applicable law.</li>
+    <li>Use automated means to scrape, overload, or disrupt the App's availability or performance.</li>
+    <li>Use any generated QR codes, barcodes, or other outputs to mislead users, distribute malware, or facilitate scams.</li>
+    <li>Attempt to bypass any security or access-control feature of the App.</li>
+  </ul></section>
+
+  <section><h3>5. Intellectual Property</h3>
+  <p>The ToolNova name, logo, visual design, original illustrations, and underlying source code are the property of ToolNova and its creators, and are protected by applicable intellectual property laws. You may not copy, reproduce, redistribute, or create derivative works based on the App's branding or design without prior written permission. Content that you generate using ToolNova's tools (such as passwords, QR codes, or formatted text) belongs to you, and we claim no ownership over it.</p></section>
+
+  <section><h3>6. Disclaimer</h3>
+  <p>ToolNova is provided on an "as is" and "as available" basis, without warranties of any kind, whether express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, accuracy, or non-infringement. While we strive for accuracy in every tool — including calculators, converters, and generators — we do not guarantee that results will be error-free, uninterrupted, or suitable for every use case, including critical, financial, medical, or legal applications.</p></section>
+
+  <section><h3>7. Limitation of Liability</h3>
+  <p>To the fullest extent permitted by applicable law, ToolNova and its creators shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of data, loss of profits, or loss of goodwill, arising out of or related to your use of, or inability to use, the App, even if we have been advised of the possibility of such damages. Your sole remedy for dissatisfaction with the App is to discontinue using it.</p></section>
+
+  <section><h3>8. Termination</h3>
+  <p>We reserve the right to suspend or discontinue access to ToolNova, in whole or in part, at any time and for any reason, including but not limited to violation of these Terms, without prior notice. Because the App does not require accounts, "termination" generally refers to restricting or discontinuing the availability of the App or specific features.</p></section>
+
+  <section><h3>9. Changes</h3>
+  <p>We may revise these Terms periodically to reflect changes in our services, legal requirements, or business practices. The updated Terms will be posted within the App with a revised "Last Updated" date. Your continued use of ToolNova after such changes constitutes your acceptance of the updated Terms.</p></section>
+
+  <section><h3>10. Governing Law</h3>
+  <p>These Terms shall be governed by and construed in accordance with applicable laws, without regard to conflict-of-law principles. Any disputes arising from these Terms or your use of the App shall be resolved in a manner consistent with applicable local regulations governing digital services.</p></section>
+
+  <section><h3>11. Contact Information</h3>
+  <p>If you have any questions about these Terms of Service, please contact us at <strong>support@toolnova.app</strong> or through the Contact page within the App.</p></section>`;
+}
+
+/* ---------------- SETTINGS ---------------- */
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('themeToggle').innerHTML = theme==='light'
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path stroke-linecap="round" d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>';
+  document.getElementById('darkModeSwitch').checked = theme==='dark';
+  localStorage.setItem(LS.theme, theme);
+}
+document.getElementById('themeToggle').addEventListener('click', ()=>{
+  const cur=document.documentElement.getAttribute('data-theme')==='light' ? 'dark':'light';
+  applyTheme(cur);
+});
+document.getElementById('darkModeSwitch').addEventListener('change', (e)=>{ applyTheme(e.target.checked?'dark':'light'); });
+
+document.getElementById('clearCacheRow').addEventListener('click', ()=>{
+  localStorage.removeItem(LS.fav); localStorage.removeItem(LS.recent);
+  updateCacheSize(); toast('Cache cleared');
+  refreshCurrentPage();
+});
+function updateCacheSize(){
+  const bytes = (localStorage.getItem(LS.fav)||'').length + (localStorage.getItem(LS.recent)||'').length;
+  document.getElementById('cacheSize').textContent = bytes<1024 ? bytes+' B' : (bytes/1024).toFixed(1)+' KB';
+}
+document.getElementById('rateRow').addEventListener('click', ()=>toast('Thanks for the love! ⭐'));
+document.getElementById('shareRow').addEventListener('click', ()=>{
+  if(navigator.share){ navigator.share({title:'ToolNova',text:'Smart Tools. Simple Solutions.',url:location.href}).catch(()=>{}); }
+  else { copyText(location.href); toast('Link copied — share it!'); }
+});
+document.getElementById('languageRow').addEventListener('click', ()=>toast('More languages coming soon'));
+
+/* ---------------- INIT ---------------- */
+function init(){
+  const savedTheme = localStorage.getItem(LS.theme) || 'dark';
+  applyTheme(savedTheme);
+  renderHome();
+  renderWhyList();
+  updateCacheSize();
+  go('home');
+}
+init();
+
+})();
+</script>
+</body>
+</html>
