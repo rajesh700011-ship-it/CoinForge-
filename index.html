@@ -1,1506 +1,1745 @@
-<!DOCTYPE html>
+কি <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>ToolNova — Smart Tools. Simple Solutions.</title>
-<meta name="description" content="ToolNova is a premium collection of 19+ everyday productivity utilities — generators, converters, calculators and developer tools — all running privately in your browser.">
-<meta name="theme-color" content="#0a0f1e">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%232563eb'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='24' fill='url(%23g)'/%3E%3Ctext x='50' y='68' font-size='58' font-family='Arial' font-weight='800' fill='white' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>⛏️ CoinForge — Mine FGE • Collect • Earn</title>
+<meta name="description" content="🪙 CoinForge — mine, collect and earn Forge Coin (FGE)." />
+<meta name="theme-color" content="#0B1020" />
+
+<!-- Telegram Mini App SDK -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<!-- Fonts: Space Grotesk (display), Inter (UI), JetBrains Mono (data/numerals) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/JsBarcode/3.11.5/JsBarcode.all.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+
 <style>
+/* =========================================================
+   CoinForge — design tokens
+   Deep navy base · electric purple + vivid blue accents
+   Neon green = mining active / success · metallic gold = FGE coin + rewards
+   ========================================================= */
 :root{
-  --bg:#0a0f1e; --bg2:#0d1428; --surface:rgba(255,255,255,.055); --surface-solid:#121a30;
-  --border:rgba(255,255,255,.09); --text:#eaeef8; --text-dim:#8d96ac; --text-faint:#5c6580;
-  --blue:#3b82f6; --cyan:#22d3ee; --grad:linear-gradient(135deg,#2563eb,#06b6d4);
-  --grad-soft:linear-gradient(135deg,rgba(37,99,235,.18),rgba(6,182,212,.14));
-  --success:#22c55e; --warning:#f59e0b; --danger:#ef4444;
-  --radius-lg:22px; --radius-md:16px; --radius-sm:10px;
-  --shadow:0 8px 30px rgba(0,0,0,.35);
-  --font-display:'Plus Jakarta Sans',sans-serif; --font-body:'Inter',sans-serif; --font-mono:'JetBrains Mono',monospace;
+  --bg:#0B1020;
+  --surface:rgba(23,32,64,0.55);
+  --surface-2:#1A2346;
+  --border:rgba(148,163,184,0.18);
+  --border-soft:rgba(148,163,184,0.10);
+
+  --primary:#7C3AED;
+  --primary-soft:#A78BFA;
+  --secondary:#2563EB;
+  --secondary-soft:#60A5FA;
+  --success:#22C55E;
+  --gold:#FBBF24;
+  --gold-hi:#FDE68A;
+
+  --text:#F8FAFC;
+  --text-dim:#94A3B8;
+
+  --grad-brand:linear-gradient(135deg,#7C3AED 0%,#2563EB 100%);
+  --grad-gold:linear-gradient(180deg,#FEF3C7 0%,#FBBF24 55%,#F59E0B 100%);
+
+  --radius-lg:22px;
+  --radius-md:18px;
+  --radius-sm:12px;
+  --shadow-card:0 10px 30px rgba(2,6,23,0.45);
+
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
 }
-[data-theme="light"]{
-  --bg:#f3f6fc; --bg2:#eaf0fa; --surface:rgba(255,255,255,.75); --surface-solid:#ffffff;
-  --border:rgba(15,23,42,.08); --text:#131b31; --text-dim:#5b6577; --text-faint:#94a0b8;
-  --shadow:0 8px 30px rgba(30,60,120,.10);
-}
-*{box-sizing:border-box; margin:0; padding:0;}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;}
 body{
-  font-family:var(--font-body); background:radial-gradient(ellipse 900px 500px at 20% -10%,rgba(37,99,235,.20),transparent),
-    radial-gradient(ellipse 700px 500px at 100% 0%,rgba(6,182,212,.14),transparent), var(--bg);
-  color:var(--text); min-height:100%; overflow-x:hidden; transition:background .3s,color .3s;
-  -webkit-tap-highlight-color:transparent;
+  margin:0;
+  font-family:'Inter',system-ui,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(900px 600px at 8% -8%, rgba(124,58,237,0.26), transparent 60%),
+    radial-gradient(800px 600px at 106% 6%, rgba(37,99,235,0.22), transparent 55%),
+    var(--bg);
+  background-attachment:fixed;
+  min-height:100vh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
 }
-h1,h2,h3,h4,.brand,.hero-title{font-family:var(--font-display);}
-button,input,select,textarea{font-family:inherit; color:inherit;}
-a{color:inherit; text-decoration:none;}
-::selection{background:rgba(37,99,235,.35);}
-::-webkit-scrollbar{width:8px; height:8px;}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12); border-radius:10px;}
+h1,h2,h3,.display{font-family:'Space Grotesk',sans-serif;}
+.mono{font-family:'JetBrains Mono',monospace;}
+button{font-family:inherit;}
+::selection{background:rgba(124,58,237,0.4);}
+button:focus-visible,
+.switch input:focus-visible + label{outline:2px solid var(--secondary-soft);outline-offset:2px;}
 
-/* ---------- shell ---------- */
-#app{max-width:520px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column; position:relative;}
+/* ---------- ambient glow + drifting particles ---------- */
+.aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.aurora span{position:absolute;border-radius:50%;filter:blur(70px);}
+.aurora span:nth-child(1){
+  width:320px;height:320px;top:34%;left:-120px;
+  background:radial-gradient(circle, rgba(124,58,237,0.32), transparent 70%);
+}
+.aurora span:nth-child(2){
+  width:300px;height:300px;bottom:-60px;right:-100px;
+  background:radial-gradient(circle, rgba(37,99,235,0.30), transparent 70%);
+}
+.motes{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.motes i{
+  position:absolute;display:block;border-radius:50%;
+  opacity:0;
+  animation:moteRise linear infinite;
+}
+@keyframes moteRise{
+  0%{opacity:0;transform:translateY(0) scale(0.6);}
+  10%{opacity:0.7;}
+  90%{opacity:0.3;}
+  100%{opacity:0;transform:translateY(-70vh) scale(1);}
+}
+#app{position:relative;z-index:1;}
+::-webkit-scrollbar{width:0;height:0;}
+
+/* ---------- shared coin icon ---------- */
+.coin-xs{width:15px;height:15px;flex:none;}
+.coin-lg{width:38px;height:38px;flex:none;filter:drop-shadow(0 0 10px rgba(251,191,36,0.4));}
+
+/* ---------- app shell ---------- */
+#app{
+  max-width:480px;
+  margin:0 auto;
+  min-height:100vh;
+  padding-top:calc(var(--safe-top) + 14px);
+  padding-bottom:calc(var(--safe-bottom) + 96px);
+}
+
+/* ---------- top bar ---------- */
 .topbar{
-  position:sticky; top:0; z-index:40; display:flex; align-items:center; justify-content:space-between;
-  padding:16px 18px; backdrop-filter:blur(16px); background:rgba(10,15,30,.55); border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 18px 14px;
 }
-[data-theme="light"] .topbar{background:rgba(255,255,255,.65);}
-.topbar-left{display:flex; align-items:center; gap:10px;}
-.icon-btn{
-  width:40px; height:40px; border-radius:12px; border:1px solid var(--border); background:var(--surface);
-  display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text); flex-shrink:0;
-  transition:transform .15s, background .15s;
+.brand{display:flex;align-items:center;gap:10px;}
+.brand-mark{
+  width:34px;height:34px;border-radius:10px;
+  background:var(--grad-brand);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 20px rgba(124,58,237,0.45), inset 0 1px 0 rgba(255,255,255,0.3);
 }
-.icon-btn:active{transform:scale(.92);}
-.icon-btn svg{width:19px; height:19px;}
-.brand{display:flex; align-items:center; gap:9px; font-weight:800; font-size:19px; letter-spacing:-.02em;}
-.brand .mark{width:34px; height:34px; border-radius:10px; background:var(--grad); display:flex; align-items:center; justify-content:center; font-size:17px; font-weight:800; color:#fff; box-shadow:0 4px 14px rgba(37,99,235,.4);}
-.brand .nova{background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;}
-.page-title-bar{display:flex; align-items:center; gap:12px;}
-.page-title-bar h1{font-size:19px; font-weight:800;}
+.brand-mark svg{width:19px;height:19px;}
+.brand-text{display:flex;flex-direction:column;}
+.brand-name{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;font-size:18px;letter-spacing:0.1px;
+  color:var(--text);line-height:1.1;
+}
+.brand-tagline{font-size:10.5px;font-weight:500;color:var(--text-dim);margin-top:1px;}
+.profile-chip{
+  display:flex;align-items:center;gap:8px;
+  padding:5px 12px 5px 5px;
+  border-radius:100px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.profile-avatar{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--grad-brand);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#fff;
+}
+.profile-name{font-size:12.5px;color:var(--text);font-weight:600;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
-main{flex:1; padding:18px 18px 100px;}
-.page{display:none; animation:fadeUp .35s ease;}
-.page.active{display:block;}
-@keyframes fadeUp{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+/* ---------- views ---------- */
+.view{display:none;padding:0 18px;animation:fadeSlide 0.28s ease;}
+.view.active{display:block;}
+@keyframes fadeSlide{
+  from{opacity:0;transform:translateY(6px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* ---------- balance (Mine) ---------- */
+.balance-wrap{text-align:center;margin:6px 0 20px;}
+.balance-label{font-size:13px;color:var(--text-dim);font-weight:500;margin-bottom:8px;}
+.balance-value{
+  display:flex;justify-content:center;align-items:center;gap:10px;
+  font-family:'Space Grotesk',sans-serif;
+  font-variant-numeric:tabular-nums;
+  line-height:1;
+}
+.balance-num{
+  font-weight:700;font-size:48px;letter-spacing:-1px;
+  background:var(--grad-gold);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 14px rgba(251,191,36,0.28));
+}
+.balance-value .unit{
+  font-size:16px;font-weight:600;color:var(--gold);align-self:flex-end;padding-bottom:6px;
+}
+.rate-pill{
+  margin:12px auto 0;width:fit-content;
+  display:flex;align-items:center;gap:8px;
+  font-size:12.5px;font-weight:600;color:var(--text);
+  background:var(--surface);
+  border:1px solid var(--border);
+  padding:6px 14px;border-radius:100px;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.rate-pill b{color:var(--text-dim);font-weight:500;}
+.live-dot{
+  width:8px;height:8px;border-radius:50%;background:#475569;flex:none;
+}
+.rate-pill.active .live-dot{
+  background:var(--success);
+  box-shadow:0 0 0 0 rgba(34,197,94,0.6), 0 0 8px rgba(34,197,94,0.8);
+  animation:livePulse 2.2s ease-out infinite;
+}
+@keyframes livePulse{
+  0%{box-shadow:0 0 0 0 rgba(34,197,94,0.55), 0 0 8px rgba(34,197,94,0.8);}
+  70%,100%{box-shadow:0 0 0 8px rgba(34,197,94,0), 0 0 8px rgba(34,197,94,0.8);}
+}
+
+/* ---------- mining orb ---------- */
+.orb-stage{
+  position:relative;
+  width:280px;height:280px;
+  margin:12px auto 8px;
+  display:flex;align-items:center;justify-content:center;
+}
+.orb-ring{
+  position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from -90deg, var(--primary) 0%, var(--secondary) calc(var(--energy-pct) * 1%), rgba(148,163,184,0.12) 0);
+  -webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
+          mask:radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
+  filter:drop-shadow(0 0 8px rgba(37,99,235,0.5));
+}
+.orb-halo{
+  position:absolute;inset:16px;border-radius:50%;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(124,58,237,0.5), transparent 62%),
+    radial-gradient(circle at 70% 78%, rgba(37,99,235,0.4), transparent 60%);
+  filter:blur(14px);
+  animation:haloPulse 4s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes haloPulse{
+  0%,100%{opacity:0.6;transform:scale(1);}
+  50%{opacity:1;transform:scale(1.06);}
+}
+.orb-btn{
+  position:relative;
+  width:212px;height:212px;
+  border-radius:50%;
+  overflow:hidden;
+  border:1.5px solid rgba(255,255,255,0.2);
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.3), rgba(255,255,255,0) 32%),
+    radial-gradient(circle at 50% 125%, rgba(37,99,235,0.95), transparent 62%),
+    linear-gradient(150deg,#8B5CF6 0%,#7C3AED 38%,#2563EB 100%);
+  box-shadow:
+    0 0 56px rgba(124,58,237,0.5),
+    0 0 90px rgba(37,99,235,0.25),
+    0 18px 40px rgba(2,6,23,0.55),
+    inset 0 2px 10px rgba(255,255,255,0.35),
+    inset 0 -26px 40px rgba(11,16,32,0.45);
+  cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:transform 0.08s ease;
+  -webkit-user-select:none;user-select:none;
+  touch-action:manipulation;
+  color:var(--text);
+}
+.orb-btn:active{transform:scale(0.965);}
+.orb-btn.depleted{filter:saturate(0.3) brightness(0.72);cursor:not-allowed;}
+.orb-sheen{
+  position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from 0deg,
+    transparent 0deg, rgba(255,255,255,0.22) 26deg, transparent 70deg,
+    transparent 210deg, rgba(96,165,250,0.2) 250deg, transparent 300deg);
+  animation:sheenSpin 9s linear infinite;
+  mix-blend-mode:overlay;
+  pointer-events:none;
+}
+@keyframes sheenSpin{ to{ transform:rotate(360deg); } }
+.orb-icon-wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.orb-icon{
+  width:96px;height:96px;
+  filter:drop-shadow(0 8px 14px rgba(11,16,32,0.55)) drop-shadow(0 0 20px rgba(251,191,36,0.4));
+}
+.orb-tap-label{
+  font-size:13px;font-weight:600;letter-spacing:0.2px;
+  color:rgba(248,250,252,0.92);
+  text-shadow:0 1px 6px rgba(11,16,32,0.5);
+}
+
+/* tap ripple + floating gain */
+.ripple{
+  position:absolute;border-radius:50%;
+  border:2px solid rgba(167,139,250,0.75);
+  pointer-events:none;
+  animation:rippleOut 0.7s ease-out forwards;
+}
+@keyframes rippleOut{
+  from{opacity:0.9;transform:scale(0.4);}
+  to{opacity:0;transform:scale(1.9);}
+}
+.float-gain{
+  position:absolute;
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;font-size:17px;color:var(--gold);
+  text-shadow:0 0 12px rgba(251,191,36,0.7);
+  pointer-events:none;
+  animation:floatUp 0.85s ease-out forwards;
+}
+@keyframes floatUp{
+  0%{opacity:0;transform:translateY(0) scale(0.8);}
+  15%{opacity:1;transform:translateY(-8px) scale(1);}
+  100%{opacity:0;transform:translateY(-58px) scale(1);}
+}
+
+/* energy readout */
+.energy-wrap{max-width:284px;margin:14px auto 0;display:flex;flex-direction:column;gap:7px;}
+.energy-row{display:flex;align-items:center;justify-content:space-between;font-size:12.5px;color:var(--text-dim);font-weight:500;}
+.energy-row .val{font-variant-numeric:tabular-nums;color:var(--text);font-weight:600;}
+.energy-track{
+  height:8px;border-radius:100px;background:rgba(148,163,184,0.12);
+  overflow:hidden;
+}
+.energy-fill{
+  height:100%;border-radius:100px;
+  background:var(--grad-brand);
+  box-shadow:0 0 12px rgba(37,99,235,0.6);
+  transition:width 0.5s ease;
+}
+.depleted-note{text-align:center;font-size:12px;color:var(--text-dim);margin-top:8px;}
+
+/* ---------- section headers ---------- */
+.section-head{margin:24px 0 12px;}
+.section-title{font-size:18px;font-weight:700;font-family:'Space Grotesk',sans-serif;}
+.section-sub{font-size:12.5px;color:var(--text-dim);margin-top:3px;}
+
+/* ---------- glass cards ---------- */
+.card{
+  background:
+    linear-gradient(155deg, rgba(124,58,237,0.13), rgba(37,99,235,0.05) 50%, rgba(255,255,255,0.02)),
+    var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-md);
+  box-shadow:var(--shadow-card), inset 0 1px 0 rgba(255,255,255,0.06);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  position:relative;
+  overflow:hidden;
+}
+
+/* upgrade card */
+.upgrade-card{display:flex;align-items:center;gap:11px;padding:14px 12px;margin-bottom:10px;}
+.upgrade-icon{
+  width:42px;height:42px;border-radius:13px;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(150deg, rgba(124,58,237,0.32), rgba(37,99,235,0.2));
+  border:1px solid rgba(167,139,250,0.28);
+}
+.upgrade-icon svg{width:23px;height:23px;color:var(--primary-soft);}
+.upgrade-body{flex:1;min-width:0;}
+.upgrade-top{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.upgrade-name{font-weight:700;font-size:14.5px;}
+.upgrade-level{
+  font-size:11px;font-weight:600;color:var(--primary-soft);
+  background:rgba(124,58,237,0.16);border:1px solid rgba(124,58,237,0.35);
+  padding:2px 9px;border-radius:100px;white-space:nowrap;
+}
+.upgrade-desc{font-size:12px;color:var(--text-dim);margin-top:2px;line-height:1.4;}
+.upgrade-effect{font-size:12px;color:var(--success);font-weight:600;margin-top:5px;}
+.upgrade-buy{
+  flex:none;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  min-width:82px;padding:9px 8px;border-radius:13px;
+  background:var(--grad-brand);
+  border:none;color:#fff;font-weight:700;font-size:12.5px;
+  box-shadow:0 6px 18px rgba(124,58,237,0.38), inset 0 1px 0 rgba(255,255,255,0.22);
+}
+.upgrade-buy .cost{
+  display:inline-flex;align-items:center;gap:5px;
+  font-variant-numeric:tabular-nums;font-size:12.5px;font-weight:600;color:#fff;
+}
+.upgrade-buy:disabled{
+  background:rgba(148,163,184,0.1);color:var(--text-dim);box-shadow:none;
+  border:1px solid var(--border-soft);
+}
+.upgrade-buy:disabled .cost{color:var(--text-dim);}
+.upgrade-buy:disabled .coin-xs{opacity:0.55;}
+.upgrade-buy:active:not(:disabled){transform:scale(0.96);}
+
+/* boost card */
+.boost-card{padding:16px;margin-bottom:12px;}
+.boost-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.boost-title-row{display:flex;align-items:center;gap:10px;}
+.boost-icon{
+  width:40px;height:40px;border-radius:12px;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(150deg, rgba(37,99,235,0.3), rgba(124,58,237,0.18));
+  border:1px solid rgba(96,165,250,0.28);
+}
+.boost-icon svg{width:19px;height:19px;color:var(--secondary-soft);}
+.boost-name{font-weight:700;font-size:14.5px;}
+.boost-desc{font-size:12px;color:var(--text-dim);margin-top:10px;line-height:1.5;}
+.ad-tag{
+  font-size:11px;font-weight:600;color:var(--text-dim);
+  border:1px solid var(--border);
+  padding:3px 9px;border-radius:100px;
+  white-space:nowrap;flex:none;
+}
+.boost-action{
+  margin-top:14px;width:100%;padding:12px;border-radius:14px;
+  border:none;font-weight:700;font-size:13.5px;
+  background:var(--grad-brand);color:#fff;
+  box-shadow:0 6px 18px rgba(37,99,235,0.32), inset 0 1px 0 rgba(255,255,255,0.22);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.boost-action:disabled{
+  background:rgba(148,163,184,0.1);color:var(--text-dim);box-shadow:none;
+  border:1px solid var(--border-soft);
+}
+.boost-action:active:not(:disabled){transform:scale(0.98);}
+.boost-action svg{width:15px;height:15px;}
+
+/* consent panel */
+.consent-card{padding:16px;margin-bottom:16px;}
+.consent-top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.consent-title{font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:8px;}
+.consent-title svg{width:16px;height:16px;color:var(--success);}
+.consent-desc{font-size:12px;color:var(--text-dim);margin-top:8px;line-height:1.55;}
+
+.switch{position:relative;width:46px;height:27px;flex:none;}
+.switch input{opacity:0;width:0;height:0;position:absolute;}
+.switch label{
+  position:absolute;inset:0;border-radius:100px;cursor:pointer;
+  background:rgba(148,163,184,0.16);border:1px solid var(--border);
+  transition:background 0.2s ease, border-color 0.2s ease;
+}
+.switch label::after{
+  content:"";position:absolute;top:2px;left:2px;
+  width:21px;height:21px;border-radius:50%;
+  background:#fff;transition:transform 0.2s ease;
+  box-shadow:0 1px 4px rgba(0,0,0,0.35);
+}
+.switch input:checked + label{
+  background:var(--success);border-color:transparent;
+  box-shadow:0 0 14px rgba(34,197,94,0.4);
+}
+.switch input:checked + label::after{transform:translateX(19px);}
+
+.disclosure-strip{
+  display:flex;gap:9px;align-items:flex-start;
+  font-size:11.5px;color:var(--text-dim);line-height:1.5;
+  background:rgba(37,99,235,0.08);border:1px solid rgba(96,165,250,0.2);
+  border-radius:var(--radius-sm);padding:11px 12px;margin-bottom:16px;
+}
+.disclosure-strip svg{width:15px;height:15px;flex:none;margin-top:1px;color:var(--secondary-soft);}
+
+/* friends */
+.invite-hero{
+  padding:22px 18px;text-align:center;margin-bottom:16px;
+  border-color:rgba(167,139,250,0.3);
+}
+.invite-hero h3{font-size:17px;margin:0 0 6px;}
+.invite-hero p{font-size:12.5px;color:var(--text-dim);margin:0 0 16px;line-height:1.55;}
+.invite-hero p b{color:var(--gold) !important;}
+.link-row{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(11,16,32,0.55);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:9px 10px 9px 12px;margin-bottom:12px;
+}
+.link-row span{
+  flex:1;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--text-dim);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;
+}
+.icon-btn{
+  flex:none;width:34px;height:34px;border-radius:10px;
+  background:rgba(148,163,184,0.1);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;color:var(--text-dim);
+}
+.icon-btn svg{width:16px;height:16px;}
+.icon-btn.copied{color:var(--success);border-color:rgba(34,197,94,0.5);background:rgba(34,197,94,0.1);}
+.btn-primary{
+  width:100%;padding:14px;border-radius:14px;border:none;
+  background:var(--grad-brand);
+  color:#fff;font-weight:700;font-size:14px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 8px 22px rgba(124,58,237,0.4), inset 0 1px 0 rgba(255,255,255,0.22);
+}
+.btn-primary:active{transform:scale(0.98);}
+.btn-primary svg{width:16px;height:16px;}
+
+.stat-row{display:flex;gap:10px;margin-bottom:16px;}
+.stat-box{flex:1;padding:14px 8px;text-align:center;}
+.stat-box .num{font-family:'Space Grotesk',sans-serif;font-variant-numeric:tabular-nums;font-weight:700;font-size:20px;color:var(--text);}
+.stat-box .num.gold{color:var(--gold);}
+.stat-box .lbl{font-size:11.5px;color:var(--text-dim);margin-top:4px;}
+
+.friend-row{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:8px;}
+.friend-avatar{
+  width:38px;height:38px;border-radius:50%;flex:none;
+  background:var(--grad-brand);
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;
+}
+.friend-name{font-weight:600;font-size:13.5px;}
+.friend-date{font-size:11.5px;color:var(--text-dim);margin-top:1px;}
+.friend-bonus{margin-left:auto;font-family:'Space Grotesk',sans-serif;font-variant-numeric:tabular-nums;font-size:14px;color:var(--gold);font-weight:700;}
+
+.empty-state{text-align:center;padding:30px 16px;color:var(--text-dim);}
+.empty-state svg{width:36px;height:36px;color:var(--primary-soft);margin-bottom:10px;opacity:0.7;}
+.empty-state p{font-size:12.5px;margin:0;line-height:1.55;}
 
 /* ---------- bottom nav ---------- */
-.bottomnav{
-  position:fixed; bottom:0; left:0; right:0; z-index:50; max-width:520px; margin:0 auto;
-  display:flex; justify-content:space-around; padding:10px 6px calc(10px + env(safe-area-inset-bottom));
-  background:rgba(10,15,30,.72); backdrop-filter:blur(18px); border-top:1px solid var(--border);
+.tabbar{
+  position:fixed;left:0;right:0;bottom:0;
+  display:flex;justify-content:center;
+  padding-bottom:var(--safe-bottom);
+  z-index:40;pointer-events:none;
 }
-[data-theme="light"] .bottomnav{background:rgba(255,255,255,.78);}
-.nav-item{display:flex; flex-direction:column; align-items:center; gap:4px; background:none; border:none; cursor:pointer; color:var(--text-faint); font-size:11px; font-weight:600; padding:5px 10px; border-radius:12px; transition:color .15s;}
-.nav-item svg{width:21px; height:21px;}
-.nav-item.active{color:var(--blue);}
-[data-theme="light"] .nav-item.active{color:#2563eb;}
-
-/* ---------- search ---------- */
-.search-bar{display:flex; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:13px 16px; box-shadow:var(--shadow);}
-.search-bar svg{width:18px; height:18px; color:var(--text-faint); flex-shrink:0;}
-.search-bar input{background:none; border:none; outline:none; width:100%; font-size:14.5px; color:var(--text);}
-.search-bar input::placeholder{color:var(--text-faint);}
-
-/* ---------- hero ---------- */
-.hero{
-  position:relative; overflow:hidden; border-radius:var(--radius-lg); padding:26px 22px; margin:18px 0 20px;
-  background:var(--grad); box-shadow:0 14px 40px rgba(37,99,235,.30);
+.tabbar-inner{
+  pointer-events:auto;
+  width:calc(100% - 28px);max-width:452px;
+  margin-bottom:12px;
+  display:flex;
+  background:rgba(15,22,46,0.8);
+  backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);
+  border:1px solid var(--border);
+  border-radius:22px;
+  box-shadow:0 12px 34px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+  padding:6px;
 }
-.hero::before,.hero::after{content:''; position:absolute; border-radius:50%; background:rgba(255,255,255,.14);}
-.hero::before{width:170px; height:170px; top:-70px; right:-50px; animation:float1 7s ease-in-out infinite;}
-.hero::after{width:110px; height:110px; bottom:-50px; left:-30px; background:rgba(255,255,255,.10); animation:float2 8s ease-in-out infinite;}
-@keyframes float1{0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(14px) rotate(12deg)}}
-@keyframes float2{0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)}}
-.hero h2{color:#fff; font-size:23px; font-weight:800; position:relative; z-index:1; margin-bottom:6px;}
-.hero p{color:rgba(255,255,255,.88); font-size:13.5px; position:relative; z-index:1; max-width:80%;}
-.hero .wave{display:inline-block; animation:wave 2s infinite;}
-@keyframes wave{0%,100%{transform:rotate(0)} 20%{transform:rotate(18deg)} 40%{transform:rotate(-10deg)} 60%{transform:rotate(14deg)}}
-
-/* ---------- sections ---------- */
-.section{margin-bottom:24px;}
-.section-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;}
-.section-head h3{font-size:15.5px; font-weight:700;}
-.link-btn{background:none; border:none; color:var(--blue); font-weight:600; font-size:13px; cursor:pointer;}
-
-.grid-2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
-.grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
-
-.tool-tile{
-  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:16px 14px;
-  cursor:pointer; transition:transform .15s,border-color .15s; text-align:left; display:flex; flex-direction:column; gap:10px;
+.tab-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:9px 4px 8px;border:none;background:transparent;color:var(--text-dim);
+  border-radius:16px;font-size:11px;font-weight:600;
+  transition:background 0.2s ease,color 0.2s ease;
 }
-.tool-tile:active{transform:scale(.96);}
-.tool-tile:hover{border-color:rgba(59,130,246,.4);}
-.tool-tile .tile-icon{width:38px; height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center; color:#fff;}
-.tool-tile .tile-icon svg{width:19px; height:19px;}
-.tool-tile .tile-name{font-size:13px; font-weight:700;}
+.tab-btn svg{width:21px;height:21px;}
+.tab-btn.active{color:var(--text);background:linear-gradient(135deg,rgba(124,58,237,0.32),rgba(37,99,235,0.24));}
+.tab-btn.active svg{color:var(--primary-soft);filter:drop-shadow(0 0 6px rgba(124,58,237,0.7));}
 
-.tool-row{
-  display:flex; align-items:center; gap:13px; background:var(--surface); border:1px solid var(--border);
-  border-radius:16px; padding:13px 14px; cursor:pointer; transition:transform .12s, border-color .15s;
+/* toast */
+#toast{
+  position:fixed;left:50%;bottom:112px;transform:translateX(-50%) translateY(20px);
+  background:rgba(26,35,70,0.92);border:1px solid var(--border);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  color:var(--text);font-size:12.5px;font-weight:600;
+  padding:10px 16px;border-radius:100px;
+  box-shadow:0 10px 26px rgba(2,6,23,0.5);
+  opacity:0;pointer-events:none;transition:all 0.25s ease;
+  z-index:80;white-space:nowrap;max-width:calc(100vw - 32px);overflow:hidden;text-overflow:ellipsis;
 }
-.tool-row + .tool-row{margin-top:10px;}
-.tool-row:active{transform:scale(.985);}
-.tool-row:hover{border-color:rgba(59,130,246,.35);}
-.tool-row .row-icon{width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0;}
-.tool-row .row-icon svg{width:20px; height:20px;}
-.tool-row .row-text{flex:1; min-width:0;}
-.tool-row .row-text .rn{font-size:14px; font-weight:700;}
-.tool-row .row-text .rd{font-size:12px; color:var(--text-dim); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-.tool-row .row-fav{background:none; border:none; cursor:pointer; color:var(--text-faint); flex-shrink:0;}
-.tool-row .row-fav svg{width:19px; height:19px;}
-.tool-row .row-fav.active{color:#f59e0b;}
-.tool-row .chev{color:var(--text-faint); flex-shrink:0;}
-.tool-row .chev svg{width:17px; height:17px;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-.chip-row{display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; scrollbar-width:none;}
-.chip-row::-webkit-scrollbar{display:none;}
-.chip{
-  flex-shrink:0; padding:9px 16px; border-radius:100px; border:1px solid var(--border); background:var(--surface);
-  font-size:13px; font-weight:600; cursor:pointer; color:var(--text-dim); white-space:nowrap; transition:all .15s;
+/* offline earnings modal */
+.overlay{
+  position:fixed;inset:0;background:rgba(6,9,20,0.78);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;z-index:90;
+  opacity:0;pointer-events:none;transition:opacity 0.25s ease;padding:24px;
 }
-.chip.active{background:var(--grad); color:#fff; border-color:transparent;}
-
-/* icon color variants */
-.c-blue{background:linear-gradient(135deg,#3b82f6,#2563eb);}
-.c-cyan{background:linear-gradient(135deg,#22d3ee,#06b6d4);}
-.c-green{background:linear-gradient(135deg,#34d399,#10b981);}
-.c-purple{background:linear-gradient(135deg,#a78bfa,#8b5cf6);}
-.c-orange{background:linear-gradient(135deg,#fb923c,#f97316);}
-.c-pink{background:linear-gradient(135deg,#f472b6,#ec4899);}
-.c-red{background:linear-gradient(135deg,#f87171,#ef4444);}
-.c-teal{background:linear-gradient(135deg,#2dd4bf,#0d9488);}
-
-/* ---------- footer ---------- */
-.footer{margin-top:8px; padding:26px 20px 20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); text-align:center;}
-.footer .brand{justify-content:center; margin-bottom:4px;}
-.footer .tag{color:var(--text-dim); font-size:12.5px; margin-bottom:18px;}
-.footer-stats{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px;}
-.fstat{background:var(--bg2); border-radius:14px; padding:12px; display:flex; gap:9px; align-items:center; text-align:left;}
-.fstat svg{width:17px; height:17px; flex-shrink:0;}
-.fstat .fn{font-size:12.5px; font-weight:700;}
-.fstat .fd{font-size:10.5px; color:var(--text-dim);}
-.footer-links{display:flex; flex-wrap:wrap; justify-content:center; gap:14px; font-size:12px; color:var(--text-dim); margin-bottom:10px;}
-.footer-links a{cursor:pointer;}
-.footer-links a:hover{color:var(--blue);}
-.copyright{font-size:11px; color:var(--text-faint);}
-
-/* ---------- empty state ---------- */
-.empty-state{text-align:center; padding:50px 20px; color:var(--text-dim);}
-.empty-state svg{width:64px; height:64px; margin-bottom:14px; color:var(--text-faint);}
-.empty-state h4{font-size:15px; color:var(--text); margin-bottom:6px;}
-.empty-state p{font-size:13px;}
-
-/* ---------- tool detail page ---------- */
-.tool-header{display:flex; align-items:center; gap:12px; margin-bottom:18px;}
-.tool-header .thi{width:44px; height:44px; border-radius:13px; display:flex; align-items:center; justify-content:center; color:#fff;}
-.tool-header .thi svg{width:21px; height:21px;}
-.tool-header .tht{flex:1;}
-.tool-header .tht h2{font-size:17px; font-weight:800;}
-.tool-header .tht p{font-size:12px; color:var(--text-dim);}
-.card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:18px; box-shadow:var(--shadow); margin-bottom:14px;}
-.field-label{font-size:12.5px; font-weight:600; color:var(--text-dim); margin-bottom:8px; display:block;}
-.field{
-  width:100%; background:var(--bg2); border:1px solid var(--border); border-radius:13px; padding:13px 14px;
-  font-size:14px; color:var(--text); outline:none; transition:border-color .15s;
+.overlay.show{opacity:1;pointer-events:auto;}
+.modal{
+  width:100%;max-width:340px;padding:28px 22px;text-align:center;
+  border-color:rgba(167,139,250,0.32);
+  animation:modalIn 0.3s ease;
 }
-.field:focus{border-color:var(--blue);}
-textarea.field{resize:vertical; min-height:100px; font-family:var(--font-mono);}
-.field-row{display:flex; gap:10px; margin-bottom:14px;}
-.field-row .field{flex:1;}
-.btn{
-  display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:14px; border:none;
-  border-radius:14px; background:var(--grad); color:#fff; font-weight:700; font-size:14.5px; cursor:pointer;
-  box-shadow:0 8px 22px rgba(37,99,235,.35); transition:transform .12s, filter .12s;
+@keyframes modalIn{from{opacity:0;transform:scale(0.94) translateY(8px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.modal-icon{display:flex;justify-content:center;margin:0 auto 12px;}
+.modal-icon .coin-lg{width:68px;height:68px;filter:drop-shadow(0 0 18px rgba(251,191,36,0.5));}
+.modal h3{font-size:17px;margin:0 0 6px;}
+.modal p{font-size:12.5px;color:var(--text-dim);margin:0 0 4px;line-height:1.5;}
+.modal .gain{
+  font-family:'Space Grotesk',sans-serif;font-variant-numeric:tabular-nums;font-weight:700;font-size:30px;
+  background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent;
+  margin:10px 0 18px;filter:drop-shadow(0 0 12px rgba(251,191,36,0.3));
 }
-.btn:active{transform:scale(.98); filter:brightness(.96);}
-.btn.secondary{background:var(--surface); color:var(--text); border:1px solid var(--border); box-shadow:none;}
-.btn.outline{background:none; border:1.5px solid var(--blue); color:var(--blue); box-shadow:none;}
-.btn-row{display:flex; gap:10px;}
-.btn-row .btn{flex:1;}
-.result-box{background:var(--bg2); border:1px dashed var(--border); border-radius:14px; padding:16px; text-align:center; font-family:var(--font-mono); font-size:14px; word-break:break-all; margin-bottom:14px;}
-.result-display{font-size:26px; font-weight:800; text-align:right; padding:20px 6px; letter-spacing:.02em;}
-.tab-row{display:flex; gap:8px; margin-bottom:16px; background:var(--bg2); padding:5px; border-radius:14px;}
-.tab-btn{flex:1; padding:9px; border:none; background:none; border-radius:10px; font-size:12.5px; font-weight:700; color:var(--text-dim); cursor:pointer;}
-.tab-btn.active{background:var(--grad); color:#fff;}
-.qr-canvas-wrap{display:flex; justify-content:center; padding:20px; background:#fff; border-radius:16px; margin-bottom:14px;}
-.strength-meter{height:8px; border-radius:6px; background:var(--bg2); overflow:hidden; margin:10px 0 6px;}
-.strength-fill{height:100%; border-radius:6px; transition:width .3s, background .3s;}
-.copy-fab{position:relative;}
-.toast{
-  position:fixed; bottom:96px; left:50%; transform:translateX(-50%) translateY(20px); opacity:0; pointer-events:none;
-  background:#111827; color:#fff; padding:11px 20px; border-radius:100px; font-size:13px; font-weight:600; z-index:99;
-  box-shadow:0 10px 30px rgba(0,0,0,.35); transition:all .25s; display:flex; align-items:center; gap:7px;
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition-duration:0.001ms !important;}
 }
-.toast.show{opacity:1; transform:translateX(-50%) translateY(0); pointer-events:auto;}
-.toast svg{width:15px; height:15px; color:var(--success);}
-
-.stat-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px;}
-.stat-box{background:var(--bg2); border-radius:14px; padding:14px 8px; text-align:center;}
-.stat-box .sv{font-size:19px; font-weight:800;}
-.stat-box .sl{font-size:10.5px; color:var(--text-dim); margin-top:2px;}
-
-.case-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;}
-.case-btn{background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:11px; font-size:12.5px; font-weight:600; cursor:pointer; text-align:left;}
-.case-btn:active{transform:scale(.97);}
-
-.calc-display{background:var(--bg2); border-radius:16px; padding:18px; margin-bottom:14px; text-align:right;}
-.calc-expr{font-size:13px; color:var(--text-dim); min-height:16px;}
-.calc-result{font-size:30px; font-weight:800; margin-top:4px; word-break:break-all;}
-.calc-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:9px;}
-.calc-key{padding:17px 0; border-radius:14px; border:none; background:var(--surface); border:1px solid var(--border); font-size:17px; font-weight:700; cursor:pointer; color:var(--text);}
-.calc-key.op{background:var(--bg2); color:var(--blue);}
-.calc-key.eq{background:var(--grad); color:#fff; grid-row:span 1;}
-.calc-key:active{transform:scale(.93);}
-
-.color-preview{height:120px; border-radius:16px; margin-bottom:14px; border:1px solid var(--border); transition:background .2s;}
-.color-vals{display:grid; grid-template-columns:1fr; gap:10px;}
-.color-val-row{display:flex; align-items:center; justify-content:space-between; background:var(--bg2); border-radius:12px; padding:11px 14px; font-family:var(--font-mono); font-size:13.5px;}
-.color-val-row button{background:none; border:none; color:var(--blue); cursor:pointer;}
-
-.dice-area{display:flex; gap:14px; justify-content:center; flex-wrap:wrap; padding:20px 0; min-height:100px; align-items:center;}
-.die{width:64px; height:64px; border-radius:16px; background:var(--grad); display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:800; color:#fff; box-shadow:0 8px 20px rgba(37,99,235,.35);}
-.coin{width:120px; height:120px; border-radius:50%; margin:20px auto; background:var(--grad); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800; color:#fff; box-shadow:0 10px 30px rgba(37,99,235,.4);}
-.coin.flipping{animation:coinFlip .6s ease;}
-@keyframes coinFlip{0%{transform:rotateY(0)}100%{transform:rotateY(1440deg)}}
-
-.range-row{display:flex; align-items:center; gap:12px; margin-bottom:14px;}
-.range-row input[type=range]{flex:1; accent-color:#2563eb;}
-.toggle-row{display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border);}
-.toggle-row:last-child{border-bottom:none;}
-.toggle-row .tr-label{font-size:13.5px; font-weight:600;}
-.switch{position:relative; width:46px; height:27px; flex-shrink:0;}
-.switch input{opacity:0; width:0; height:0;}
-.slider-tg{position:absolute; inset:0; background:var(--bg2); border:1px solid var(--border); border-radius:100px; cursor:pointer; transition:.2s;}
-.slider-tg::before{content:''; position:absolute; width:21px; height:21px; left:2px; top:2px; background:#fff; border-radius:50%; transition:.2s; box-shadow:0 1px 4px rgba(0,0,0,.3);}
-.switch input:checked + .slider-tg{background:var(--grad); border-color:transparent;}
-.switch input:checked + .slider-tg::before{transform:translateX(19px);}
-
-.settings-group{margin-bottom:20px;}
-.settings-group h4{font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin-bottom:10px; padding-left:4px;}
-.settings-list{background:var(--surface); border:1px solid var(--border); border-radius:16px; overflow:hidden;}
-.settings-row{display:flex; align-items:center; gap:12px; padding:14px 16px; border-bottom:1px solid var(--border); cursor:pointer;}
-.settings-row:last-child{border-bottom:none;}
-.settings-row .sr-icon{width:32px; height:32px; border-radius:9px; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0;}
-.settings-row .sr-icon svg{width:16px; height:16px;}
-.settings-row .sr-text{flex:1; font-size:13.5px; font-weight:600;}
-.settings-row .sr-val{font-size:12px; color:var(--text-faint);}
-.settings-row .sr-chev{color:var(--text-faint); flex-shrink:0;}
-.settings-row .sr-chev svg{width:16px; height:16px;}
-
-.legal-page h2{font-size:20px; font-weight:800; margin-bottom:4px;}
-.legal-page .legal-meta{font-size:12px; color:var(--text-dim); margin-bottom:18px;}
-.legal-page .toc{background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px; margin-bottom:20px;}
-.legal-page .toc h4{font-size:13px; margin-bottom:10px;}
-.legal-page .toc ol{padding-left:18px; font-size:12.5px; color:var(--text-dim); line-height:2;}
-.legal-page section{margin-bottom:20px;}
-.legal-page section h3{font-size:14.5px; font-weight:700; margin-bottom:8px; color:var(--text);}
-.legal-page section p, .legal-page section li{font-size:13px; color:var(--text-dim); line-height:1.75; margin-bottom:6px;}
-.legal-page section ul{padding-left:18px;}
-
-.about-hero{text-align:center; padding:10px 10px 24px;}
-.about-hero .mark-lg{width:64px; height:64px; border-radius:18px; background:var(--grad); display:flex; align-items:center; justify-content:center; font-size:30px; font-weight:800; color:#fff; margin:0 auto 14px; box-shadow:0 10px 26px rgba(37,99,235,.4);}
-.feature-list{display:flex; flex-direction:column; gap:10px;}
-.feature-item{display:flex; gap:12px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:14px;}
-.feature-item .fi-icon{width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0;}
-.feature-item .fi-icon svg{width:17px; height:17px;}
-.feature-item h5{font-size:13.5px; font-weight:700; margin-bottom:2px;}
-.feature-item p{font-size:12px; color:var(--text-dim);}
-
-.contact-form{display:flex; flex-direction:column; gap:12px;}
-.faq-item{border-bottom:1px solid var(--border); padding:13px 2px; cursor:pointer;}
-.faq-item:last-child{border-bottom:none;}
-.faq-q{display:flex; justify-content:space-between; align-items:center; font-size:13.5px; font-weight:600;}
-.faq-q svg{width:16px; height:16px; transition:transform .2s; flex-shrink:0;}
-.faq-a{font-size:12.5px; color:var(--text-dim); max-height:0; overflow:hidden; transition:max-height .25s, margin .25s; line-height:1.6;}
-.faq-item.open .faq-a{max-height:200px; margin-top:8px;}
-.faq-item.open .faq-q svg{transform:rotate(180deg);}
-.social-row{display:flex; gap:10px; margin-top:6px;}
-.social-row a{width:40px; height:40px; border-radius:12px; background:var(--surface); border:1px solid var(--border); display:flex; align-items:center; justify-content:center;}
-.social-row a svg{width:17px; height:17px;}
-.info-list{background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:4px 16px;}
-.info-row{display:flex; justify-content:space-between; padding:13px 0; border-bottom:1px solid var(--border); font-size:13px;}
-.info-row:last-child{border-bottom:none;}
-.info-row span:first-child{color:var(--text-dim);}
-.info-row span:last-child{font-weight:600;}
-
-@media (min-width:600px){ .grid-3{grid-template-columns:repeat(4,1fr);} }
-.sr-only{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0);}
-:focus-visible{outline:2px solid var(--blue); outline-offset:2px;}
-@media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important;} }
 </style>
 </head>
 <body>
+
+<!-- Shared FGE coin: metallic gold, reused via <use href="#fge-coin"> -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="gRim" x1="6" y1="4" x2="42" y2="44" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FEF3C7"/>
+      <stop offset="0.32" stop-color="#FBBF24"/>
+      <stop offset="0.7" stop-color="#B45309"/>
+      <stop offset="1" stop-color="#FDE68A"/>
+    </linearGradient>
+    <radialGradient id="gFace" cx="0.34" cy="0.28" r="0.85">
+      <stop offset="0" stop-color="#FDE68A"/>
+      <stop offset="0.5" stop-color="#FBBF24"/>
+      <stop offset="1" stop-color="#D97706"/>
+    </radialGradient>
+    <linearGradient id="gShine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <symbol id="fge-coin" viewBox="0 0 48 48">
+    <circle cx="24" cy="24" r="21.5" fill="url(#gRim)"/>
+    <circle cx="24" cy="24" r="17.8" fill="url(#gFace)"/>
+    <circle cx="24" cy="24" r="17.8" fill="none" stroke="#FEF3C7" stroke-opacity="0.6" stroke-width="0.8"/>
+    <circle cx="24" cy="24" r="14.8" fill="none" stroke="#92400E" stroke-opacity="0.35" stroke-width="0.8" stroke-dasharray="1.1 2.6"/>
+    <path d="M18 17.9V31.7M18 17.9H30.6M18 24.2H27" transform="translate(0 0.9)" stroke="#FEF3C7" stroke-opacity="0.65" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M18 17.9V31.7M18 17.9H30.6M18 24.2H27" stroke="#92400E" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <ellipse cx="17" cy="11.6" rx="7" ry="2.6" transform="rotate(-30 24 24)" fill="url(#gShine)" opacity="0.7"/>
+  </symbol>
+</svg>
+
+
+<div class="aurora"><span></span><span></span></div>
+<div class="motes" id="motes"></div>
+
 <div id="app">
 
-  <!-- ============ TOPBAR ============ -->
-  <header class="topbar" id="topbar">
-    <div class="topbar-left" id="topbarHome">
-      <div class="brand"><span class="mark">T</span>Tool<span class="nova">Nova</span></div>
+  <!-- ============ TOP BAR ============ -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 8v8l8 6 8-6V8l-8-6z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 2v20M4 8l8 5 8-5" stroke="#fff" stroke-width="1.2" opacity="0.7"/></svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">CoinForge</span>
+        <span class="brand-tagline">Mine FGE • Collect • Earn</span>
+      </div>
     </div>
-    <div class="page-title-bar" id="topbarPage" style="display:none;">
-      <button class="icon-btn" id="backBtn" aria-label="Back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+    <div class="profile-chip" id="profileChip">
+      <div class="profile-avatar" id="profileAvatar">C</div>
+      <span class="profile-name" id="profileName">Explorer</span>
+    </div>
+  </div>
+
+  <!-- ============ MINE VIEW ============ -->
+  <section class="view active" id="view-mine">
+    <div class="balance-wrap">
+      <div class="balance-label">Your balance</div>
+      <div class="balance-value">
+        <svg class="coin-lg" viewBox="0 0 48 48" aria-hidden="true"><use href="#fge-coin"/></svg>
+        <span class="balance-num" id="balanceValue">0</span><span class="unit">FGE</span>
+      </div>
+      <div class="rate-pill" id="ratePillWrap">
+        <i class="live-dot" aria-hidden="true"></i>
+        <span id="ratePill">0</span><b>&nbsp;FGE/hr</b>
+      </div>
+    </div>
+
+    <div class="orb-stage">
+      <div class="orb-ring" id="orbRing"></div>
+      <div class="orb-halo"></div>
+      <button class="orb-btn" id="orbBtn" aria-label="Tap to mine">
+        <div class="orb-sheen"></div>
+        <div class="orb-icon-wrap">
+          <svg class="orb-icon" viewBox="0 0 48 48" aria-hidden="true"><use href="#fge-coin"/></svg>
+          <span class="orb-tap-label">Tap to mine</span>
+        </div>
       </button>
-      <h1 id="pageTitleText">Page</h1>
-    </div>
-    <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path stroke-linecap="round" d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
-    </button>
-  </header>
-
-  <main>
-
-  <!-- ============ HOME PAGE ============ -->
-  <section class="page active" id="page-home">
-    <div class="search-bar" id="homeSearchBar" role="button" tabindex="0">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M21 21l-4.3-4.3"/></svg>
-      <input type="text" id="homeSearchInput" placeholder="Search tools…" readonly>
     </div>
 
-    <div class="hero">
-      <h2>Good Morning <span class="wave">👋</span></h2>
-      <p>19 handy tools, zero clutter — everything runs right on your device.</p>
-    </div>
-
-    <div class="section">
-      <div class="section-head"><h3>Popular Tools</h3><button class="link-btn" data-nav="tools">View All</button></div>
-      <div class="grid-3" id="popularGrid"></div>
-    </div>
-
-    <div class="section">
-      <div class="section-head"><h3>Categories</h3><button class="link-btn" data-nav="tools">View All</button></div>
-      <div class="chip-row" id="homeCatRow"></div>
-    </div>
-
-    <div class="section" id="recentSection" style="display:none;">
-      <div class="section-head"><h3>Recently Used</h3><button class="link-btn" data-nav="recent">View All</button></div>
-      <div id="recentHomeList"></div>
-    </div>
-
-    <div class="section">
-      <div class="section-head"><h3>Quick Access</h3></div>
-      <div class="grid-3" id="quickGrid"></div>
-    </div>
-
-    <footer class="footer">
-      <div class="brand"><span class="mark">T</span>Tool<span class="nova">Nova</span></div>
-      <p class="tag">Smart Tools, Simple Solutions.</p>
-      <div class="footer-stats">
-        <div class="fstat"><svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><div><div class="fn">19 Tools</div><div class="fd">All in one app</div></div></div>
-        <div class="fstat"><svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg><div><div class="fn">Fast & Local</div><div class="fd">Runs on-device</div></div></div>
-        <div class="fstat"><svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="4"/><path stroke-linecap="round" d="M8 12h8M8 16h5"/></svg><div><div class="fn">Easy to Use</div><div class="fd">Clean, simple UI</div></div></div>
-        <div class="fstat"><svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2"><path d="M12 2l7 4v6c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg><div><div class="fn">Private</div><div class="fd">No hidden cost</div></div></div>
+    <div class="energy-wrap">
+      <div class="energy-row">
+        <span>Energy</span>
+        <span class="val"><span id="energyVal">0</span> / <span id="energyMax">0</span></span>
       </div>
-      <div class="footer-links">
-        <a data-nav="about">About</a><a data-nav="privacy">Privacy Policy</a><a data-nav="terms">Terms</a><a data-nav="contact">Contact</a><span>Version 1.0</span>
-      </div>
-      <p class="copyright">Copyright © 2026 ToolNova. All rights reserved.</p>
-    </footer>
-  </section>
+      <div class="energy-track"><div class="energy-fill" id="energyFill" style="width:0%"></div></div>
+      <div class="depleted-note" id="depletedNote" style="display:none;">Out of energy — it refills over time. No ads required.</div>
+    </div>
 
-  <!-- ============ ALL TOOLS PAGE ============ -->
-  <section class="page" id="page-tools">
-    <div class="search-bar" style="margin-bottom:14px;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M21 21l-4.3-4.3"/></svg>
-      <input type="text" id="toolsSearchInput" placeholder="Search tools…">
+    <div class="section-head">
+      <div class="section-title">Rig snapshot</div>
+      <div class="section-sub">A quick look at what's powering your mine</div>
     </div>
-    <div class="chip-row" id="toolsCatRow" style="margin-bottom:16px;"></div>
-    <div id="toolsList"></div>
-  </section>
-
-  <!-- ============ FAVORITES PAGE ============ -->
-  <section class="page" id="page-favorites">
-    <div id="favoritesList"></div>
-  </section>
-
-  <!-- ============ RECENT PAGE ============ -->
-  <section class="page" id="page-recent">
-    <div class="section-head"><h3 style="font-size:14px;color:var(--text-dim);font-weight:600;">Your last used tools</h3>
-      <button class="link-btn" id="clearRecentBtn">Clear</button></div>
-    <div id="recentList"></div>
-  </section>
-
-  <!-- ============ TOOL DETAIL PAGE ============ -->
-  <section class="page" id="page-tool">
-    <div id="toolDetailBody"></div>
-  </section>
-
-  <!-- ============ ABOUT PAGE ============ -->
-  <section class="page" id="page-about">
-    <div class="about-hero">
-      <div class="mark-lg">T</div>
-      <h2 style="font-size:20px;font-weight:800;margin-bottom:6px;">ToolNova</h2>
-      <p style="font-size:13px;color:var(--text-dim);max-width:300px;margin:0 auto;">Smart Tools. Simple Solutions. A single home for the small utilities you reach for every day.</p>
-    </div>
-    <div class="card">
-      <h3 style="font-size:14.5px;font-weight:700;margin-bottom:8px;">Who we are</h3>
-      <p style="font-size:13px;color:var(--text-dim);line-height:1.7;">ToolNova is an independent, browser-based utility suite. We build small, focused tools — generators, converters, calculators — and bring them together into one fast, distraction-free workspace so you never have to hunt through ten different sites to get one simple job done.</p>
-    </div>
-    <div class="card">
-      <h3 style="font-size:14.5px;font-weight:700;margin-bottom:8px;">Our Mission</h3>
-      <p style="font-size:13px;color:var(--text-dim);line-height:1.7;">To make everyday digital tasks effortless by putting reliable, private, and beautifully designed tools within a single tap — with no clutter, no logins, and no unnecessary permissions.</p>
-    </div>
-    <div class="card">
-      <h3 style="font-size:14.5px;font-weight:700;margin-bottom:8px;">Our Vision</h3>
-      <p style="font-size:13px;color:var(--text-dim);line-height:1.7;">A world where productivity tools respect your time and your data equally — where getting something done doesn't mean giving something up.</p>
-    </div>
-    <div class="section">
-      <div class="section-head"><h3>Why ToolNova</h3></div>
-      <div class="feature-list" id="whyList"></div>
-    </div>
-    <div class="card" style="text-align:center;">
-      <div style="width:44px;height:44px;border-radius:13px;background:var(--grad);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" style="width:21px;height:21px;"><path d="M12 2l8 4v6c0 5.5-3.4 9-8 10-4.6-1-8-4.5-8-10V6z"/><path stroke-linecap="round" d="M9 12l2 2 4-4"/></svg>
-      </div>
-      <h3 style="font-size:14px;font-weight:700;margin-bottom:6px;">Our Security Commitment</h3>
-      <p style="font-size:12.5px;color:var(--text-dim);line-height:1.7;">Every tool in ToolNova processes your input locally in your browser. We never see your passwords, files, or generated content — because they never leave your device.</p>
+    <div class="stat-row">
+      <div class="card stat-box"><div class="num gold" id="statTotal">0</div><div class="lbl">Total mined</div></div>
+      <div class="card stat-box"><div class="num" id="statTap">0</div><div class="lbl">FGE / tap</div></div>
+      <div class="card stat-box"><div class="num" id="statLevels">0</div><div class="lbl">Upgrades owned</div></div>
     </div>
   </section>
 
-  <!-- ============ PRIVACY POLICY PAGE ============ -->
-  <section class="page legal-page" id="page-privacy"></section>
+  <!-- ============ BOOST VIEW ============ -->
+  <section class="view" id="view-boost">
+    <div class="section-head" style="margin-top:4px;">
+      <div class="section-title">Boost</div>
+      <div class="section-sub">Optional sponsor rewards — never required to play</div>
+    </div>
 
-  <!-- ============ TERMS PAGE ============ -->
-  <section class="page legal-page" id="page-terms"></section>
+    <div class="disclosure-strip">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 16.5h.01M10.3 3.9L2.7 17.3c-.6 1 .1 2.2 1.3 2.2h16c1.2 0 1.9-1.2 1.3-2.2L13.7 3.9c-.6-1-2.1-1-2.7 0z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>All rewards on this page come from optional, clearly-labelled sponsor content. Every core feature of CoinForge works fully without ever watching one, and nothing here inflates counts or fakes engagement.</span>
+    </div>
 
-  <!-- ============ CONTACT PAGE ============ -->
-  <section class="page" id="page-contact">
-    <div class="card">
-      <h3 style="font-size:14.5px;font-weight:700;margin-bottom:12px;">Send us a message</h3>
-      <form class="contact-form" id="contactForm">
-        <input class="field" placeholder="Your name" required>
-        <input class="field" type="email" placeholder="Your email" required>
-        <select class="field"><option>General question</option><option>Bug report</option><option>Feature request</option><option>Business inquiry</option></select>
-        <textarea class="field" placeholder="Your message" rows="4" required></textarea>
-        <button type="submit" class="btn">Send Message</button>
-      </form>
-    </div>
-    <div class="card">
-      <div class="info-list" style="border:none;padding:0;">
-        <div class="info-row"><span>Support Email</span><span>support@toolnova.app</span></div>
-        <div class="info-row"><span>Business Hours</span><span>Mon–Fri, 9am–6pm</span></div>
-        <div class="info-row"><span>Response Time</span><span>Within 24–48 hrs</span></div>
-      </div>
-    </div>
-    <div class="section">
-      <div class="section-head"><h3>Frequently Asked</h3></div>
-      <div class="card" id="faqCard"></div>
-    </div>
-    <div class="section">
-      <div class="section-head"><h3>Follow Us</h3></div>
-      <div class="social-row">
-        <a href="#" aria-label="Website"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 4 6 4 9s-1.5 6.3-4 9c-2.5-2.7-4-6-4-9s1.5-6.3 4-9z"/></svg></a>
-        <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linejoin="round" d="M22 5.9c-.7.3-1.5.6-2.3.7.8-.5 1.5-1.3 1.8-2.3-.8.5-1.7.8-2.6 1a4 4 0 00-6.9 3.7 11.5 11.5 0 01-8.4-4.3 4 4 0 001.3 5.4c-.7 0-1.3-.2-1.9-.5v.1a4 4 0 003.3 4 4 4 0 01-1.9.1 4 4 0 003.8 2.8A8.1 8.1 0 012 19.5a11.4 11.4 0 006.2 1.8c7.5 0 11.6-6.4 11.6-11.9v-.5c.8-.6 1.5-1.3 2.2-2.1z"/></svg></a>
-        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg></a>
-        <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><path stroke-linecap="round" d="M7.5 10v7M7.5 7.2v.1M12 17v-4.5c0-1.4 1-2.5 2.4-2.5S17 11.1 17 12.5V17M12 12.5v4.5"/></svg></a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ SETTINGS PAGE ============ -->
-  <section class="page" id="page-settings">
-    <div class="settings-group">
-      <h4>Appearance</h4>
-      <div class="settings-list">
-        <div class="settings-row" style="cursor:default;">
-          <div class="sr-icon c-purple"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg></div>
-          <div class="sr-text">Dark Mode</div>
-          <label class="switch"><input type="checkbox" id="darkModeSwitch" checked><span class="slider-tg"></span></label>
+    <div class="card consent-card">
+      <div class="consent-top">
+        <div class="consent-title">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 12l6 6L20 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Enable sponsor rewards
+        </div>
+        <div class="switch">
+          <input type="checkbox" id="adsConsent" />
+          <label for="adsConsent"></label>
         </div>
       </div>
+      <div class="consent-desc">Turn this on to unlock optional rewarded offers below. You can switch it off anytime — mining, upgrades and friends stay fully usable either way.</div>
     </div>
-    <div class="settings-group">
-      <h4>General</h4>
-      <div class="settings-list">
-        <div class="settings-row" id="languageRow"><div class="sr-icon c-blue"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 4 6 4 9s-1.5 6.3-4 9c-2.5-2.7-4-6-4-9s1.5-6.3 4-9z"/></svg></div><div class="sr-text">Language</div><div class="sr-val">English</div><div class="sr-chev">›</div></div>
-        <div class="settings-row" id="clearCacheRow"><div class="sr-icon c-orange"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path stroke-linecap="round" d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-9 0l1 12a2 2 0 002 2h6a2 2 0 002-2l1-12"/></svg></div><div class="sr-text">Clear Cache</div><div class="sr-val" id="cacheSize">0 KB</div><div class="sr-chev">›</div></div>
-        <div class="settings-row" id="rateRow"><div class="sr-icon c-orange"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path stroke-linejoin="round" d="M12 3l2.7 5.9 6.3.6-4.8 4.3 1.4 6.2L12 16.9 6.4 20l1.4-6.2-4.8-4.3 6.3-.6z"/></svg></div><div class="sr-text">Rate Us</div><div class="sr-chev">›</div></div>
-        <div class="settings-row" id="shareRow"><div class="sr-icon c-cyan"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.1M8.2 13.2l7.6 4.1"/></svg></div><div class="sr-text">Share App</div><div class="sr-chev">›</div></div>
-      </div>
-    </div>
-    <div class="settings-group">
-      <h4>About</h4>
-      <div class="settings-list">
-        <div class="settings-row" data-nav="about"><div class="sr-icon c-blue"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M12 16v-5M12 8.2v.1"/></svg></div><div class="sr-text">About ToolNova</div><div class="sr-val">v1.0.0</div><div class="sr-chev">›</div></div>
-        <div class="settings-row" data-nav="privacy"><div class="sr-icon c-green"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2l8 4v6c0 5.5-3.4 9-8 10-4.6-1-8-4.5-8-10V6z"/></svg></div><div class="sr-text">Privacy Policy</div><div class="sr-chev">›</div></div>
-        <div class="settings-row" data-nav="terms"><div class="sr-icon c-purple"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M7 3h8l4 4v14H7z"/><path stroke-linecap="round" d="M9 12h6M9 16h6M9 8h2"/></svg></div><div class="sr-text">Terms of Service</div><div class="sr-chev">›</div></div>
-        <div class="settings-row" data-nav="contact"><div class="sr-icon c-pink"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="3"/><path stroke-linecap="round" d="M4 7l8 6 8-6"/></svg></div><div class="sr-text">Contact Us</div><div class="sr-chev">›</div></div>
-      </div>
-    </div>
+
+    <div id="boostList"></div>
   </section>
 
-  </main>
+  <!-- ============ UPGRADES VIEW ============ -->
+  <section class="view" id="view-upgrades">
+    <div class="section-head" style="margin-top:4px;">
+      <div class="section-title">Upgrades</div>
+      <div class="section-sub">Spend FGE to grow your mining rate</div>
+    </div>
+    <div id="upgradesList"></div>
+  </section>
 
-  <!-- ============ BOTTOM NAV ============ -->
-  <nav class="bottomnav">
-    <button class="nav-item active" data-nav="home">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z"/></svg>Home</button>
-    <button class="nav-item" data-nav="tools">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>All Tools</button>
-    <button class="nav-item" data-nav="favorites">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-9.5-8.8C.7 7.8 2.5 4.5 6 4.2c2-.2 3.7 1 4.5 2.4.8-1.4 2.5-2.6 4.5-2.4 3.5.3 5.3 3.6 3.5 7-2.5 4.4-9.5 8.8-9.5 8.8z"/></svg>Favorites</button>
-    <button class="nav-item" data-nav="recent">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M12 7v5l3.5 2"/></svg>Recent</button>
-    <button class="nav-item" data-nav="settings">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a7.7 7.7 0 000-2l2-1.5-2-3.4-2.3.9a7.6 7.6 0 00-1.7-1L15 3.5h-4l-.4 2.5a7.6 7.6 0 00-1.7 1l-2.3-.9-2 3.4L6.6 11a7.7 7.7 0 000 2l-2 1.5 2 3.4 2.3-.9c.5.4 1.1.8 1.7 1l.4 2.5h4l.4-2.5a7.6 7.6 0 001.7-1l2.3.9 2-3.4z"/></svg>Settings</button>
-  </nav>
+  <!-- ============ FRIENDS VIEW ============ -->
+  <section class="view" id="view-friends">
+    <div class="section-head" style="margin-top:4px;">
+      <div class="section-title">Friends</div>
+      <div class="section-sub">Invite friends and earn together</div>
+    </div>
 
-  <div class="toast" id="toast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"/></svg><span id="toastMsg">Copied!</span></div>
-</div>
-<script>
-/* ============================================================
-   ToolNova — App Logic
-   ============================================================ */
-(function(){
-'use strict';
-
-const ICONS = {
-  qr:      '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM19 14h2v2h-2zM14 19h2v2h-2zM19 19h2v2h-2z"/></svg>',
-  barcode: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 4v16M8 4v16M11 4v16M15 4v16M17 4v16M21 4v16"/></svg>',
-  pwgen:   '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 118 0v4"/></svg>',
-  pwcheck: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2l8 4v6c0 5.5-3.4 9-8 10-4.6-1-8-4.5-8-10V6z"/><path stroke-linecap="round" d="M9 12l2 2 4-4"/></svg>',
-  calc:    '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><path stroke-linecap="round" d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></svg>',
-  unit:    '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M7 7h13M17 4l3 3-3 3M17 17H4M7 20l-3-3 3-3"/></svg>',
-  textcnt: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>',
-  casecnv: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 18L8 6l5 12M4.5 14h7M14 18l3.5-9L21 18M15 15.5h5"/></svg>',
-  color:   '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2a9 9 0 000 18h1.5a2 2 0 001.5-3.3 1.6 1.6 0 011.5-2.7H18a3 3 0 003-3 9 9 0 00-9-9z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7.5" r="1"/><circle cx="15" cy="7.5" r="1"/></svg>',
-  uuid:    '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M8 10h.01M12 9v6M16 10h.01M9 15h6"/></svg>',
-  json:    '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4c-2 0-3 1-3 3v3c0 1-1 2-2 2 1 0 2 1 2 2v3c0 2 1 3 3 3M17 4c2 0 3 1 3 3v3c0 1 1 2 2 2-1 0-2 1-2 2v3c0 2-1 3-3 3"/></svg>',
-  b64:     '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="7" height="10" rx="1.5"/><path d="M14 7l4 5-4 5M21 7v10"/></svg>',
-  urlenc:  '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M9 12a4 4 0 004 4h3a4 4 0 000-8h-1M15 12a4 4 0 00-4-4H8a4 4 0 000 8h1"/></svg>',
-  ts:      '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="13" r="8"/><path stroke-linecap="round" d="M12 9v4l3 2M9 2h6"/></svg>',
-  rng:     '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="8.5" cy="8.5" r="1.2" fill="#fff" stroke="none"/><circle cx="15.5" cy="15.5" r="1.2" fill="#fff" stroke="none"/><circle cx="15.5" cy="8.5" r="1.2" fill="#fff" stroke="none"/><circle cx="8.5" cy="15.5" r="1.2" fill="#fff" stroke="none"/><circle cx="12" cy="12" r="1.2" fill="#fff" stroke="none"/></svg>',
-  coin:    '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M9 10a3 3 0 116 0c0 2-3 2-3 4M12 17h.01"/></svg>',
-  dice:    '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="8.5" cy="8.5" r="1.1" fill="#fff" stroke="none"/><circle cx="15.5" cy="8.5" r="1.1" fill="#fff" stroke="none"/><circle cx="8.5" cy="15.5" r="1.1" fill="#fff" stroke="none"/><circle cx="15.5" cy="15.5" r="1.1" fill="#fff" stroke="none"/></svg>',
-  charcnt: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M4 19V7a2 2 0 012-2h6l6 6v8a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path stroke-linecap="round" d="M12 5v6h6"/></svg>',
-  lorem:   '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M5 5h14M5 9h14M5 13h9M5 17h11"/></svg>'
-};
-
-const TOOLS = [
-  {id:'qr', name:'QR Code Generator', short:'Create QR codes for any text or link', desc:'Turn text, links or contact details into a scannable QR code instantly.', cat:'Generator', color:'c-blue'},
-  {id:'barcode', name:'Barcode Generator', short:'Generate barcodes for products', desc:'Generate standard CODE128 barcodes for products and inventory.', cat:'Generator', color:'c-cyan'},
-  {id:'pwgen', name:'Password Generator', short:'Generate strong random passwords', desc:'Create strong, random passwords with custom length and character sets.', cat:'Security', color:'c-green'},
-  {id:'pwcheck', name:'Password Strength Checker', short:'Check the strength of your password', desc:'See how strong your password is and get tips to make it stronger.', cat:'Security', color:'c-purple'},
-  {id:'calc', name:'Calculator', short:'Perform basic and advanced calculations', desc:'A fast, clean calculator for everyday arithmetic.', cat:'Calculator', color:'c-orange'},
-  {id:'unit', name:'Unit Converter', short:'Convert between multiple units', desc:'Convert length, weight, temperature and more between units.', cat:'Converter', color:'c-blue'},
-  {id:'textcnt', name:'Text Counter', short:'Count characters, words and lines', desc:'Count words, characters, sentences and lines in your text.', cat:'Text', color:'c-purple'},
-  {id:'casecnv', name:'Case Converter', short:'Convert text between cases', desc:'Switch text between UPPER, lower, Title, Sentence and more.', cat:'Text', color:'c-pink'},
-  {id:'color', name:'Color Picker', short:'Pick any color and get its values', desc:'Pick a color and instantly get its HEX, RGB and HSL values.', cat:'Utility', color:'c-pink'},
-  {id:'uuid', name:'UUID Generator', short:'Generate random UUIDs', desc:'Generate RFC-4122 v4 UUIDs for your projects.', cat:'Developer', color:'c-teal'},
-  {id:'json', name:'JSON Formatter', short:'Format and validate JSON', desc:'Beautify, minify and validate JSON data.', cat:'Developer', color:'c-blue'},
-  {id:'b64', name:'Base64 Encoder & Decoder', short:'Encode or decode Base64 text', desc:'Encode text to Base64 or decode Base64 back to text.', cat:'Developer', color:'c-cyan'},
-  {id:'urlenc', name:'URL Encoder & Decoder', short:'Encode or decode URLs', desc:'Encode text for safe use in URLs, or decode it back.', cat:'Developer', color:'c-green'},
-  {id:'ts', name:'Timestamp Converter', short:'Convert Unix timestamps to dates', desc:'Convert between Unix timestamps and human-readable dates.', cat:'Converter', color:'c-orange'},
-  {id:'rng', name:'Random Number Generator', short:'Generate random numbers in a range', desc:'Generate a random number within any range you choose.', cat:'Generator', color:'c-purple'},
-  {id:'coin', name:'Coin Flip', short:'Flip a virtual coin', desc:'Flip a virtual coin for quick heads-or-tails decisions.', cat:'Utility', color:'c-orange'},
-  {id:'dice', name:'Dice Roller', short:'Roll one or more dice', desc:'Roll one or more six-sided dice.', cat:'Utility', color:'c-red'},
-  {id:'charcnt', name:'Character Counter', short:'Count characters with limits', desc:'Track character count against common limits like SMS or tweets.', cat:'Text', color:'c-teal'},
-  {id:'lorem', name:'Lorem Ipsum Generator', short:'Generate placeholder text', desc:'Generate placeholder paragraphs, sentences or words.', cat:'Generator', color:'c-cyan'}
-];
-const CATS = ['All','Generator','Converter','Calculator','Text','Developer','Utility','Security'];
-
-let state = { page:'home', prevPage:'home', currentTool:null, toolsFilter:'All', toolsQuery:'' };
-const LS = { fav:'toolnova_favorites', recent:'toolnova_recent', theme:'toolnova_theme' };
-
-function getFavs(){ try{return JSON.parse(localStorage.getItem(LS.fav)||'[]');}catch(e){return [];} }
-function setFavs(a){ localStorage.setItem(LS.fav, JSON.stringify(a)); }
-function toggleFav(id){ let f=getFavs(); if(f.includes(id)) f=f.filter(x=>x!==id); else f.unshift(id); setFavs(f); }
-function getRecent(){ try{return JSON.parse(localStorage.getItem(LS.recent)||'[]');}catch(e){return [];} }
-function pushRecent(id){ let r=getRecent().filter(x=>x!==id); r.unshift(id); r=r.slice(0,12); localStorage.setItem(LS.recent, JSON.stringify(r)); }
-
-function toast(msg){
-  const t=document.getElementById('toast'); document.getElementById('toastMsg').textContent=msg;
-  t.classList.add('show'); clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.remove('show'),1800);
-}
-function copyText(str){
-  navigator.clipboard && navigator.clipboard.writeText(str).then(()=>toast('Copied to clipboard')).catch(()=>toast('Copy failed'));
-}
-
-/* ---------------- routing ---------------- */
-function go(page, opts){
-  opts = opts || {};
-  if(page!=='tool') state.currentTool=null;
-  state.prevPage = state.page==='tool' ? state.prevPage : state.page;
-  state.page = page;
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page-'+page).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.nav===page));
-
-  const topbarHome=document.getElementById('topbarHome'), topbarPage=document.getElementById('topbarPage');
-  const titles={tools:'All Tools',favorites:'Favorites',recent:'Recent Tools',about:'About',privacy:'Privacy Policy',terms:'Terms of Service',contact:'Contact Us',settings:'Settings'};
-  if(page==='home'){ topbarHome.style.display='flex'; topbarPage.style.display='none'; }
-  else{ topbarHome.style.display='none'; topbarPage.style.display='flex'; document.getElementById('pageTitleText').textContent = page==='tool' ? (opts.title||'Tool') : (titles[page]||''); }
-
-  window.scrollTo({top:0,behavior:'instant'});
-  if(page==='tools') renderToolsPage();
-  if(page==='favorites') renderFavoritesPage();
-  if(page==='recent') renderRecentPage();
-  if(page==='privacy') renderPrivacyPage();
-  if(page==='terms') renderTermsPage();
-  if(page==='contact') renderContactPage();
-}
-document.getElementById('backBtn').addEventListener('click', ()=>{
-  if(state.page==='tool'){ go(state.prevPage||'tools'); } else { go('home'); }
-});
-document.addEventListener('click', (e)=>{
-  const navEl = e.target.closest('[data-nav]');
-  if(navEl){ go(navEl.dataset.nav); }
-});
-document.getElementById('homeSearchBar').addEventListener('click', ()=>{ go('tools'); setTimeout(()=>document.getElementById('toolsSearchInput').focus(),150); });
-
-/* ---------------- icon/row helpers ---------------- */
-function toolRow(t){
-  const favs=getFavs(); const isFav=favs.includes(t.id);
-  return `<div class="tool-row" data-open="${t.id}">
-    <div class="row-icon ${t.color}">${ICONS[t.id]}</div>
-    <div class="row-text"><div class="rn">${t.name}</div><div class="rd">${t.short}</div></div>
-    <button class="row-fav ${isFav?'active':''}" data-fav="${t.id}" aria-label="Toggle favorite">
-      <svg viewBox="0 0 24 24" fill="${isFav?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-9.5-8.8C.7 7.8 2.5 4.5 6 4.2c2-.2 3.7 1 4.5 2.4.8-1.4 2.5-2.6 4.5-2.4 3.5.3 5.3 3.6 3.5 7-2.5 4.4-9.5 8.8-9.5 8.8z"/></svg>
-    </button>
-    <div class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></div>
-  </div>`;
-}
-function toolTile(t){
-  return `<div class="tool-tile" data-open="${t.id}"><div class="tile-icon ${t.color}">${ICONS[t.id]}</div><div class="tile-name">${t.name}</div></div>`;
-}
-function wireRows(container){
-  container.querySelectorAll('[data-open]').forEach(el=>{
-    el.addEventListener('click',(e)=>{ if(e.target.closest('[data-fav]')) return; openTool(el.dataset.open); });
-  });
-  container.querySelectorAll('[data-fav]').forEach(el=>{
-    el.addEventListener('click',(e)=>{ e.stopPropagation(); toggleFav(el.dataset.fav); refreshCurrentPage(); });
-  });
-}
-function refreshCurrentPage(){
-  if(state.page==='home') renderHome();
-  if(state.page==='tools') renderToolsPage();
-  if(state.page==='favorites') renderFavoritesPage();
-  if(state.page==='recent') renderRecentPage();
-}
-function emptyState(icon, title, desc){
-  return `<div class="empty-state">${icon}<h4>${title}</h4><p>${desc}</p></div>`;
-}
-const STAR_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20s-7-4.4-9.5-8.8C.7 7.8 2.5 4.5 6 4.2c2-.2 3.7 1 4.5 2.4.8-1.4 2.5-2.6 4.5-2.4 3.5.3 5.3 3.6 3.5 7-2.5 4.4-9.5 8.8-9.5 8.8z"/></svg>';
-const CLOCK_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M12 7v5l3 2"/></svg>';
-
-/* ---------------- HOME ---------------- */
-function renderHome(){
-  const popular = TOOLS.filter(t=>['qr','pwgen','calc','unit','textcnt','json'].includes(t.id));
-  document.getElementById('popularGrid').innerHTML = popular.slice(0,6).map(toolTile).join('');
-  const catIcons={Generator:'c-blue',Converter:'c-cyan',Calculator:'c-orange',Text:'c-purple',Developer:'c-teal',Utility:'c-pink',Security:'c-green'};
-  document.getElementById('homeCatRow').innerHTML = CATS.slice(1).map(c=>`<div class="chip" data-catgo="${c}">${c}</div>`).join('');
-  const quick = TOOLS.filter(t=>['coin','dice','uuid','b64','rng','ts'].includes(t.id));
-  document.getElementById('quickGrid').innerHTML = quick.slice(0,6).map(toolTile).join('');
-
-  const recent = getRecent();
-  const recentSection = document.getElementById('recentSection');
-  if(recent.length){
-    recentSection.style.display='block';
-    const items = recent.slice(0,3).map(id=>TOOLS.find(t=>t.id===id)).filter(Boolean);
-    document.getElementById('recentHomeList').innerHTML = items.map(toolRow).join('');
-    wireRows(document.getElementById('recentHomeList'));
-  } else { recentSection.style.display='none'; }
-
-  wireRows(document.getElementById('popularGrid'));
-  wireRows(document.getElementById('quickGrid'));
-  document.querySelectorAll('[data-catgo]').forEach(el=>{
-    el.addEventListener('click',()=>{ state.toolsFilter=el.dataset.catgo; go('tools'); });
-  });
-}
-
-/* ---------------- ALL TOOLS ---------------- */
-function renderToolsPage(){
-  const row=document.getElementById('toolsCatRow');
-  row.innerHTML = CATS.map(c=>`<div class="chip ${state.toolsFilter===c?'active':''}" data-catf="${c}">${c}</div>`).join('');
-  row.querySelectorAll('[data-catf]').forEach(el=>el.addEventListener('click',()=>{ state.toolsFilter=el.dataset.catf; renderToolsPage(); }));
-
-  const input=document.getElementById('toolsSearchInput');
-  input.value = state.toolsQuery;
-  input.oninput = ()=>{ state.toolsQuery = input.value; renderToolsList(); };
-  renderToolsList();
-}
-function renderToolsList(){
-  let list = TOOLS.filter(t=> state.toolsFilter==='All' || t.cat===state.toolsFilter);
-  const q = state.toolsQuery.trim().toLowerCase();
-  if(q) list = list.filter(t=> t.name.toLowerCase().includes(q) || t.short.toLowerCase().includes(q));
-  const el = document.getElementById('toolsList');
-  if(!list.length){ el.innerHTML = emptyState(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M21 21l-4.3-4.3"/></svg>`,'No tools found','Try a different search term or category.'); return; }
-  el.innerHTML = list.map(toolRow).join('');
-  wireRows(el);
-}
-
-/* ---------------- FAVORITES ---------------- */
-function renderFavoritesPage(){
-  const favs=getFavs(); const items=favs.map(id=>TOOLS.find(t=>t.id===id)).filter(Boolean);
-  const el=document.getElementById('favoritesList');
-  if(!items.length){ el.innerHTML = emptyState(STAR_ICON,'No favorites yet','Tap the star on any tool to pin it here for quick access.'); return; }
-  el.innerHTML = items.map(toolRow).join('');
-  wireRows(el);
-}
-
-/* ---------------- RECENT ---------------- */
-function renderRecentPage(){
-  const recent=getRecent(); const items=recent.map(id=>TOOLS.find(t=>t.id===id)).filter(Boolean);
-  const el=document.getElementById('recentList');
-  if(!items.length){ el.innerHTML = emptyState(CLOCK_ICON,'No recent tools','Tools you open will show up here for fast access.'); return; }
-  el.innerHTML = items.map(toolRow).join('');
-  wireRows(el);
-}
-document.getElementById('clearRecentBtn').addEventListener('click', ()=>{ localStorage.removeItem(LS.recent); renderRecentPage(); });
-
-/* ---------------- TOOL DETAIL ---------------- */
-function openTool(id){
-  const t = TOOLS.find(x=>x.id===id); if(!t) return;
-  state.currentTool = id;
-  pushRecent(id);
-  go('tool', {title:t.name});
-  const body=document.getElementById('toolDetailBody');
-  const favs=getFavs(); const isFav=favs.includes(id);
-  body.innerHTML = `
-    <div class="tool-header">
-      <div class="thi ${t.color}">${ICONS[t.id]}</div>
-      <div class="tht"><h2>${t.name}</h2><p>${t.desc}</p></div>
-      <button id="toolFavBtn" style="width:36px;height:36px;border:1px solid var(--border);border-radius:10px;background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;color:${isFav?'#f59e0b':'var(--text-faint)'};flex-shrink:0;">
-        <svg viewBox="0 0 24 24" width="19" height="19" fill="${isFav?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-9.5-8.8C.7 7.8 2.5 4.5 6 4.2c2-.2 3.7 1 4.5 2.4.8-1.4 2.5-2.6 4.5-2.4 3.5.3 5.3 3.6 3.5 7-2.5 4.4-9.5 8.8-9.5 8.8z"/></svg>
+    <div class="card invite-hero">
+      <h3>Invite friends, earn FGE</h3>
+      <p>You get <b style="color:var(--text)">2,000 FGE</b> for every friend who joins, plus <b style="color:var(--text)">10%</b> of what they mine — forever.</p>
+      <div class="link-row">
+        <span id="refLink">t.me/CoinForgeBot/app?startapp=ref_0</span>
+        <button class="icon-btn" id="copyBtn" title="Copy link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M5 15V6a2 2 0 0 1 2-2h9" stroke="currentColor" stroke-width="1.6"/></svg>
+        </button>
+      </div>
+      <button class="btn-primary" id="shareBtn">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        Share invite link
       </button>
     </div>
-    <div id="toolMount"></div>`;
-  document.getElementById('toolFavBtn').addEventListener('click', ()=>{ toggleFav(id); openTool(id); });
-  const mount = document.getElementById('toolMount');
-  (TOOL_RENDERERS[id] || (()=>{mount.innerHTML='<div class="card">Coming soon.</div>';}))(mount);
-}
 
-const TOOL_RENDERERS = {};
-
-/* ---- QR Code Generator ---- */
-TOOL_RENDERERS.qr = function(m){
-  m.innerHTML = `
-    <div class="card">
-      <label class="field-label">Enter Text or URL</label>
-      <textarea class="field" id="qrInput" rows="3" placeholder="https://example.com">https://toolnova.app</textarea>
-      <div style="height:12px;"></div>
-      <button class="btn" id="qrGenBtn">Generate QR Code</button>
+    <div class="stat-row">
+      <div class="card stat-box"><div class="num" id="friendCount">0</div><div class="lbl">Friends joined</div></div>
+      <div class="card stat-box"><div class="num gold" id="friendEarned">0</div><div class="lbl">FGE from friends</div></div>
     </div>
-    <div class="card" id="qrResultCard" style="display:none;">
-      <div class="qr-canvas-wrap"><div id="qrCanvasHolder"></div></div>
-      <div class="btn-row"><button class="btn secondary" id="qrDownloadBtn">Download</button><button class="btn secondary" id="qrShareBtn">Share</button></div>
-    </div>`;
-  let qrObj=null;
-  function render(){
-    const val = document.getElementById('qrInput').value.trim() || 'https://toolnova.app';
-    const holder=document.getElementById('qrCanvasHolder'); holder.innerHTML='';
+
+    <div class="section-head">
+      <div class="section-title" style="font-size:15px;">Your invites</div>
+    </div>
+    <div id="friendsList"></div>
+  </section>
+
+</div>
+
+<!-- ============ BOTTOM TAB BAR ============ -->
+<nav class="tabbar">
+  <div class="tabbar-inner">
+    <button class="tab-btn active" data-tab="mine">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 8v8l8 6 8-6V8l-8-6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/></svg>
+      Mine
+    </button>
+    <button class="tab-btn" data-tab="boost">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M13 2L4.5 13.5H11L10.5 22 19.5 10H13L13 2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      Boost
+    </button>
+    <button class="tab-btn" data-tab="upgrades">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Upgrades
+    </button>
+    <button class="tab-btn" data-tab="friends">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M15.5 5.3c1.6.4 2.8 1.8 2.8 3.5 0 1.6-1 2.9-2.5 3.4M18.2 14.4c2 .6 3.3 2.3 3.3 4.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      Friends
+    </button>
+  </div>
+</nav>
+
+<div id="toast"></div>
+
+<div class="overlay" id="offlineOverlay">
+  <div class="card modal">
+    <div class="modal-icon"><svg class="coin-lg" viewBox="0 0 48 48" aria-hidden="true"><use href="#fge-coin"/></svg></div>
+    <h3>Welcome back</h3>
+    <p>Your rig kept mining while you were away.</p>
+    <div class="gain">+<span id="offlineGain">0</span> FGE</div>
+    <button class="btn-primary" id="offlineClaimBtn">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M4 12l6 6L20 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Collect
+    </button>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   FGEORA — client logic
+   NOTE ON PRODUCTION READINESS:
+   This file implements the full UI/UX and a believable local
+   game loop using localStorage so the Mini App is playable
+   standalone. For a real production economy you MUST move
+   balance, energy, upgrade and referral state to a backend
+   you control (validate every mutation server-side using the
+   Telegram initData signature) — never trust client-side
+   balances for anything of real value. See README.md.
+   ========================================================= */
+(function(){
+  "use strict";
+
+  /* ---------- ambient background particles (purely decorative) ---------- */
+  (function spawnMotes(){
+    var host = document.getElementById('motes');
+    if(!host) return;
+    var palette = ['#7C3AED','#2563EB','#A78BFA','#60A5FA','#FBBF24'];
+    var count = 14;
+    for(var i=0;i<count;i++){
+      var mote = document.createElement('i');
+      var size = 2 + Math.random()*3.5;
+      var col = palette[i % palette.length];
+      mote.style.width = size+'px';
+      mote.style.height = size+'px';
+      mote.style.left = (Math.random()*100)+'%';
+      mote.style.bottom = (-10 - Math.random()*20)+'px';
+      mote.style.animationDuration = (9 + Math.random()*10)+'s';
+      mote.style.animationDelay = (Math.random()*12)+'s';
+      mote.style.background = col;
+      mote.style.boxShadow = '0 0 7px '+col;
+      host.appendChild(mote);
+    }
+  })();
+
+  /* ---------- Telegram WebApp bootstrap ---------- */
+  var tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+  var tgUser = null;
+  if(tg){
     try{
-      qrObj = new QRCode(holder, {text: val, width:200, height:200, colorDark:'#0a0f1e', colorLight:'#ffffff', correctLevel:QRCode.CorrectLevel.M});
-      document.getElementById('qrResultCard').style.display='block';
-    }catch(e){ toast('Could not generate QR code'); }
+      tg.ready();
+      tg.expand();
+      if(tg.setHeaderColor) tg.setHeaderColor('#0B1020');
+      if(tg.setBackgroundColor) tg.setBackgroundColor('#0B1020');
+      tg.MainButton && tg.MainButton.hide();
+      tgUser = (tg.initDataUnsafe && tg.initDataUnsafe.user) || null;
+    }catch(e){ /* non-Telegram environment, degrade gracefully */ }
   }
-  document.getElementById('qrGenBtn').addEventListener('click', render);
-  document.getElementById('qrDownloadBtn').addEventListener('click', ()=>{
-    const img = m.querySelector('#qrCanvasHolder img, #qrCanvasHolder canvas');
-    if(!img) return toast('Generate a code first');
-    const link=document.createElement('a');
-    link.download='toolnova-qr.png';
-    link.href = img.tagName==='CANVAS' ? img.toDataURL('image/png') : img.src;
-    link.click();
-  });
-  document.getElementById('qrShareBtn').addEventListener('click', ()=>{ copyText(document.getElementById('qrInput').value.trim()); });
-  render();
-};
 
-/* ---- Barcode Generator ---- */
-TOOL_RENDERERS.barcode = function(m){
-  m.innerHTML = `
-    <div class="card">
-      <label class="field-label">Enter Product Code / Text</label>
-      <input class="field" id="bcInput" value="TOOLNOVA123">
-      <div style="height:12px;"></div>
-      <button class="btn" id="bcGenBtn">Generate Barcode</button>
-    </div>
-    <div class="card" id="bcResultCard" style="display:none;">
-      <div class="qr-canvas-wrap"><svg id="bcSvg"></svg></div>
-      <button class="btn secondary" id="bcDownloadBtn">Download</button>
-    </div>`;
-  function render(){
-    const val=document.getElementById('bcInput').value.trim() || 'TOOLNOVA123';
+  function haptic(kind){
+    if(!tg || !tg.HapticFeedback) return;
     try{
-      JsBarcode('#bcSvg', val, {format:'CODE128', lineColor:'#0a0f1e', width:2, height:80, displayValue:true});
-      document.getElementById('bcResultCard').style.display='block';
-    }catch(e){ toast('Invalid input for barcode'); }
+      if(kind === 'success') tg.HapticFeedback.notificationOccurred('success');
+      else if(kind === 'warn') tg.HapticFeedback.notificationOccurred('warning');
+      else tg.HapticFeedback.impactOccurred(kind || 'light');
+    }catch(e){}
   }
-  document.getElementById('bcGenBtn').addEventListener('click', render);
-  document.getElementById('bcDownloadBtn').addEventListener('click', ()=>{
-    const svg=document.getElementById('bcSvg');
-    const xml=new XMLSerializer().serializeToString(svg);
-    const img=new Image(); const canvas=document.createElement('canvas');
-    canvas.width=svg.width.baseVal.value*2; canvas.height=svg.height.baseVal.value*2;
-    img.onload=function(){ const ctx=canvas.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.drawImage(img,0,0,canvas.width,canvas.height);
-      const a=document.createElement('a'); a.download='toolnova-barcode.png'; a.href=canvas.toDataURL('image/png'); a.click(); };
-    img.src='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(xml)));
+
+  /* ---------- config ---------- */
+  var BOT_USERNAME = "CoinForgeBot"; // TODO: replace with your production bot username
+  var BACKEND_URL = "https://your-backend.example.com"; // TODO: set to your deployed referral server (see server.js in the doc comments below). Leave as-is to keep referral tracking disabled.
+  var TICK_MS = 1000;
+  var MAX_OFFLINE_SECONDS = 3 * 3600; // cap passive-earning catch-up at 3 hours
+  var REFERRAL_SYNC_MS = 20000; // how often to poll the backend for new referral rewards
+
+  var UPGRADE_DEFS = [
+    {
+      id:"rig", name:"Neon Rig", desc:"A brighter core means a stronger tap.",
+      baseCost:50, costGrowth:1.16, effect:0.4, unit:" FGE/tap",
+      icon:'<path d="M4 7l8-4 8 4v10l-8 4-8-4V7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M4 7l8 4 8-4M12 11v10" stroke="currentColor" stroke-width="1.3"/>',
+      apply:function(base,lvl){ return {tap: lvl * 0.4}; }
+    },
+    {
+      id:"cell", name:"Cryo Cell", desc:"Cools the rig, expanding energy capacity.",
+      baseCost:70, costGrowth:1.17, effect:15, unit:" max energy",
+      icon:'<path d="M12 2v20M4.5 6.5l15 11M19.5 6.5l-15 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+      apply:function(base,lvl){ return {energyMax: lvl * 15}; }
+    },
+    {
+      id:"flux", name:"Flux Regenerator", desc:"Speeds up how fast energy refills.",
+      baseCost:90, costGrowth:1.18, effect:0.08, unit:" /sec regen",
+      icon:'<path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M6 4v4h4M18 20v-4h-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>',
+      apply:function(base,lvl){ return {regen: lvl * 0.08}; }
+    },
+    {
+      id:"array", name:"Quantum Array", desc:"Mines passively even while you're away.",
+      baseCost:160, costGrowth:1.2, effect:6, unit:" FGE/hr",
+      icon:'<circle cx="12" cy="12" r="2.4" stroke="currentColor" stroke-width="1.5"/><ellipse cx="12" cy="12" rx="9" ry="4" stroke="currentColor" stroke-width="1.4"/><ellipse cx="12" cy="12" rx="9" ry="4" stroke="currentColor" stroke-width="1.4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="4" stroke="currentColor" stroke-width="1.4" transform="rotate(120 12 12)"/>',
+      apply:function(base,lvl){ return {rate: lvl * 6}; }
+    },
+    {
+      id:"signal", name:"Signal Booster", desc:"Amplifies every tap even further.",
+      baseCost:260, costGrowth:1.22, effect:0.9, unit:" FGE/tap",
+      icon:'<path d="M13 2L4.5 13.5H11L10.5 22 19.5 10H13L13 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>',
+      apply:function(base,lvl){ return {tap: lvl * 0.9}; }
+    },
+    {
+      id:"auto", name:"Auto Miner", desc:"A dedicated unit that never sleeps.",
+      baseCost:420, costGrowth:1.24, effect:14, unit:" FGE/hr",
+      icon:'<rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M8 9h8M8 13h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+      apply:function(base,lvl){ return {rate: lvl * 14}; }
+    }
+  ];
+
+  var BOOST_DEFS = [
+    {
+      id:"energy_refill", name:"Instant Recharge",
+      desc:"Watch an optional sponsor video to refill 50% of your energy instantly.",
+      icon:'<path d="M13 2L4.5 13.5H11L10.5 22 19.5 10H13L13 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>',
+      cooldownMin:20,
+      reward:function(state){ var amt=Math.round(state.energyMax*0.5); state.energy=Math.min(state.energyMax,state.energy+amt); return amt+" energy"; }
+    },
+    {
+      id:"rate_surge", name:"Rate Surge",
+      desc:"Watch an optional sponsor video for a 2× mining rate boost, lasting 30 minutes.",
+      icon:'<path d="M4 19L14 3l1.5 6L20 5l-6 16-1.5-6L4 19z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>',
+      cooldownMin:45,
+      reward:function(state){ state.surgeUntil=Date.now()+30*60*1000; return "2× rate for 30 min"; }
+    },
+    {
+      id:"bonus_drop", name:"Sponsor Bonus",
+      desc:"Check out an optional partner offer for a one-time FGE bonus.",
+      icon:'<path d="M20 7H4a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1z" stroke="currentColor" stroke-width="1.4"/><path d="M12 7v14M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M9 7a2.5 2.5 0 0 1 0-5c1.7 0 3 2.5 3 5M15 7a2.5 2.5 0 0 0 0-5c-1.7 0-3 2.5-3 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>',
+      cooldownMin:60,
+      reward:function(state){ var amt=250+Math.round(Math.random()*250); state.balance+=amt; state.totalEarned+=amt; return amt+" FGE"; }
+    }
+  ];
+
+  /* ---------- state ---------- */
+  var uid = (tgUser && tgUser.id) ? String(tgUser.id) : "guest";
+  var STORE_KEY = "coinforge_state_" + uid;
+
+  function defaultState(){
+    return {
+      balance:0, totalEarned:0,
+      energy:1000, energyMax:1000,
+      lastTick:Date.now(),
+      surgeUntil:0,
+      levels:{}, // upgrade id -> level
+      boostCooldowns:{}, // boost id -> ts of last claim
+      adsConsent:false,
+      referrals:[], // {name, ts, bonus, friendId}
+      referredBy:null, // the uid of whoever invited this user, once linked
+      onboarded:false
+    };
+  }
+
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(STORE_KEY);
+      if(!raw) return defaultState();
+      var s = JSON.parse(raw);
+      var d = defaultState();
+      for(var k in d){ if(!(k in s)) s[k]=d[k]; }
+      return s;
+    }catch(e){ return defaultState(); }
+  }
+  function saveState(){
+    try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  var state = loadState();
+
+  /* ---------- derived stats ---------- */
+  function levelOf(id){ return state.levels[id]||0; }
+
+  function computeDerived(){
+    var tap=1, energyMax=1000, regen=0.12, rate=0;
+    UPGRADE_DEFS.forEach(function(u){
+      var lvl = levelOf(u.id);
+      if(lvl<=0) return;
+      var eff = u.apply(u.baseCost, lvl);
+      if(eff.tap) tap += eff.tap;
+      if(eff.energyMax) energyMax += eff.energyMax;
+      if(eff.regen) regen += eff.regen;
+      if(eff.rate) rate += eff.rate;
+    });
+    var surging = state.surgeUntil && state.surgeUntil>Date.now();
+    return { tap:tap, energyMax:energyMax, regen:regen, rate: surging? rate*2 : rate, surging:surging };
+  }
+
+  function upgradeCost(u){
+    var lvl = levelOf(u.id);
+    return Math.round(u.baseCost * Math.pow(u.costGrowth, lvl));
+  }
+
+  /* ---------- simulation tick (energy regen + passive rate) ---------- */
+  function advanceTime(seconds, opts){
+    opts = opts||{};
+    var d = computeDerived();
+    if(state.energyMax !== d.energyMax) state.energyMax = d.energyMax;
+    state.energy = Math.min(state.energyMax, state.energy + d.regen*seconds);
+    var passive = (d.rate/3600) * seconds;
+    if(passive>0){
+      state.balance += passive;
+      state.totalEarned += passive;
+    }
+    return passive;
+  }
+
+  function processOfflineTime(){
+    var now = Date.now();
+    var elapsedSec = (now - state.lastTick)/1000;
+    state.lastTick = now;
+    if(elapsedSec < 30){ return 0; }
+    var capped = Math.min(elapsedSec, MAX_OFFLINE_SECONDS);
+    var gained = advanceTime(capped);
+    saveState();
+    return Math.round(gained);
+  }
+
+  /* ---------- formatting ---------- */
+  function fmt(n){
+    n = Math.floor(n);
+    if(n>=1e9) return (n/1e9).toFixed(2).replace(/\.00$/,'')+"B";
+    if(n>=1e6) return (n/1e6).toFixed(2).replace(/\.00$/,'')+"M";
+    if(n>=1e4) return (n/1e3).toFixed(1).replace(/\.0$/,'')+"K";
+    return n.toLocaleString('en-US');
+  }
+  function fmtDecimal(n){
+    return n.toFixed(1).replace(/\.0$/,'');
+  }
+
+  /* ---------- toast ---------- */
+  var toastEl = document.getElementById('toast');
+  var toastTimer=null;
+  function showToast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 2200);
+  }
+
+  /* ---------- profile ---------- */
+  (function initProfile(){
+    var nameEl = document.getElementById('profileName');
+    var avEl = document.getElementById('profileAvatar');
+    if(tgUser){
+      var name = tgUser.first_name || tgUser.username || "Explorer";
+      nameEl.textContent = name;
+      avEl.textContent = name.charAt(0).toUpperCase();
+    }
+  })();
+
+  /* ---------- referral link ---------- */
+  (function initReferral(){
+    var link = "t.me/"+BOT_USERNAME+"/app?startapp=ref_"+uid;
+    document.getElementById('refLink').textContent = link;
+  })();
+
+  /* ================= MINE VIEW ================= */
+  var balanceValueEl = document.getElementById('balanceValue');
+  var ratePillEl = document.getElementById('ratePill');
+  var energyValEl = document.getElementById('energyVal');
+  var energyMaxEl = document.getElementById('energyMax');
+  var energyFillEl = document.getElementById('energyFill');
+  var orbRingEl = document.getElementById('orbRing');
+  var orbBtnEl = document.getElementById('orbBtn');
+  var depletedNoteEl = document.getElementById('depletedNote');
+  var statTotalEl = document.getElementById('statTotal');
+  var statTapEl = document.getElementById('statTap');
+  var statLevelsEl = document.getElementById('statLevels');
+
+  function renderMine(){
+    var d = computeDerived();
+    balanceValueEl.textContent = fmt(state.balance);
+    ratePillEl.textContent = fmtDecimal(d.rate) + (d.surging ? " ⚡2×" : "");
+    document.getElementById('ratePillWrap').classList.toggle('active', d.rate > 0 || state.energy >= 1);
+    energyValEl.textContent = Math.floor(state.energy);
+    energyMaxEl.textContent = state.energyMax;
+    var pct = state.energyMax>0 ? (state.energy/state.energyMax*100) : 0;
+    energyFillEl.style.width = pct+"%";
+    orbRingEl.style.setProperty('--energy-pct', pct.toFixed(1));
+    var canTap = state.energy >= 1;
+    orbBtnEl.classList.toggle('depleted', !canTap);
+    depletedNoteEl.style.display = canTap ? 'none' : 'block';
+    statTotalEl.textContent = fmt(state.totalEarned);
+    statTapEl.textContent = fmtDecimal(d.tap);
+    var totalLevels=0; for(var k in state.levels) totalLevels+=state.levels[k];
+    statLevelsEl.textContent = totalLevels;
+  }
+
+  function spawnRipple(x,y){
+    var r = document.createElement('div');
+    r.className='ripple';
+    var size=210;
+    r.style.width=size+'px'; r.style.height=size+'px';
+    r.style.left=(x-size/2)+'px'; r.style.top=(y-size/2)+'px';
+    document.querySelector('.orb-stage').appendChild(r);
+    setTimeout(function(){ r.remove(); }, 720);
+  }
+  function spawnGain(amount,x,y){
+    var g=document.createElement('div');
+    g.className='float-gain';
+    g.textContent='+'+fmtDecimal(amount);
+    g.style.left=(x-14)+'px'; g.style.top=(y-10)+'px';
+    document.querySelector('.orb-stage').appendChild(g);
+    setTimeout(function(){ g.remove(); }, 900);
+  }
+
+  orbBtnEl.addEventListener('click', function(ev){
+    if(state.energy < 1){ haptic('warn'); showToast("Out of energy — it refills over time."); return; }
+    var d = computeDerived();
+    state.energy -= 1;
+    state.balance += d.tap;
+    state.totalEarned += d.tap;
+    saveState();
+    renderMine();
+    haptic('light');
+    var rect = orbBtnEl.getBoundingClientRect();
+    var stageRect = document.querySelector('.orb-stage').getBoundingClientRect();
+    var x = rect.left + rect.width/2 - stageRect.left + (ev.clientX? (ev.clientX-rect.left-rect.width/2)*0.3:0);
+    var y = rect.top + rect.height/2 - stageRect.top;
+    spawnRipple(x,y);
+    spawnGain(d.tap, x, y-30);
+  }, {passive:true});
+
+  /* ================= UPGRADES VIEW ================= */
+  var upgradesListEl = document.getElementById('upgradesList');
+  function renderUpgrades(){
+    upgradesListEl.innerHTML = "";
+    UPGRADE_DEFS.forEach(function(u){
+      var lvl = levelOf(u.id);
+      var cost = upgradeCost(u);
+      var affordable = state.balance >= cost;
+      var card = document.createElement('div');
+      card.className = "card upgrade-card";
+      card.innerHTML =
+        '<div class="upgrade-icon"><svg viewBox="0 0 24 24" fill="none">'+u.icon+'</svg></div>'+
+        '<div class="upgrade-body">'+
+          '<div class="upgrade-top"><span class="upgrade-name">'+u.name+'</span><span class="upgrade-level">LV '+lvl+'</span></div>'+
+          '<div class="upgrade-desc">'+u.desc+'</div>'+
+          '<div class="upgrade-effect">+'+u.effect+u.unit+' per level</div>'+
+        '</div>'+
+        '<button class="upgrade-buy" '+(affordable?'':'disabled')+'><span>Upgrade</span><span class="cost"><svg class="coin-xs" viewBox="0 0 48 48" aria-hidden="true"><use href="#fge-coin"/></svg>'+fmt(cost)+'</span></button>';
+      var btn = card.querySelector('.upgrade-buy');
+      btn.addEventListener('click', function(){
+        if(state.balance < cost) return;
+        state.balance -= cost;
+        state.levels[u.id] = lvl+1;
+        saveState();
+        haptic('success');
+        showToast(u.name+" upgraded to level "+(lvl+1));
+        renderAll();
+      });
+      upgradesListEl.appendChild(card);
+    });
+  }
+
+  /* ================= BOOST VIEW ================= */
+  var boostListEl = document.getElementById('boostList');
+  var adsConsentEl = document.getElementById('adsConsent');
+  adsConsentEl.checked = !!state.adsConsent;
+  adsConsentEl.addEventListener('change', function(){
+    state.adsConsent = adsConsentEl.checked;
+    saveState();
+    renderBoosts();
+    showToast(state.adsConsent ? "Sponsor rewards enabled" : "Sponsor rewards disabled");
   });
-  render();
-};
 
-/* ---- Password Generator ---- */
-TOOL_RENDERERS.pwgen = function(m){
-  m.innerHTML = `
-    <div class="card">
-      <div class="result-box" id="pwOutput" style="font-size:18px;">Tap generate</div>
-      <div class="btn-row"><button class="btn" id="pwCopyBtn">Copy</button><button class="btn secondary" id="pwGenBtn">Generate</button></div>
-    </div>
-    <div class="card">
-      <div class="range-row"><span class="field-label" style="margin:0;">Length</span><input type="range" id="pwLen" min="6" max="32" value="16"><span id="pwLenVal" style="font-weight:700;">16</span></div>
-      <div class="toggle-row"><span class="tr-label">Uppercase (A-Z)</span><label class="switch"><input type="checkbox" id="pwUpper" checked><span class="slider-tg"></span></label></div>
-      <div class="toggle-row"><span class="tr-label">Lowercase (a-z)</span><label class="switch"><input type="checkbox" id="pwLower" checked><span class="slider-tg"></span></label></div>
-      <div class="toggle-row"><span class="tr-label">Numbers (0-9)</span><label class="switch"><input type="checkbox" id="pwNum" checked><span class="slider-tg"></span></label></div>
-      <div class="toggle-row"><span class="tr-label">Symbols (!@#$)</span><label class="switch"><input type="checkbox" id="pwSym"><span class="slider-tg"></span></label></div>
-    </div>`;
-  function gen(){
-    const len=+document.getElementById('pwLen').value;
-    document.getElementById('pwLenVal').textContent=len;
-    let chars='';
-    if(document.getElementById('pwUpper').checked) chars+='ABCDEFGHJKLMNPQRSTUVWXYZ';
-    if(document.getElementById('pwLower').checked) chars+='abcdefghijkmnpqrstuvwxyz';
-    if(document.getElementById('pwNum').checked) chars+='23456789';
-    if(document.getElementById('pwSym').checked) chars+='!@#$%^&*()-_=+?';
-    if(!chars){ document.getElementById('pwOutput').textContent='Select at least one type'; return; }
-    const arr=new Uint32Array(len); crypto.getRandomValues(arr);
-    let out=''; for(let i=0;i<len;i++) out+=chars[arr[i]%chars.length];
-    document.getElementById('pwOutput').textContent=out;
+  // Pluggable ad adapter. Swap the body of this function for a real
+  // rewarded-ad SDK call (e.g. Telegram Ads, Adsgram, etc). It must
+  // resolve true only if the ad was actually completed, and must
+  // never be invoked without explicit user action + consent.
+  function showRewardedAd(placementId){
+    return new Promise(function(resolve){
+      showToast("Playing sponsor video…");
+      setTimeout(function(){ resolve(true); }, 1600);
+    });
   }
-  document.getElementById('pwGenBtn').addEventListener('click', gen);
-  document.getElementById('pwLen').addEventListener('input', gen);
-  ['pwUpper','pwLower','pwNum','pwSym'].forEach(id=>document.getElementById(id).addEventListener('change', gen));
-  document.getElementById('pwCopyBtn').addEventListener('click', ()=>copyText(document.getElementById('pwOutput').textContent));
-  gen();
-};
 
-/* ---- Password Strength Checker ---- */
-TOOL_RENDERERS.pwcheck = function(m){
-  m.innerHTML = `
-    <div class="card">
-      <label class="field-label">Enter Password</label>
-      <input class="field" id="pcInput" type="text" placeholder="Type a password to check">
-      <div class="strength-meter"><div class="strength-fill" id="pcFill" style="width:0%;background:#ef4444;"></div></div>
-      <div id="pcLabel" style="font-size:13px;font-weight:700;text-align:right;">—</div>
-    </div>
-    <div class="card">
-      <div class="toggle-row"><span class="tr-label">At least 8 characters</span><span id="ck1">—</span></div>
-      <div class="toggle-row"><span class="tr-label">Upper & lowercase letters</span><span id="ck2">—</span></div>
-      <div class="toggle-row"><span class="tr-label">Contains a number</span><span id="ck3">—</span></div>
-      <div class="toggle-row"><span class="tr-label">Contains a symbol</span><span id="ck4">—</span></div>
-    </div>`;
-  const colors=['#ef4444','#f59e0b','#eab308','#22c55e','#06b6d4'];
-  const labels=['Very Weak','Weak','Fair','Strong','Very Strong'];
-  function check(){
-    const v=document.getElementById('pcInput').value;
-    let score=0;
-    const c1=v.length>=8, c2=/[a-z]/.test(v)&&/[A-Z]/.test(v), c3=/[0-9]/.test(v), c4=/[^A-Za-z0-9]/.test(v);
-    [c1,c2,c3,c4].forEach(c=>c&&score++);
-    if(v.length>=12) score=Math.min(score+1,4);
-    document.getElementById('ck1').textContent=c1?'✓':'✕';
-    document.getElementById('ck2').textContent=c2?'✓':'✕';
-    document.getElementById('ck3').textContent=c3?'✓':'✕';
-    document.getElementById('ck4').textContent=c4?'✓':'✕';
-    const pct = v.length? (score/4*100) : 0;
-    document.getElementById('pcFill').style.width=pct+'%';
-    document.getElementById('pcFill').style.background=colors[score];
-    document.getElementById('pcLabel').textContent = v.length? labels[score] : '—';
-  }
-  document.getElementById('pcInput').addEventListener('input', check);
-};
+  function renderBoosts(){
+    boostListEl.innerHTML = "";
+    BOOST_DEFS.forEach(function(b){
+      var lastClaim = state.boostCooldowns[b.id]||0;
+      var cooldownMs = b.cooldownMin*60*1000;
+      var remaining = cooldownMs - (Date.now()-lastClaim);
+      var onCooldown = remaining>0;
+      var locked = !state.adsConsent;
 
-/* ---- Calculator ---- */
-TOOL_RENDERERS.calc = function(m){
-  m.innerHTML = `
-    <div class="calc-display"><div class="calc-expr" id="calcExpr">&nbsp;</div><div class="calc-result" id="calcRes">0</div></div>
-    <div class="calc-grid">
-      <button class="calc-key op" data-k="AC">AC</button><button class="calc-key op" data-k="(">( )</button><button class="calc-key op" data-k="%">%</button><button class="calc-key op" data-k="/">÷</button>
-      <button class="calc-key" data-k="7">7</button><button class="calc-key" data-k="8">8</button><button class="calc-key" data-k="9">9</button><button class="calc-key op" data-k="*">×</button>
-      <button class="calc-key" data-k="4">4</button><button class="calc-key" data-k="5">5</button><button class="calc-key" data-k="6">6</button><button class="calc-key op" data-k="-">−</button>
-      <button class="calc-key" data-k="1">1</button><button class="calc-key" data-k="2">2</button><button class="calc-key" data-k="3">3</button><button class="calc-key op" data-k="+">+</button>
-      <button class="calc-key" data-k="0" style="grid-column:span 2;">0</button><button class="calc-key" data-k=".">.</button><button class="calc-key eq" data-k="=">=</button>
-    </div>`;
-  let expr='';
-  let paren=0;
-  function evalExpr(str){
-    const safe = str.replace(/[^0-9+\-*/().%\s]/g,'');
-    if(!safe.trim()) return '';
-    const withPercent = safe.replace(/(\d+(\.\d+)?)%/g,'($1/100)');
-    // eslint-disable-next-line no-new-func
-    const val = Function('"use strict"; return ('+withPercent+')')();
-    if(!isFinite(val)) return 'Error';
-    return Math.round(val*1e10)/1e10;
+      var card = document.createElement('div');
+      card.className = "card boost-card";
+      var tagLabel = locked ? "Ad · Locked" : (onCooldown ? "Ad · Cooling down" : "Ad · Optional");
+      card.innerHTML =
+        '<div class="boost-top">'+
+          '<div class="boost-title-row">'+
+            '<div class="boost-icon"><svg viewBox="0 0 24 24" fill="none">'+b.icon+'</svg></div>'+
+            '<div><div class="boost-name">'+b.name+'</div></div>'+
+          '</div>'+
+          '<span class="ad-tag">'+tagLabel+'</span>'+
+        '</div>'+
+        '<div class="boost-desc">'+b.desc+'</div>'+
+        '<button class="boost-action" '+((locked||onCooldown)?'disabled':'')+'>'+
+          '<svg viewBox="0 0 24 24" fill="none"><path d="M5 3l14 9-14 9V3z" fill="currentColor"/></svg>'+
+          '<span>'+(locked?'Enable rewards to unlock':(onCooldown?('Available in '+Math.ceil(remaining/60000)+' min'):'Watch & claim'))+'</span>'+
+        '</button>';
+      var btn = card.querySelector('.boost-action');
+      btn.addEventListener('click', function(){
+        if(locked || onCooldown) return;
+        btn.disabled = true;
+        btn.querySelector('span').textContent = "Loading…";
+        showRewardedAd(b.id).then(function(completed){
+          if(!completed){
+            showToast("Sponsor video skipped — no reward given");
+            renderBoosts();
+            return;
+          }
+          var rewardText = b.reward(state);
+          state.boostCooldowns[b.id] = Date.now();
+          saveState();
+          haptic('success');
+          showToast("Reward claimed: "+rewardText);
+          renderAll();
+        });
+      });
+      boostListEl.appendChild(card);
+    });
   }
-  function render(){
-    document.getElementById('calcExpr').textContent = expr.replace(/\*/g,'×').replace(/\//g,'÷') || '\u00a0';
+
+  /* ================= FRIENDS VIEW ================= */
+  var friendsListEl = document.getElementById('friendsList');
+  var friendCountEl = document.getElementById('friendCount');
+  var friendEarnedEl = document.getElementById('friendEarned');
+
+  function renderFriends(){
+    friendCountEl.textContent = state.referrals.length;
+    var totalBonus = state.referrals.reduce(function(s,r){return s+r.bonus;},0);
+    friendEarnedEl.textContent = fmt(totalBonus);
+
+    friendsListEl.innerHTML = "";
+    if(state.referrals.length===0){
+      friendsListEl.innerHTML =
+        '<div class="card empty-state">'+
+          '<svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.2" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>'+
+          '<p>No friends yet. Share your invite link above —<br/>anyone who opens CoinForge through it appears here.</p>'+
+        '</div>';
+      return;
+    }
+    state.referrals.forEach(function(r){
+      var row = document.createElement('div');
+      row.className = "card friend-row";
+      var d = new Date(r.ts);
+      row.innerHTML =
+        '<div class="friend-avatar">'+r.name.charAt(0).toUpperCase()+'</div>'+
+        '<div><div class="friend-name">'+r.name+'</div><div class="friend-date">Joined '+d.toLocaleDateString()+'</div></div>'+
+        '<div class="friend-bonus">+'+fmt(r.bonus)+'</div>';
+      friendsListEl.appendChild(row);
+    });
   }
-  document.querySelectorAll('.calc-key').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const k=btn.dataset.k;
-      if(k==='AC'){ expr=''; paren=0; document.getElementById('calcRes').textContent='0'; render(); return; }
-      if(k==='('){ if(paren>0 && /[\d)]$/.test(expr)===false){ expr+='('; paren++; } else if(/[\d)]$/.test(expr)){ expr+=')'; paren=Math.max(0,paren-1);} else { expr+='('; paren++; } render(); return; }
-      if(k==='='){
-        try{ const r=evalExpr(expr); document.getElementById('calcRes').textContent = r===''?'0':r; }
-        catch(e){ document.getElementById('calcRes').textContent='Error'; }
-        return;
-      }
-      expr+=k; render();
-      try{ const r=evalExpr(expr); if(r!=='') document.getElementById('calcRes').textContent=r; }catch(e){}
+
+  document.getElementById('copyBtn').addEventListener('click', function(){
+    var text = "https://"+document.getElementById('refLink').textContent;
+    var done = function(){
+      var b=document.getElementById('copyBtn');
+      b.classList.add('copied');
+      showToast("Invite link copied");
+      setTimeout(function(){ b.classList.remove('copied'); }, 1500);
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(done);
+    } else { done(); }
+  });
+
+  document.getElementById('shareBtn').addEventListener('click', function(){
+    var link = "https://"+document.getElementById('refLink').textContent;
+    var text = "Join me on CoinForge and start mining FGE!";
+    if(tg && tg.openTelegramLink){
+      tg.openTelegramLink("https://t.me/share/url?url="+encodeURIComponent(link)+"&text="+encodeURIComponent(text));
+    } else if(navigator.share){
+      navigator.share({title:"CoinForge", text:text, url:link});
+    } else {
+      showToast("Share link: "+link);
+    }
+  });
+
+  /* ================= TAB NAVIGATION ================= */
+  var tabBtns = document.querySelectorAll('.tab-btn');
+  var views = {
+    mine: document.getElementById('view-mine'),
+    boost: document.getElementById('view-boost'),
+    upgrades: document.getElementById('view-upgrades'),
+    friends: document.getElementById('view-friends')
+  };
+  tabBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      tabBtns.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      Object.keys(views).forEach(function(k){ views[k].classList.remove('active'); });
+      views[btn.dataset.tab].classList.add('active');
+      haptic('light');
+      if(btn.dataset.tab==='boost') renderBoosts();
     });
   });
-};
 
-/* ---- Unit Converter ---- */
-TOOL_RENDERERS.unit = function(m){
-  const CATS_U = {
-    Length:{base:'m', units:{Kilometer:1000,Meter:1,Centimeter:0.01,Millimeter:0.001,Mile:1609.34,Yard:0.9144,Foot:0.3048,Inch:0.0254}},
-    Weight:{base:'g', units:{Kilogram:1000,Gram:1,Milligram:0.001,Pound:453.592,Ounce:28.3495,Tonne:1000000}},
-    Temperature:{special:true},
-    Volume:{base:'l', units:{Liter:1,Milliliter:0.001,'Gallon (US)':3.78541,'Cup':0.24,'Fluid Ounce':0.0295735}},
-    Time:{base:'s', units:{Second:1,Minute:60,Hour:3600,Day:86400,Week:604800}},
-    Speed:{base:'mps', units:{'m/s':1,'km/h':0.277778,'mph':0.44704,'knot':0.514444}}
-  };
-  m.innerHTML = `
-    <div class="card">
-      <label class="field-label">Category</label>
-      <select class="field" id="ucCat">${Object.keys(CATS_U).map(c=>`<option>${c}</option>`).join('')}</select>
-    </div>
-    <div class="card">
-      <label class="field-label">From</label>
-      <div class="field-row"><input class="field" id="ucFrom" type="number" value="1"><select class="field" id="ucFromUnit" style="max-width:140px;"></select></div>
-      <label class="field-label">To</label>
-      <div class="field-row"><input class="field" id="ucTo" type="number" readonly><select class="field" id="ucToUnit" style="max-width:140px;"></select></div>
-    </div>
-    <div class="result-box" id="ucResultText">—</div>`;
-  const catSel=document.getElementById('ucCat'), fromU=document.getElementById('ucFromUnit'), toU=document.getElementById('ucToUnit');
-  function populate(){
-    const cat=CATS_U[catSel.value];
-    const keys = cat.special ? ['Celsius','Fahrenheit','Kelvin'] : Object.keys(cat.units);
-    fromU.innerHTML=keys.map(k=>`<option>${k}</option>`).join('');
-    toU.innerHTML=keys.map(k=>`<option>${k}</option>`).join('');
-    if(keys.length>1) toU.selectedIndex=1;
-    convert();
+  /* ================= RENDER ALL / TICK LOOP ================= */
+  function renderAll(){
+    renderMine();
+    renderUpgrades();
+    renderBoosts();
+    renderFriends();
   }
-  function toCelsius(v,u){ if(u==='Celsius')return v; if(u==='Fahrenheit')return (v-32)*5/9; return v-273.15; }
-  function fromCelsius(c,u){ if(u==='Celsius')return c; if(u==='Fahrenheit')return c*9/5+32; return c+273.15; }
-  function convert(){
-    const cat=CATS_U[catSel.value]; const from=+document.getElementById('ucFrom').value||0;
-    let result;
-    if(cat.special){ result = fromCelsius(toCelsius(from, fromU.value), toU.value); }
-    else{ const base = from * cat.units[fromU.value]; result = base / cat.units[toU.value]; }
-    result = Math.round(result*1e6)/1e6;
-    document.getElementById('ucTo').value = result;
-    document.getElementById('ucResultText').textContent = `${from} ${fromU.value} = ${result} ${toU.value}`;
+
+  function tick(){
+    advanceTime(TICK_MS/1000);
+    renderMine();
   }
-  catSel.addEventListener('change', populate);
-  fromU.addEventListener('change', convert); toU.addEventListener('change', convert);
-  document.getElementById('ucFrom').addEventListener('input', convert);
-  populate();
-};
 
-/* ---- Text Counter ---- */
-TOOL_RENDERERS.textcnt = function(m){
-  m.innerHTML = `
-    <div class="card">
-      <textarea class="field" id="tcInput" rows="7" placeholder="Paste or type your text here…"></textarea>
-    </div>
-    <div class="stat-grid">
-      <div class="stat-box"><div class="sv" id="tcWords">0</div><div class="sl">Words</div></div>
-      <div class="stat-box"><div class="sv" id="tcChars">0</div><div class="sl">Characters</div></div>
-      <div class="stat-box"><div class="sv" id="tcLines">0</div><div class="sl">Lines</div></div>
-    </div>
-    <div class="stat-grid">
-      <div class="stat-box"><div class="sv" id="tcSent">0</div><div class="sl">Sentences</div></div>
-      <div class="stat-box"><div class="sv" id="tcNoSpace">0</div><div class="sl">No Spaces</div></div>
-      <div class="stat-box"><div class="sv" id="tcReadTime">0s</div><div class="sl">Read Time</div></div>
-    </div>`;
-  function update(){
-    const v=document.getElementById('tcInput').value;
-    const words=v.trim()? v.trim().split(/\s+/).length : 0;
-    document.getElementById('tcWords').textContent=words;
-    document.getElementById('tcChars').textContent=v.length;
-    document.getElementById('tcLines').textContent= v? v.split(/\n/).length : 0;
-    document.getElementById('tcSent').textContent= (v.match(/[.!?]+/g)||[]).length;
-    document.getElementById('tcNoSpace').textContent= v.replace(/\s/g,'').length;
-    document.getElementById('tcReadTime').textContent= Math.max(1,Math.ceil(words/200*60))+'s';
-  }
-  document.getElementById('tcInput').addEventListener('input', update);
-};
-
-/* ---- Case Converter ---- */
-TOOL_RENDERERS.casecnv = function(m){
-  m.innerHTML = `
-    <div class="card"><textarea class="field" id="ccInput" rows="5" placeholder="Type text to convert…">ToolNova makes everyday tasks Simple.</textarea></div>
-    <div class="case-grid">
-      <button class="case-btn" data-c="upper">UPPERCASE</button>
-      <button class="case-btn" data-c="lower">lowercase</button>
-      <button class="case-btn" data-c="title">Title Case</button>
-      <button class="case-btn" data-c="sentence">Sentence case</button>
-      <button class="case-btn" data-c="camel">camelCase</button>
-      <button class="case-btn" data-c="snake">snake_case</button>
-      <button class="case-btn" data-c="kebab">kebab-case</button>
-      <button class="case-btn" data-c="alt">aLtErNaTiNg</button>
-    </div>
-    <div class="card"><div class="result-box" id="ccOutput" style="text-align:left;font-family:var(--font-body);">Result will appear here</div><button class="btn secondary" id="ccCopy">Copy Result</button></div>`;
-  const converters={
-    upper:s=>s.toUpperCase(), lower:s=>s.toLowerCase(),
-    title:s=>s.replace(/\w\S*/g,w=>w[0].toUpperCase()+w.slice(1).toLowerCase()),
-    sentence:s=>s.toLowerCase().replace(/(^\s*\w|[.!?]\s*\w)/g,c=>c.toUpperCase()),
-    camel:s=>s.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g,(_,c)=>c.toUpperCase()),
-    snake:s=>s.trim().toLowerCase().replace(/[^a-zA-Z0-9]+/g,'_'),
-    kebab:s=>s.trim().toLowerCase().replace(/[^a-zA-Z0-9]+/g,'-'),
-    alt:s=>s.split('').map((c,i)=>i%2? c.toLowerCase():c.toUpperCase()).join('')
-  };
-  let out='';
-  document.querySelectorAll('.case-btn').forEach(b=>b.addEventListener('click',()=>{
-    out=converters[b.dataset.c](document.getElementById('ccInput').value);
-    document.getElementById('ccOutput').textContent=out;
-  }));
-  document.getElementById('ccCopy').addEventListener('click',()=>copyText(out||document.getElementById('ccOutput').textContent));
-};
-
-/* ---- Color Picker ---- */
-TOOL_RENDERERS.color = function(m){
-  m.innerHTML = `
-    <div class="color-preview" id="cpPreview" style="background:#2563eb;"></div>
-    <div class="card">
-      <input type="color" id="cpInput" value="#2563eb" style="width:100%;height:46px;border:none;background:none;cursor:pointer;">
-    </div>
-    <div class="color-vals">
-      <div class="color-val-row"><span id="cpHex">#2563EB</span><button data-copy="hex">Copy</button></div>
-      <div class="color-val-row"><span id="cpRgb">rgb(37,99,235)</span><button data-copy="rgb">Copy</button></div>
-      <div class="color-val-row"><span id="cpHsl">hsl(217,83%,53%)</span><button data-copy="hsl">Copy</button></div>
-    </div>`;
-  function hexToRgb(hex){ const n=parseInt(hex.slice(1),16); return [n>>16&255,n>>8&255,n&255]; }
-  function rgbToHsl(r,g,b){
-    r/=255;g/=255;b/=255; const max=Math.max(r,g,b),min=Math.min(r,g,b); let h,s,l=(max+min)/2;
-    if(max===min){h=s=0;} else{ const d=max-min; s=l>0.5? d/(2-max-min): d/(max+min);
-      switch(max){case r:h=(g-b)/d+(g<b?6:0);break; case g:h=(b-r)/d+2;break; default:h=(r-g)/d+4;} h/=6; }
-    return [Math.round(h*360),Math.round(s*100),Math.round(l*100)];
-  }
-  function update(){
-    const hex=document.getElementById('cpInput').value;
-    document.getElementById('cpPreview').style.background=hex;
-    document.getElementById('cpHex').textContent=hex.toUpperCase();
-    const [r,g,b]=hexToRgb(hex);
-    document.getElementById('cpRgb').textContent=`rgb(${r},${g},${b})`;
-    const [h,s,l]=rgbToHsl(r,g,b);
-    document.getElementById('cpHsl').textContent=`hsl(${h},${s}%,${l}%)`;
-  }
-  document.getElementById('cpInput').addEventListener('input', update);
-  document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',()=>{
-    const map={hex:'cpHex',rgb:'cpRgb',hsl:'cpHsl'}; copyText(document.getElementById(map[b.dataset.copy]).textContent);
-  }));
-  update();
-};
-
-/* ---- UUID Generator ---- */
-TOOL_RENDERERS.uuid = function(m){
-  m.innerHTML = `
-    <div class="card">
-      <div class="result-box" id="uuidOut" style="font-size:15px;">—</div>
-      <div class="btn-row"><button class="btn" id="uuidGen">Generate New</button><button class="btn secondary" id="uuidCopy">Copy</button></div>
-    </div>
-    <div class="card">
-      <label class="field-label">Bulk Generate</label>
-      <div class="field-row"><input class="field" type="number" id="uuidCount" value="5" min="1" max="50"><button class="btn secondary" id="uuidBulkBtn" style="flex:0 0 auto;width:auto;padding:0 18px;">Generate</button></div>
-      <textarea class="field" id="uuidBulkOut" rows="6" readonly style="margin-top:10px;"></textarea>
-    </div>`;
-  function newUuid(){ return crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0; return (c==='x'?r:(r&0x3|0x8)).toString(16);}); }
-  function gen(){ document.getElementById('uuidOut').textContent=newUuid(); }
-  document.getElementById('uuidGen').addEventListener('click', gen);
-  document.getElementById('uuidCopy').addEventListener('click', ()=>copyText(document.getElementById('uuidOut').textContent));
-  document.getElementById('uuidBulkBtn').addEventListener('click', ()=>{
-    const n=Math.min(50,Math.max(1,+document.getElementById('uuidCount').value||1));
-    document.getElementById('uuidBulkOut').value = Array.from({length:n},newUuid).join('\n');
-  });
-  gen();
-};
-
-/* ---- JSON Formatter ---- */
-TOOL_RENDERERS.json = function(m){
-  m.innerHTML = `
-    <div class="card"><textarea class="field" id="jfInput" rows="7" placeholder='{"name":"ToolNova","tools":19}'>{"name":"ToolNova","tools":19,"active":true}</textarea></div>
-    <div class="btn-row" style="margin-bottom:14px;"><button class="btn" id="jfFormat">Format</button><button class="btn secondary" id="jfMinify">Minify</button></div>
-    <div class="card"><textarea class="field" id="jfOutput" rows="7" readonly></textarea><div style="height:10px;"></div><button class="btn secondary" id="jfCopy">Copy Result</button></div>
-    <div id="jfError" style="color:#ef4444;font-size:12.5px;margin-top:8px;"></div>`;
-  function parse(){
-    try{ const obj=JSON.parse(document.getElementById('jfInput').value); document.getElementById('jfError').textContent=''; return obj; }
-    catch(e){ document.getElementById('jfError').textContent='Invalid JSON: '+e.message; return null; }
-  }
-  document.getElementById('jfFormat').addEventListener('click', ()=>{ const o=parse(); if(o!==null) document.getElementById('jfOutput').value=JSON.stringify(o,null,2); });
-  document.getElementById('jfMinify').addEventListener('click', ()=>{ const o=parse(); if(o!==null) document.getElementById('jfOutput').value=JSON.stringify(o); });
-  document.getElementById('jfCopy').addEventListener('click', ()=>copyText(document.getElementById('jfOutput').value));
-};
-
-/* ---- Base64 Encoder & Decoder ---- */
-TOOL_RENDERERS.b64 = function(m){
-  m.innerHTML = `
-    <div class="tab-row"><button class="tab-btn active" data-t="enc">Encode</button><button class="tab-btn" data-t="dec">Decode</button></div>
-    <div class="card"><textarea class="field" id="b64Input" rows="5" placeholder="Enter text…"></textarea></div>
-    <button class="btn" id="b64Run" style="margin-bottom:14px;">Convert</button>
-    <div class="card"><textarea class="field" id="b64Output" rows="5" readonly></textarea><div style="height:10px;"></div><button class="btn secondary" id="b64Copy">Copy Result</button></div>`;
-  let mode='enc';
-  m.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',()=>{ m.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); mode=b.dataset.t; }));
-  document.getElementById('b64Run').addEventListener('click', ()=>{
-    const v=document.getElementById('b64Input').value;
-    try{ document.getElementById('b64Output').value = mode==='enc' ? btoa(unescape(encodeURIComponent(v))) : decodeURIComponent(escape(atob(v))); }
-    catch(e){ document.getElementById('b64Output').value='Error: invalid input for this operation.'; }
-  });
-  document.getElementById('b64Copy').addEventListener('click', ()=>copyText(document.getElementById('b64Output').value));
-};
-
-/* ---- URL Encoder & Decoder ---- */
-TOOL_RENDERERS.urlenc = function(m){
-  m.innerHTML = `
-    <div class="tab-row"><button class="tab-btn active" data-t="enc">Encode</button><button class="tab-btn" data-t="dec">Decode</button></div>
-    <div class="card"><textarea class="field" id="urlInput" rows="4" placeholder="https://example.com/?q=hello world"></textarea></div>
-    <button class="btn" id="urlRun" style="margin-bottom:14px;">Convert</button>
-    <div class="card"><textarea class="field" id="urlOutput" rows="4" readonly></textarea><div style="height:10px;"></div><button class="btn secondary" id="urlCopy">Copy Result</button></div>`;
-  let mode='enc';
-  m.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',()=>{ m.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); mode=b.dataset.t; }));
-  document.getElementById('urlRun').addEventListener('click', ()=>{
-    const v=document.getElementById('urlInput').value;
-    try{ document.getElementById('urlOutput').value = mode==='enc' ? encodeURIComponent(v) : decodeURIComponent(v); }
-    catch(e){ document.getElementById('urlOutput').value='Error: invalid input for this operation.'; }
-  });
-  document.getElementById('urlCopy').addEventListener('click', ()=>copyText(document.getElementById('urlOutput').value));
-};
-
-/* ---- Timestamp Converter ---- */
-TOOL_RENDERERS.ts = function(m){
-  m.innerHTML = `
-    <div class="tab-row"><button class="tab-btn active" data-t="toDate">Timestamp → Date</button><button class="tab-btn" data-t="toTs">Date → Timestamp</button></div>
-    <div class="card" id="tsToDateCard">
-      <label class="field-label">Unix Timestamp (seconds)</label>
-      <input class="field" id="tsInput" type="number" value="${Math.floor(Date.now()/1000)}">
-      <div style="height:12px;"></div>
-      <button class="btn" id="tsNowBtn">Use Current Time</button>
-    </div>
-    <div class="card" id="tsToTsCard" style="display:none;">
-      <label class="field-label">Date & Time</label>
-      <input class="field" id="tsDateInput" type="datetime-local">
-    </div>
-    <div class="result-box" id="tsResult">—</div>`;
-  let mode='toDate';
-  function update(){
-    if(mode==='toDate'){
-      const v=+document.getElementById('tsInput').value;
-      const d=new Date(v*1000);
-      document.getElementById('tsResult').textContent = isNaN(d.getTime()) ? 'Invalid timestamp' : d.toUTCString()+'\n'+d.toString();
-    } else {
-      const v=document.getElementById('tsDateInput').value;
-      const d=new Date(v);
-      document.getElementById('tsResult').textContent = isNaN(d.getTime()) ? 'Pick a date' : Math.floor(d.getTime()/1000);
+  /* ================= offline earnings modal ================= */
+  function maybeShowOffline(){
+    var gained = processOfflineTime();
+    if(gained>0){
+      document.getElementById('offlineGain').textContent = fmt(gained);
+      document.getElementById('offlineOverlay').classList.add('show');
     }
   }
-  m.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',()=>{
-    m.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); mode=b.dataset.t;
-    document.getElementById('tsToDateCard').style.display = mode==='toDate'?'block':'none';
-    document.getElementById('tsToTsCard').style.display = mode==='toTs'?'block':'none';
-    update();
-  }));
-  document.getElementById('tsInput').addEventListener('input', update);
-  document.getElementById('tsDateInput').addEventListener('input', update);
-  document.getElementById('tsNowBtn').addEventListener('click', ()=>{ document.getElementById('tsInput').value=Math.floor(Date.now()/1000); update(); });
-  update();
-};
-
-/* ---- Random Number Generator ---- */
-TOOL_RENDERERS.rng = function(m){
-  m.innerHTML = `
-    <div class="card"><div class="result-display" id="rngResult">—</div></div>
-    <div class="card">
-      <div class="field-row"><div style="flex:1;"><label class="field-label">Min</label><input class="field" id="rngMin" type="number" value="1"></div><div style="flex:1;"><label class="field-label">Max</label><input class="field" id="rngMax" type="number" value="100"></div></div>
-      <div class="toggle-row"><span class="tr-label">Allow duplicates when generating multiple</span><label class="switch"><input type="checkbox" id="rngDup" checked><span class="slider-tg"></span></label></div>
-      <div class="field-row" style="margin-top:6px;"><div style="flex:1;"><label class="field-label">How many numbers</label><input class="field" id="rngCount" type="number" value="1" min="1" max="50"></div></div>
-      <button class="btn" id="rngGenBtn">Generate</button>
-    </div>`;
-  document.getElementById('rngGenBtn').addEventListener('click', ()=>{
-    let min=+document.getElementById('rngMin').value, max=+document.getElementById('rngMax').value;
-    if(min>max) [min,max]=[max,min];
-    const count=Math.min(50,Math.max(1,+document.getElementById('rngCount').value||1));
-    const dup=document.getElementById('rngDup').checked;
-    let nums=[];
-    if(dup || (max-min+1)<count){ for(let i=0;i<count;i++) nums.push(Math.floor(Math.random()*(max-min+1))+min); }
-    else{ const pool=[]; for(let i=min;i<=max;i++) pool.push(i); for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]];} nums=pool.slice(0,count); }
-    document.getElementById('rngResult').textContent = nums.join(', ');
+  document.getElementById('offlineClaimBtn').addEventListener('click', function(){
+    document.getElementById('offlineOverlay').classList.remove('show');
+    haptic('success');
+    renderAll();
   });
-};
 
-/* ---- Coin Flip ---- */
-TOOL_RENDERERS.coin = function(m){
-  m.innerHTML = `
-    <div class="card" style="text-align:center;">
-      <div class="coin" id="coinEl">HEADS</div>
-      <button class="btn" id="coinFlipBtn">Flip Coin</button>
-      <p style="margin-top:14px;font-size:12.5px;color:var(--text-dim);" id="coinStats">Heads: 0 · Tails: 0</p>
-    </div>`;
-  let heads=0, tails=0;
-  document.getElementById('coinFlipBtn').addEventListener('click', ()=>{
-    const el=document.getElementById('coinEl');
-    el.classList.remove('flipping'); void el.offsetWidth; el.classList.add('flipping');
-    setTimeout(()=>{
-      const isHeads = Math.random()<0.5;
-      el.textContent = isHeads ? 'HEADS' : 'TAILS';
-      isHeads ? heads++ : tails++;
-      document.getElementById('coinStats').textContent = `Heads: ${heads} · Tails: ${tails}`;
-    }, 300);
+  /* ================= REFERRAL SYSTEM =================
+     Two different users never share localStorage (they're on
+     different phones), so making "Friends" actually work requires
+     a small backend both devices can talk to. This block:
+       1. Reads the ref_<id> payload Telegram passes in start_param
+          when someone opens the app via your invite link, and tells
+          the backend "this new user was invited by that id".
+       2. Periodically asks the backend "has anyone I invited joined
+          yet?" and, for any new ones, credits the bonus locally and
+          acknowledges them so they're not double-counted.
+     Both calls simply do nothing if BACKEND_URL is left as the
+     placeholder, so the app keeps working stand-alone either way.
+     See the "REFERRAL BACKEND" section in the doc comments at the
+     bottom of this file for the matching server.js + package.json. */
+  function backendConfigured(){
+    return BACKEND_URL && BACKEND_URL.indexOf("your-backend.example.com") === -1;
+  }
+
+  function registerReferralIfNeeded(){
+    if(!backendConfigured() || !tg || !tg.initDataUnsafe) return;
+    var startParam = tg.initDataUnsafe.start_param;
+    if(!startParam || startParam.indexOf("ref_") !== 0) return;
+    var referrerId = startParam.slice(4);
+    if(!referrerId || referrerId === uid) return; // ignore missing or self-referrals
+    if(state.referredBy) return; // already linked once, never overwrite
+
+    state.referredBy = referrerId;
+    saveState();
+
+    fetch(BACKEND_URL + "/api/referral/register", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ newUserId: uid, referrerId: referrerId, initData: tg.initData })
+    }).catch(function(){ /* offline or backend down — safe to ignore, harmless to the player */ });
+  }
+
+  function syncReferralRewards(){
+    if(!backendConfigured()) return;
+    fetch(BACKEND_URL + "/api/referral/friends/" + encodeURIComponent(uid))
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if(!data || !data.ok || !Array.isArray(data.friends)) return;
+        var known = {};
+        state.referrals.forEach(function(r){ if(r.friendId) known[r.friendId]=true; });
+        var fresh = data.friends.filter(function(f){ return !known[f.friendId]; });
+        if(fresh.length === 0) return;
+
+        fresh.forEach(function(f){
+          state.referrals.push({ name:f.friendName, ts:f.ts, bonus:f.bonus, friendId:f.friendId });
+          state.balance += f.bonus;
+          state.totalEarned += f.bonus;
+        });
+        saveState();
+        renderAll();
+        haptic('success');
+        showToast((fresh.length===1?"A friend":fresh.length+" friends")+" joined via your link — bonus added!");
+
+        fetch(BACKEND_URL + "/api/referral/sync", {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ userId: uid, friendIds: fresh.map(function(f){ return f.friendId; }) })
+        }).catch(function(){});
+      })
+      .catch(function(){ /* backend unreachable — try again on next poll */ });
+  }
+
+  /* ================= boot ================= */
+  renderAll();
+  maybeShowOffline();
+  registerReferralIfNeeded();
+  syncReferralRewards();
+  setInterval(tick, TICK_MS);
+  setInterval(function(){ renderBoosts(); }, 15000); // refresh cooldown labels
+  setInterval(syncReferralRewards, REFERRAL_SYNC_MS);
+  window.addEventListener('beforeunload', function(){ state.lastTick=Date.now(); saveState(); });
+  document.addEventListener('visibilitychange', function(){
+    if(document.visibilityState==='visible'){ maybeShowOffline(); renderAll(); syncReferralRewards(); }
+    else { state.lastTick=Date.now(); saveState(); }
   });
-};
-
-/* ---- Dice Roller ---- */
-TOOL_RENDERERS.dice = function(m){
-  m.innerHTML = `
-    <div class="card">
-      <div class="dice-area" id="diceArea"></div>
-      <div class="range-row"><span class="field-label" style="margin:0;">Number of dice</span><input type="range" id="diceCount" min="1" max="6" value="2"><span id="diceCountVal" style="font-weight:700;">2</span></div>
-      <button class="btn" id="diceRollBtn">Roll Dice</button>
-      <p style="margin-top:12px;text-align:center;font-size:13px;color:var(--text-dim);" id="diceSum"></p>
-    </div>`;
-  function roll(){
-    const n=+document.getElementById('diceCount').value;
-    document.getElementById('diceCountVal').textContent=n;
-    const vals=Array.from({length:n},()=>Math.floor(Math.random()*6)+1);
-    document.getElementById('diceArea').innerHTML = vals.map(v=>`<div class="die">${v}</div>`).join('');
-    document.getElementById('diceSum').textContent = `Total: ${vals.reduce((a,b)=>a+b,0)}`;
-  }
-  document.getElementById('diceRollBtn').addEventListener('click', roll);
-  document.getElementById('diceCount').addEventListener('input', roll);
-  roll();
-};
-
-/* ---- Character Counter ---- */
-TOOL_RENDERERS.charcnt = function(m){
-  m.innerHTML = `
-    <div class="card"><textarea class="field" id="chInput" rows="6" placeholder="Type or paste text…"></textarea></div>
-    <div class="card">
-      <div class="toggle-row"><span class="tr-label">SMS (160 chars)</span><span id="chSms" style="font-weight:700;">0 / 160</span></div>
-      <div class="toggle-row"><span class="tr-label">Tweet / Post (280 chars)</span><span id="chTweet" style="font-weight:700;">0 / 280</span></div>
-      <div class="toggle-row"><span class="tr-label">Meta Description (160 chars)</span><span id="chMeta" style="font-weight:700;">0 / 160</span></div>
-    </div>
-    <div class="stat-grid"><div class="stat-box"><div class="sv" id="chTotal">0</div><div class="sl">Total Characters</div></div><div class="stat-box"><div class="sv" id="chNoSpace">0</div><div class="sl">Without Spaces</div></div></div>`;
-  function update(){
-    const v=document.getElementById('chInput').value;
-    document.getElementById('chTotal').textContent=v.length;
-    document.getElementById('chNoSpace').textContent=v.replace(/\s/g,'').length;
-    document.getElementById('chSms').textContent=`${v.length} / 160`;
-    document.getElementById('chTweet').textContent=`${v.length} / 280`;
-    document.getElementById('chMeta').textContent=`${v.length} / 160`;
-  }
-  document.getElementById('chInput').addEventListener('input', update);
-};
-
-/* ---- Lorem Ipsum Generator ---- */
-TOOL_RENDERERS.lorem = function(m){
-  const WORDS = "lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum".split(' ');
-  m.innerHTML = `
-    <div class="card">
-      <label class="field-label">Generate</label>
-      <select class="field" id="loType"><option value="p">Paragraphs</option><option value="s">Sentences</option><option value="w">Words</option></select>
-      <div style="height:12px;"></div>
-      <div class="range-row"><span class="field-label" style="margin:0;">Amount</span><input type="range" id="loAmt" min="1" max="10" value="3"><span id="loAmtVal" style="font-weight:700;">3</span></div>
-      <button class="btn" id="loGenBtn">Generate Text</button>
-    </div>
-    <div class="card"><textarea class="field" id="loOutput" rows="8" readonly></textarea><div style="height:10px;"></div><button class="btn secondary" id="loCopy">Copy Result</button></div>`;
-  function randWords(n){ let out=[]; for(let i=0;i<n;i++) out.push(WORDS[Math.floor(Math.random()*WORDS.length)]); out[0]=out[0][0].toUpperCase()+out[0].slice(1); return out.join(' '); }
-  function sentence(){ return randWords(6+Math.floor(Math.random()*8))+'.'; }
-  function paragraph(){ let s=[]; for(let i=0;i<4+Math.floor(Math.random()*3);i++) s.push(sentence()); return s.join(' '); }
-  function gen(){
-    const type=document.getElementById('loType').value, amt=+document.getElementById('loAmt').value;
-    let out='';
-    if(type==='p') out=Array.from({length:amt},paragraph).join('\n\n');
-    else if(type==='s') out=Array.from({length:amt},sentence).join(' ');
-    else out=randWords(amt)+'.';
-    document.getElementById('loOutput').value=out;
-  }
-  document.getElementById('loAmt').addEventListener('input', ()=>{ document.getElementById('loAmtVal').textContent=document.getElementById('loAmt').value; });
-  document.getElementById('loGenBtn').addEventListener('click', gen);
-  document.getElementById('loCopy').addEventListener('click', ()=>copyText(document.getElementById('loOutput').value));
-  gen();
-};
-
-/* ---------------- ABOUT: why list ---------------- */
-function renderWhyList(){
-  const items=[
-    {icon:ICONS.qr,color:'c-blue',title:'19+ Tools in One Place',desc:'No more switching between ten different sites.'},
-    {icon:ICONS.pwcheck,color:'c-green',title:'Privacy First',desc:'Your data is processed locally and never uploaded.'},
-    {icon:ICONS.calc,color:'c-orange',title:'No Sign-Up Needed',desc:'Open a tool and start using it immediately.'},
-    {icon:ICONS.color,color:'c-pink',title:'Beautiful, Simple Design',desc:'A clean interface that stays out of your way.'}
-  ];
-  document.getElementById('whyList').innerHTML = items.map(i=>`<div class="feature-item"><div class="fi-icon ${i.color}">${i.icon}</div><div><h5>${i.title}</h5><p>${i.desc}</p></div></div>`).join('');
-}
-
-/* ---------------- CONTACT: FAQ ---------------- */
-function renderContactPage(){
-  const faqs=[
-    {q:'Is ToolNova free to use?',a:'Yes. Every tool in ToolNova is completely free, with no hidden costs or required sign-ups.'},
-    {q:'Do you store my data?',a:'No. Almost every tool runs entirely in your browser — your text, passwords and files are never sent to a server.'},
-    {q:'Does ToolNova work offline?',a:'Once loaded, most tools continue to work without an internet connection.'},
-    {q:'Can I request a new tool?',a:'Absolutely — use the contact form above and tell us what you would like to see added.'}
-  ];
-  const card=document.getElementById('faqCard');
-  card.innerHTML = faqs.map((f,i)=>`<div class="faq-item" data-i="${i}"><div class="faq-q">${f.q}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-a">${f.a}</div></div>`).join('');
-  card.querySelectorAll('.faq-item').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('open')));
-  const form=document.getElementById('contactForm');
-  form.onsubmit=(e)=>{ e.preventDefault(); toast('Message sent — we will reply soon'); form.reset(); };
-}
-
-/* ---------------- PRIVACY POLICY ---------------- */
-function renderPrivacyPage(){
-  const el=document.getElementById('page-privacy');
-  el.innerHTML = `
-  <h2>Privacy Policy</h2>
-  <p class="legal-meta">Effective Date: January 1, 2026 &nbsp;·&nbsp; Last Updated: August 7, 2026</p>
-  <div class="toc"><h4>Table of Contents</h4><ol>
-    <li>User Privacy</li><li>Information We Collect</li><li>Information We Do Not Collect</li>
-    <li>Browser Local Processing</li><li>Local Storage</li><li>Cookies</li><li>Third-Party Services</li>
-    <li>Advertising Providers</li><li>Analytics</li><li>Data Security</li><li>User Rights</li>
-    <li>Children's Privacy</li><li>International Users</li><li>Data Retention</li>
-    <li>Changes to This Privacy Policy</li><li>Contact Information</li>
-  </ol></div>
-
-  <section><h3>1. User Privacy</h3>
-  <p>ToolNova ("we", "us", "our", or "the App") was built on a simple idea: everyday utilities should not require you to give up your privacy to use them. This Privacy Policy explains, in plain language, what information ToolNova interacts with, how it is handled, and what choices you have. By using ToolNova, you agree to the practices described in this document. If you do not agree with any part of this policy, we encourage you to discontinue use of the App.</p>
-  <p>We designed ToolNova around a "local-first" philosophy. Wherever technically possible, the tools inside the App — including the QR Code Generator, Barcode Generator, Password Generator, Calculator, Unit Converter, Text Counter, Case Converter, Color Picker, UUID Generator, JSON Formatter, Base64 and URL Encoders/Decoders, Timestamp Converter, Random Number Generator, Coin Flip, Dice Roller, Character Counter, and Lorem Ipsum Generator — run their calculations directly inside your device's browser rather than on a remote server.</p></section>
-
-  <section><h3>2. Information We Collect</h3>
-  <p>ToolNova is designed to minimize data collection. Depending on how you use the App, the following limited categories of information may be processed:</p>
-  <ul>
-    <li><strong>Technical information</strong> such as browser type, device type, and general app performance data, used only to keep the App fast and stable.</li>
-    <li><strong>Preference data</strong> such as your selected theme (dark or light mode), your favorite tools, and your recently used tools — all stored on your own device.</li>
-    <li><strong>Voluntary information</strong> you choose to submit through the Contact page, such as your name, email address, and message, solely for the purpose of responding to your inquiry.</li>
-  </ul>
-  <p>We do not require account creation, and we do not ask for information beyond what is reasonably necessary to operate the specific feature you are using.</p></section>
-
-  <section><h3>3. Information We Do Not Collect</h3>
-  <p>We want to be explicit about what ToolNova does <em>not</em> do. We do not collect, transmit, or store:</p>
-  <ul>
-    <li>The text, passwords, colors, numbers, or files you enter into any tool.</li>
-    <li>The content of QR codes or barcodes you generate.</li>
-    <li>Your precise location, contacts, camera roll, or device identifiers.</li>
-    <li>Financial information, government identification numbers, or other sensitive personal data.</li>
-  </ul>
-  <p>Because most tools process information entirely within your browser's memory, that information is discarded the moment you close the tab, refresh the page, or navigate away — it never reaches our servers in the first place.</p></section>
-
-  <section><h3>4. Browser Local Processing</h3>
-  <p>Tools such as the Password Generator, Password Strength Checker, Calculator, Unit Converter, Text Counter, Case Converter, Color Picker, UUID Generator, JSON Formatter, Base64 Encoder/Decoder, URL Encoder/Decoder, Timestamp Converter, Random Number Generator, Coin Flip, Dice Roller, Character Counter, and Lorem Ipsum Generator perform every calculation using JavaScript running locally on your device. No input from these tools is ever transmitted to ToolNova or to any third party. This means your generated passwords, calculated results, formatted JSON, and converted values stay exclusively on your device unless you personally choose to copy, download, or share them.</p></section>
-
-  <section><h3>5. Local Storage</h3>
-  <p>ToolNova uses your browser's local storage to remember small, non-sensitive preferences between visits, such as which tools you have marked as favorites, which tools you have recently opened, and your preferred display theme. This information is stored only on your own device and is never transmitted to our servers. You may clear this data at any time from the Settings page using the "Clear Cache" option, or by clearing your browser's site data manually.</p></section>
-
-  <section><h3>6. Cookies</h3>
-  <p>ToolNova's core functionality does not rely on tracking cookies. If, in the future, we introduce optional analytics or advertising features, any associated cookies will be limited in scope, clearly disclosed, and — where required by applicable law — subject to your consent.</p></section>
-
-  <section><h3>7. Third-Party Services</h3>
-  <p>ToolNova may load a small number of third-party resources, such as web fonts or lightweight libraries used to render QR codes and barcodes, directly within your browser. These resources are used strictly to display content and do not receive the data you type into ToolNova's tools.</p></section>
-
-  <section><h3>8. Advertising Providers</h3>
-  <p>ToolNova does not currently display advertisements. Should advertising be introduced in a future update, it will always be optional, clearly labeled, and will never block access to any tool. We will never force you to view an advertisement to use a feature, and the App will remain fully functional without them. Should third-party advertising partners be engaged, this policy will be updated to name them and describe their data practices.</p></section>
-
-  <section><h3>9. Analytics</h3>
-  <p>We may use limited, privacy-conscious analytics to understand aggregate, anonymized usage patterns — for example, which tools are most popular — so that we can improve the App. Any analytics we use are configured to avoid collecting personally identifiable information wherever possible.</p></section>
-
-  <section><h3>10. Data Security</h3>
-  <p>We take reasonable technical and organizational measures to protect any information that is submitted to us, such as messages sent through the Contact form. However, no method of electronic transmission or storage is completely secure, and we cannot guarantee absolute security. Because the vast majority of ToolNova's functionality never leaves your device, your exposure to data-security risk from using ToolNova is inherently limited.</p></section>
-
-  <section><h3>11. User Rights</h3>
-  <p>Depending on your jurisdiction, you may have rights to access, correct, delete, or restrict the processing of personal information we hold about you — primarily limited to information you voluntarily submitted through the Contact form. You may exercise these rights at any time by reaching out through the Contact page. Because ToolNova does not maintain user accounts, most of your usage data (favorites, recents, theme) is already fully within your control and can be erased instantly via Settings.</p></section>
-
-  <section><h3>12. Children's Privacy</h3>
-  <p>ToolNova is a general-audience utility application and is not directed at children under the age of 13 (or the relevant minimum age in your jurisdiction). We do not knowingly collect personal information from children. If you believe a child has provided us with personal information, please contact us so we can take appropriate action.</p></section>
-
-  <section><h3>13. International Users</h3>
-  <p>ToolNova may be accessed by users around the world. Because most processing happens locally on your device, cross-border data transfer concerns are minimal. Where information is submitted to us directly (such as through the Contact form), it may be processed in a country other than your own; by submitting such information, you consent to this processing in accordance with this Privacy Policy.</p></section>
-
-  <section><h3>14. Data Retention</h3>
-  <p>Information stored locally on your device (favorites, recent tools, theme preference) persists only until you clear it or clear your browser data. Messages submitted through the Contact form are retained only as long as necessary to respond to your inquiry and to comply with any applicable legal obligations, after which they are deleted.</p></section>
-
-  <section><h3>15. Changes to This Privacy Policy</h3>
-  <p>We may update this Privacy Policy from time to time to reflect changes in our practices, technology, or applicable law. Material changes will be reflected by updating the "Last Updated" date at the top of this page. We encourage you to review this policy periodically.</p></section>
-
-  <section><h3>16. Contact Information</h3>
-  <p>If you have questions, concerns, or requests relating to this Privacy Policy or your personal information, please reach us at <strong>support@toolnova.app</strong> or through the Contact page within the App.</p></section>`;
-}
-
-/* ---------------- TERMS OF SERVICE ---------------- */
-function renderTermsPage(){
-  const el=document.getElementById('page-terms');
-  el.innerHTML = `
-  <h2>Terms of Service</h2>
-  <p class="legal-meta">Effective Date: January 1, 2026 &nbsp;·&nbsp; Last Updated: August 7, 2026</p>
-
-  <section><h3>1. Acceptance of Terms</h3>
-  <p>These Terms of Service ("Terms") govern your access to and use of ToolNova (the "App", "we", "us", or "our"). By accessing or using ToolNova, you agree to be bound by these Terms. If you do not agree to these Terms, please discontinue use of the App immediately. We may update these Terms from time to time, and continued use of the App after changes take effect constitutes acceptance of the revised Terms.</p></section>
-
-  <section><h3>2. Description of Service</h3>
-  <p>ToolNova provides a collection of free, browser-based productivity utilities, including but not limited to a QR Code Generator, Barcode Generator, Password Generator, Password Strength Checker, Calculator, Unit Converter, Text Counter, Case Converter, Color Picker, UUID Generator, JSON Formatter, Base64 Encoder/Decoder, URL Encoder/Decoder, Timestamp Converter, Random Number Generator, Coin Flip, Dice Roller, Character Counter, and Lorem Ipsum Generator. The App does not require account registration and, for most tools, does not depend on a backend server or database. We may add, modify, or remove tools and features at our discretion.</p></section>
-
-  <section><h3>3. User Responsibilities</h3>
-  <p>You agree to use ToolNova only for lawful purposes and in a manner consistent with these Terms. You are solely responsible for the content you input into, generate with, or export from the App's tools, including but not limited to passwords, QR codes, barcodes, and text. You are responsible for maintaining the security of any passwords or sensitive values you generate using ToolNova, including storing them appropriately after generation.</p></section>
-
-  <section><h3>4. Acceptable Use Policy</h3>
-  <p>When using ToolNova, you agree that you will not:</p>
-  <ul>
-    <li>Use the App to generate or distribute content that is illegal, fraudulent, deceptive, or infringes on the rights of others.</li>
-    <li>Attempt to reverse-engineer, decompile, or interfere with the App's underlying code beyond what is permitted by applicable law.</li>
-    <li>Use automated means to scrape, overload, or disrupt the App's availability or performance.</li>
-    <li>Use any generated QR codes, barcodes, or other outputs to mislead users, distribute malware, or facilitate scams.</li>
-    <li>Attempt to bypass any security or access-control feature of the App.</li>
-  </ul></section>
-
-  <section><h3>5. Intellectual Property</h3>
-  <p>The ToolNova name, logo, visual design, original illustrations, and underlying source code are the property of ToolNova and its creators, and are protected by applicable intellectual property laws. You may not copy, reproduce, redistribute, or create derivative works based on the App's branding or design without prior written permission. Content that you generate using ToolNova's tools (such as passwords, QR codes, or formatted text) belongs to you, and we claim no ownership over it.</p></section>
-
-  <section><h3>6. Disclaimer</h3>
-  <p>ToolNova is provided on an "as is" and "as available" basis, without warranties of any kind, whether express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, accuracy, or non-infringement. While we strive for accuracy in every tool — including calculators, converters, and generators — we do not guarantee that results will be error-free, uninterrupted, or suitable for every use case, including critical, financial, medical, or legal applications.</p></section>
-
-  <section><h3>7. Limitation of Liability</h3>
-  <p>To the fullest extent permitted by applicable law, ToolNova and its creators shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of data, loss of profits, or loss of goodwill, arising out of or related to your use of, or inability to use, the App, even if we have been advised of the possibility of such damages. Your sole remedy for dissatisfaction with the App is to discontinue using it.</p></section>
-
-  <section><h3>8. Termination</h3>
-  <p>We reserve the right to suspend or discontinue access to ToolNova, in whole or in part, at any time and for any reason, including but not limited to violation of these Terms, without prior notice. Because the App does not require accounts, "termination" generally refers to restricting or discontinuing the availability of the App or specific features.</p></section>
-
-  <section><h3>9. Changes</h3>
-  <p>We may revise these Terms periodically to reflect changes in our services, legal requirements, or business practices. The updated Terms will be posted within the App with a revised "Last Updated" date. Your continued use of ToolNova after such changes constitutes your acceptance of the updated Terms.</p></section>
-
-  <section><h3>10. Governing Law</h3>
-  <p>These Terms shall be governed by and construed in accordance with applicable laws, without regard to conflict-of-law principles. Any disputes arising from these Terms or your use of the App shall be resolved in a manner consistent with applicable local regulations governing digital services.</p></section>
-
-  <section><h3>11. Contact Information</h3>
-  <p>If you have any questions about these Terms of Service, please contact us at <strong>support@toolnova.app</strong> or through the Contact page within the App.</p></section>`;
-}
-
-/* ---------------- SETTINGS ---------------- */
-function applyTheme(theme){
-  document.documentElement.setAttribute('data-theme', theme);
-  document.getElementById('themeToggle').innerHTML = theme==='light'
-    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>'
-    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path stroke-linecap="round" d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>';
-  document.getElementById('darkModeSwitch').checked = theme==='dark';
-  localStorage.setItem(LS.theme, theme);
-}
-document.getElementById('themeToggle').addEventListener('click', ()=>{
-  const cur=document.documentElement.getAttribute('data-theme')==='light' ? 'dark':'light';
-  applyTheme(cur);
-});
-document.getElementById('darkModeSwitch').addEventListener('change', (e)=>{ applyTheme(e.target.checked?'dark':'light'); });
-
-document.getElementById('clearCacheRow').addEventListener('click', ()=>{
-  localStorage.removeItem(LS.fav); localStorage.removeItem(LS.recent);
-  updateCacheSize(); toast('Cache cleared');
-  refreshCurrentPage();
-});
-function updateCacheSize(){
-  const bytes = (localStorage.getItem(LS.fav)||'').length + (localStorage.getItem(LS.recent)||'').length;
-  document.getElementById('cacheSize').textContent = bytes<1024 ? bytes+' B' : (bytes/1024).toFixed(1)+' KB';
-}
-document.getElementById('rateRow').addEventListener('click', ()=>toast('Thanks for the love! ⭐'));
-document.getElementById('shareRow').addEventListener('click', ()=>{
-  if(navigator.share){ navigator.share({title:'ToolNova',text:'Smart Tools. Simple Solutions.',url:location.href}).catch(()=>{}); }
-  else { copyText(location.href); toast('Link copied — share it!'); }
-});
-document.getElementById('languageRow').addEventListener('click', ()=>toast('More languages coming soon'));
-
-/* ---------------- INIT ---------------- */
-function init(){
-  const savedTheme = localStorage.getItem(LS.theme) || 'dark';
-  applyTheme(savedTheme);
-  renderHome();
-  renderWhyList();
-  updateCacheSize();
-  go('home');
-}
-init();
 
 })();
 </script>
 </body>
 </html>
+
+<!--
+=====================================================================
+ FGEORA — single-file bundle
+ Everything you need is in this one index.html. The docs and the
+ optional Telegram bot starter are included below as plain comments
+ so you have one file to keep, copy, or hand off — they don't affect
+ the app above in any way.
+=====================================================================
+
+──────────────────────────────────────────────────────────────
+ 1) README
+──────────────────────────────────────────────────────────────
+
+FGEORA — Telegram Mini App
+A premium, mobile-first tap-to-earn Mini App. Deep navy (#0B1020) base
+with electric purple + blue accents, a metallic gold FGE coin, a glowing "mining orb" with a coin
+medallion as the signature interaction, glassy cards, and a radial
+energy ring instead of a generic progress bar.
+
+WHAT'S HERE
+This single index.html is the entire app (HTML + CSS + JS, no build
+step). Host it as one static file on any HTTPS host (GitHub Pages,
+Vercel, Netlify, Cloudflare Pages, S3+CDN, etc). Telegram Mini Apps
+require HTTPS.
+
+TABS
+- Mine — balance, live mining rate, radial energy ring, large glowing
+  mining button (tap-to-earn) with a coin medallion at its center,
+  rig snapshot stats, and an "offline earnings" welcome-back modal.
+- Boost — sponsor rewards only, entirely optional. A consent toggle
+  gates access; nothing here is ever required to keep mining,
+  upgrading, or inviting friends.
+- Upgrades — six upgrade cards (Neon Rig, Cryo Cell, Flux Regenerator,
+  Quantum Array, Signal Booster, Auto Miner) with scaling costs and
+  clear mining-rate/energy bonuses.
+- Friends — referral link generation, one-tap copy/share via
+  Telegram, and an invited-friends list with bonus tracking.
+
+AD & SPONSOR-CONTENT COMPLIANCE
+- Sponsor rewards live only in the Boost tab and are opt-in via an
+  explicit consent switch (adsConsent, persisted per user).
+- No ad view is ever required to mine, upgrade, or invite — every
+  core action works with the toggle off.
+- Each boost is labelled "Ad · Optional" and describes the exact
+  reward before it's claimed.
+- A disclosure strip at the top of Boost states plainly that rewards
+  are optional and that nothing is faked.
+- The reward-claim flow only fires reward() after showRewardedAd()
+  resolves true (i.e. the ad actually completed) — declining/skipping
+  grants nothing, and nothing is auto-clicked or auto-counted.
+- There is no fake-impression or inflated-stat logic anywhere in the
+  codebase.
+
+WIRING A REAL AD NETWORK
+showRewardedAd(placementId) inside the <script> above is a single,
+clearly-marked adapter function with a simulated ~1.6s "ad" for demo
+purposes:
+
+  function showRewardedAd(placementId){
+    return new Promise(function(resolve){
+      // TODO: replace with your ad network's rewarded-video call,
+      // e.g. Adsgram, Telegram Ads, or another TMA-compatible SDK.
+      // resolve(true) only once the ad genuinely completed.
+    });
+  }
+
+Swap its body for your ad SDK's real rewarded-video call and nothing
+else in the app needs to change.
+
+PRODUCTION CHECKLIST (IMPORTANT)
+This file ships a fully playable client using localStorage so it
+works immediately, but a real economy needs a backend:
+
+1. Move state server-side. Balance, energy, upgrade levels and
+   referral bonuses must be authoritative on a server you control —
+   never trust client-submitted numbers for anything with real value.
+2. Validate Telegram initData. On every request, verify the initData
+   HMAC signature (see core.telegram.org/bots/webapps#validating-data-received-via-the-mini-app)
+   so you know requests really came from Telegram for that user.
+3. Rate-limit taps and boost claims server-side to prevent scripted
+   abuse, independent of the client's energy math.
+4. Persist referrals server-side, crediting the inviter only once the
+   invited user's account is verified real (e.g. after their first
+   session), and enforce the referral reward rule there rather than
+   in the client.
+5. Ad SDK integration should also confirm completion server-side if
+   your network supports server-to-server reward callbacks, so client
+   tampering can't fabricate a reward.
+
+BOT SETUP (BOTFATHER)
+1. Talk to @BotFather → /newbot (or reuse an existing bot) → note the
+   bot token.
+2. /mybots → your bot → Bot Settings → Menu Button → Configure Menu
+   Button, set the URL to your hosted index.html
+   (e.g. https://yourdomain.com/).
+3. Alternatively use /newapp to register a Mini App with its own
+   short name, giving you a link like https://t.me/YourBot/app.
+4. Update BOT_USERNAME near the top of the <script> block above to
+   your real bot username so referral links resolve correctly.
+
+The bot.js example below shows the minimal Telegraf setup for a
+/start command that opens the Mini App and forwards a
+startapp=ref_<id> payload for referrals — wire this to your backend
+once you've stood one up.
+
+MAKING THE REFERRAL LINK ACTUALLY WORK
+The link in the Friends tab (t.me/YourBot/app?startapp=ref_<uid>) is
+generated correctly out of the box, but by itself a referral link
+can't credit anyone: the person who invites and the friend who joins
+are on two different phones with two different localStorages, so
+there's no shared place to record "these two are connected" without
+a backend both devices can talk to. Section 4 below (server.js) is
+that backend. Once it's deployed:
+
+1. Set BACKEND_URL near the top of the <script> block above to your
+   deployed server's URL (e.g. https://api.yourdomain.com). Leave it
+   as the placeholder and referral tracking silently stays off —
+   nothing else in the app breaks.
+2. Set BOT_USERNAME (already covered above) so the generated link
+   points at your real bot.
+3. Make sure your bot's webapp button passes start_param through —
+   Telegram does this automatically for /app?startapp=... links and
+   for bot.js's ctx.startPayload forwarding shown in section 3 below.
+4. Deploy server.js (section 4) anywhere that runs Node — Render,
+   Railway, Fly.io, a small VPS, etc — and set its FGEORA_BOT_TOKEN
+   env var to the same token as your bot.
+
+How the flow works end-to-end once wired up:
+  a. Person A opens Friends, taps Share, sends their link to Person B.
+  b. Person B opens the link, Telegram launches the Mini App and
+     passes start_param = "ref_<A's id>" into initDataUnsafe.
+  c. On load, the app reads that, verifies it isn't a self-referral,
+     and POSTs {newUserId: B, referrerId: A, initData} to
+     /api/referral/register. The server verifies the initData
+     signature (so B can't be spoofed), then stores "B was invited
+     by A" and queues a 2,000 FGE bonus record for A.
+  d. Every ~20 seconds (and whenever the app becomes visible again),
+     each open app polls /api/referral/friends/<own id>. When A's
+     app polls and sees B's new record, it adds B to the Friends
+     list, credits the 2,000 FGE bonus to A's local balance, and
+     tells the server that record has been delivered so it's never
+     double-counted.
+This keeps the actual balance math on each device (matching how the
+rest of this demo works) while using the server purely as the
+shared "who invited whom, and what's still owed" ledger. For a
+launch with real money on the line, move balance itself server-side
+too — see the production checklist above.
+
+CUSTOMIZING BRANDING
+All CoinForge-specific copy, the wordmark, and the coin/icon glyph live
+in the <script> and <style> blocks above. No assets, text, or class
+names are borrowed from any reference product — palette, iconography,
+and the mining-orb interaction were designed fresh for this brief.
+
+
+──────────────────────────────────────────────────────────────
+ 2) bot/package.json  (save as its own file if you run the bot)
+──────────────────────────────────────────────────────────────
+
+{
+  "name": "coinforge-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Minimal Telegram bot that launches the CoinForge Mini App",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "telegraf": "^4.16.3"
+  }
+}
+
+
+──────────────────────────────────────────────────────────────
+ 3) bot/bot.js  (save as its own file if you run the bot)
+──────────────────────────────────────────────────────────────
+
+// CoinForge — minimal Telegram bot that launches the Mini App.
+// This is a starting point, not a full backend. See the README
+// section above for what still needs to move server-side before
+// real launch.
+//
+// Setup:
+//   1. npm install
+//   2. Set BOT_TOKEN and WEB_APP_URL below (or via env vars)
+//   3. node bot.js
+
+const { Telegraf, Markup } = require("telegraf");
+
+const BOT_TOKEN = process.env.FGEORA_BOT_TOKEN || "PUT_YOUR_BOT_TOKEN_HERE";
+const WEB_APP_URL = process.env.FGEORA_WEB_APP_URL || "https://yourdomain.com/";
+
+if (BOT_TOKEN === "PUT_YOUR_BOT_TOKEN_HERE") {
+  console.warn("⚠️  Set FGEORA_BOT_TOKEN before running in production.");
+}
+
+const bot = new Telegraf(BOT_TOKEN);
+
+bot.start((ctx) => {
+  // Forward any referral payload (e.g. "ref_12345") so your backend
+  // can credit the inviter once you've built that server-side.
+  const payload = ctx.startPayload; // e.g. "ref_12345"
+  const url = payload ? `${WEB_APP_URL}?startapp=${encodeURIComponent(payload)}` : WEB_APP_URL;
+
+  ctx.reply(
+    "Welcome to CoinForge — tap, boost and grow your mining rig.",
+    Markup.inlineKeyboard([
+      Markup.button.webApp("⚡ Open CoinForge", url),
+    ])
+  );
+});
+
+bot.launch();
+console.log("CoinForge bot is running.");
+
+process.once("SIGINT", () => bot.stop("SIGINT"));
+process.once("SIGTERM", () => bot.stop("SIGTERM"));
+
+
+──────────────────────────────────────────────────────────────
+ 4) server/server.js  (the referral backend — save as its own file)
+──────────────────────────────────────────────────────────────
+
+// CoinForge — minimal referral backend.
+// Verifies Telegram initData, stores "who invited whom", and hands
+// out referral rewards to be picked up by each player's device.
+// Storage is a single JSON file for simplicity — swap loadDB/saveDB
+// for a real database (Postgres, SQLite, etc) before scaling up.
+//
+// Setup:
+//   1. npm install
+//   2. Set FGEORA_BOT_TOKEN to the SAME token your bot uses
+//   3. node server.js
+//   4. Point BACKEND_URL in index.html at wherever this is hosted
+
+const express = require("express");
+const cors = require("cors");
+const crypto = require("crypto");
+const fs = require("fs");
+const path = require("path");
+
+const BOT_TOKEN = process.env.FGEORA_BOT_TOKEN || "PUT_YOUR_BOT_TOKEN_HERE";
+const PORT = process.env.PORT || 3001;
+const DB_PATH = path.join(__dirname, "db.json");
+const REFERRAL_BONUS = 2000; // FGE credited to the inviter per joined friend
+
+function loadDB() {
+  if (!fs.existsSync(DB_PATH)) return { users: {}, referrals: {} };
+  try { return JSON.parse(fs.readFileSync(DB_PATH, "utf8")); }
+  catch (e) { return { users: {}, referrals: {} }; }
+}
+function saveDB(db) {
+  fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2));
+}
+
+// Validates Telegram's initData signature so a request claiming to
+// be "user 12345" can actually be trusted.
+// See: core.telegram.org/bots/webapps#validating-data-received-via-the-mini-app
+function verifyInitData(initData) {
+  if (!initData || BOT_TOKEN === "PUT_YOUR_BOT_TOKEN_HERE") return null;
+  const params = new URLSearchParams(initData);
+  const hash = params.get("hash");
+  if (!hash) return null;
+  params.delete("hash");
+
+  const pairs = [...params.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([k, v]) => `${k}=${v}`);
+  const dataCheckString = pairs.join("\n");
+
+  const secretKey = crypto.createHmac("sha256", "WebAppData").update(BOT_TOKEN).digest();
+  const computedHash = crypto.createHmac("sha256", secretKey).update(dataCheckString).digest("hex");
+  if (computedHash !== hash) return null;
+
+  const userJson = params.get("user");
+  return userJson ? JSON.parse(userJson) : null;
+}
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// Called once, when a new player opens the app via someone's invite link.
+app.post("/api/referral/register", (req, res) => {
+  const { newUserId, referrerId, initData } = req.body || {};
+  if (!newUserId || !referrerId) {
+    return res.status(400).json({ ok: false, error: "missing fields" });
+  }
+  if (String(newUserId) === String(referrerId)) {
+    return res.status(400).json({ ok: false, error: "self-referral" });
+  }
+
+  const verifiedUser = verifyInitData(initData);
+  if (!verifiedUser || String(verifiedUser.id) !== String(newUserId)) {
+    return res.status(401).json({ ok: false, error: "initData verification failed" });
+  }
+
+  const db = loadDB();
+  if (db.users[newUserId] && db.users[newUserId].referredBy) {
+    return res.json({ ok: true, note: "already registered" }); // no double-counting
+  }
+
+  const friendName = verifiedUser.first_name || verifiedUser.username || "Explorer";
+  db.users[newUserId] = { referredBy: referrerId, name: friendName, joinedAt: Date.now() };
+  db.referrals[referrerId] = db.referrals[referrerId] || [];
+  db.referrals[referrerId].push({
+    friendId: String(newUserId),
+    friendName: friendName,
+    ts: Date.now(),
+    bonus: REFERRAL_BONUS,
+    synced: false
+  });
+  saveDB(db);
+  res.json({ ok: true });
+});
+
+// Polled by each player's device to discover new referral rewards.
+app.get("/api/referral/friends/:userId", (req, res) => {
+  const db = loadDB();
+  const list = db.referrals[req.params.userId] || [];
+  res.json({ ok: true, friends: list });
+});
+
+// Called after the client has added a reward locally, so it isn't
+// handed out again on the next poll.
+app.post("/api/referral/sync", (req, res) => {
+  const { userId, friendIds } = req.body || {};
+  if (!userId || !Array.isArray(friendIds)) {
+    return res.status(400).json({ ok: false, error: "missing fields" });
+  }
+  const db = loadDB();
+  const list = db.referrals[userId] || [];
+  list.forEach((r) => { if (friendIds.includes(r.friendId)) r.synced = true; });
+  saveDB(db);
+  res.json({ ok: true });
+});
+
+app.listen(PORT, () => console.log("CoinForge referral server listening on :" + PORT));
+
+
+──────────────────────────────────────────────────────────────
+ 5) server/package.json  (save as its own file)
+──────────────────────────────────────────────────────────────
+
+{
+  "name": "coinforge-referral-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Minimal referral backend for the CoinForge Mini App",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}
+
+=====================================================================
+ END OF BUNDLE
+=====================================================================
+-->
